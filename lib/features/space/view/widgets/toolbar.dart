@@ -82,7 +82,7 @@ class ToolBar extends StatelessWidget {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(
           isSelected
-              ? Theme.of(context).primaryColor.withOpacity(0.15)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.15)
               : Colors.transparent,
         ),
       ),

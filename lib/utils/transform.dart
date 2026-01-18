@@ -43,8 +43,9 @@ class _DebounceStreamTransformer<T> extends StreamTransformerBase<T, T> {
             timer = Timer(duration, () {
               // When the timer completes, it means the specified duration has passed
               // without any new events. We can now emit the last value we received.
-              if (latestValue != null) {
-                controller?.add(latestValue!);
+              final value = latestValue;
+              if (value != null) {
+                controller?.add(value);
               }
             });
           },
@@ -53,8 +54,9 @@ class _DebounceStreamTransformer<T> extends StreamTransformerBase<T, T> {
             // When the original stream is done, we clean up.
             timer?.cancel();
             // If there was a pending value, emit it before closing.
-            if (latestValue != null) {
-              controller?.add(latestValue!);
+            final value = latestValue;
+            if (value != null) {
+              controller?.add(value);
             }
             controller?.close();
           },

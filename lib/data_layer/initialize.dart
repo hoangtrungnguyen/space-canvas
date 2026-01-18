@@ -24,5 +24,5 @@ Future initializeDependencies() async {
 
   getIt.registerLazySingleton(() => SpaceDashboardRepository(getIt()));
 
-  getIt.registerLazySingleton(() => SpaceViewRepository(getIt()));
+  getIt.registerLazySingleton(() => SpaceViewRepository());
 }

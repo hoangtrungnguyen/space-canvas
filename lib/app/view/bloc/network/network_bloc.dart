@@ -11,7 +11,6 @@ part 'network_state.dart';
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
-  late StreamSubscription<InternetConnectionStatus> _internetStatusSubscription;
 
   NetworkBloc() : super(const NetworkState.initial()) {
     on<_Started>(_onStarted);

@@ -213,40 +213,6 @@ class RestApiSource {
   }
 
   // Helper method to handle Dio errors and throw more specific exceptions
-  Exception _handleDioError(DioException dioError) {
-    String errorMessage;
-    switch (dioError.type) {
-      case DioExceptionType.connectionTimeout:
-        errorMessage = "Connection timed out.";
-        break;
-      case DioExceptionType.sendTimeout:
-        errorMessage = "Send timed out.";
-        break;
-      case DioExceptionType.receiveTimeout:
-        errorMessage = "Receive timed out.";
-        break;
-      case DioExceptionType.badResponse:
-        errorMessage =
-            "Received invalid status code: ${dioError.response?.statusCode}";
-        // You can inspect dioError.response?.data here for more details
-        break;
-      case DioExceptionType.cancel:
-        errorMessage = "Request to API server was cancelled.";
-        break;
-      case DioExceptionType.connectionError:
-        errorMessage =
-            "Connection error. Please check your internet connection.";
-        break;
-      case DioExceptionType.unknown:
-        errorMessage = "An unexpected error occurred: ${dioError.message}";
-        break;
-      default:
-        errorMessage = "Something went wrong: ${dioError.message}";
-        break;
-    }
-    log('errorMessage $errorMessage');
-    return Exception(errorMessage);
-  }
 
   /// Updates the authorization token in the Dio instance's headers.
   ///

@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/models/grid_painter.dart';
 import 'package:ideascape/features/space/domain/models/object_painter.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/models/space_tools.dart';
-import 'package:ideascape/features/space/view/bloc/space_page_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
-import 'package:ideascape/features/space/view/widgets/toolbar.dart';
 
+import 'package:ideascape/features/space/domain/models/space_tools.dart';
+import 'package:ideascape/features/space/view/bloc/bloc.dart';
+import 'package:ideascape/features/space/view/bloc/page_bloc.dart';
+import 'package:ideascape/features/space/view/widgets/toolbar.dart';
+import 'package:ideascape/features/space/view/widgets/shape_library.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler_factory.dart';
+
+import 'package:ideascape/aliases.dart';
+import 'package:ideascape/domain/space_data_service.dart';
 import '../constant.dart';
 
 class IdeaSpace extends StatelessWidget {
   static const String routePath = '/idea-space/:id';
-  static const String routeName = 'Space';
+  static const String routeName = 'Idea Space';
 
   const IdeaSpace({super.key, required this.id});
 
@@ -20,24 +24,47 @@ class IdeaSpace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => SpacePageBloc(id)),
-        BlocProvider(create: (context) => ToolbarBloc()),
-      ],
-      child: SpacePage(),
+    return BlocProvider(
+      create:
+          (context) =>
+              SpacePageBloc(id: id, spaceDataService: getIt<SpaceDataService>()),
+      child: BlocBuilder<SpacePageBloc, PageState>(
+        buildWhen: (p, c) {
+          return p != c;
+        },
+        builder: (context, state) {
+          return state.map(
+            init: (_) {
+              context.read<SpacePageBloc>().add(const PageEvent.load());
+              return const Center(child: CircularProgressIndicator());
+            },
+            inProgress: (_) => const Center(child: CircularProgressIndicator()),
+            failure: (_) => const Center(child: Text('Failed to load space')),
+            success:
+                (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => CanvasBloc()),
+                    BlocProvider(create: (_) => ShapeLayerBloc(id)),
+                    BlocProvider(create: (_) => ActiveLayerBloc()),
+                    BlocProvider(create: (context) => ToolbarBloc()),
+                  ],
+                  child: const SpaceView(),
+                ),
+          );
+        },
+      ),
     );
   }
 }
 
-class SpacePage extends StatefulWidget {
-  const SpacePage({super.key});
+class SpaceView extends StatefulWidget {
+  const SpaceView({super.key});
 
   @override
-  State<SpacePage> createState() => _SpacePageState();
+  State<SpaceView> createState() => _SpaceViewState();
 }
 
-class _SpacePageState extends State<SpacePage> {
+class _SpaceViewState extends State<SpaceView> {
   late TransformationController _controller;
   final double _initialScale =
       3.0; // Set your initial scale factor here (e.g., 2.0 for 2x zoom)
@@ -51,13 +78,18 @@ class _SpacePageState extends State<SpacePage> {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SpacePageBloc>().add(
-        SpacePageEvent.initialize(_controller.value),
-      );
+      context.read<ShapeLayerBloc>().add(const ShapeLayerEvent.initialize());
 
       _controller.addListener(() {
-        context.read<SpacePageBloc>().add(
-          SpacePageEvent.spaceTransformUpdated(_controller.value),
+        final matrix = _controller.value;
+        final scale = matrix.getMaxScaleOnAxis();
+        final translation = matrix.getTranslation();
+
+        context.read<CanvasBloc>().add(
+          CanvasEvent.transformUpdated(
+            offset: Offset(translation.x, translation.y),
+            scale: scale,
+          ),
         );
       });
     });
@@ -68,7 +100,7 @@ class _SpacePageState extends State<SpacePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: BlocSelector<SpacePageBloc, SpacePageState, String>(
+        title: BlocSelector<ShapeLayerBloc, ShapeLayerState, String>(
           selector: (state) {
             return state.data.title;
           },
@@ -87,28 +119,34 @@ class _SpacePageState extends State<SpacePage> {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<SpacePageBloc, SpacePageState>(
+          BlocListener<CanvasBloc, CanvasState>(
             listenWhen: (p, c) {
-              return p.data.transformMatrix != c.data.transformMatrix;
+              return p.offset != c.offset || p.scale != c.scale;
             },
-            listener: (BuildContext context, SpacePageState state) {
-              _controller.value = state.data.transformMatrix;
+            listener: (BuildContext context, CanvasState state) {
+              final newMatrix =
+                  Matrix4.identity()
+                    ..translate(state.offset.dx, state.offset.dy)
+                    ..scale(state.scale);
+              if (_controller.value != newMatrix) {
+                _controller.value = newMatrix;
+              }
             },
           ),
         ],
-        child: BlocBuilder<SpacePageBloc, SpacePageState>(
+        child: BlocBuilder<ShapeLayerBloc, ShapeLayerState>(
           buildWhen: (p, c) {
             return p != c;
           },
           builder: (context, state) {
             switch (state) {
-              case SpacePageStateFailure():
+              case ShapeLayerStateFailure():
                 return const Center(child: Text("failure"));
-              case SpacePageStateInitialize():
+              case ShapeLayerStateInitialize():
                 return const Center(child: Text("init"));
-              case SpacePageStateLoading():
+              case ShapeLayerStateLoading():
                 return const Center(child: CircularProgressIndicator());
-              case SpacePageStateSuccess():
+              case ShapeLayerStateSuccess():
                 return Stack(
                   children: [
                     // The main interactive canvas area
@@ -137,10 +175,77 @@ class _SpacePageState extends State<SpacePage> {
                                     Widget? child,
                                   ) {
                                     return GestureDetector(
+                                      onTapUp: (details) {
+                                        final tool =
+                                            context
+                                                .read<ToolbarBloc>()
+                                                .state
+                                                .tool;
+                                        final handler =
+                                            ToolHandlerFactory.getHandler(tool);
+                                        handler.onTapUp(
+                                          details,
+                                          context,
+                                          _controller,
+                                        );
+                                      },
                                       onPanStart:
                                           state.panEnabled
                                               ? null
-                                              : (details) {},
+                                              : (details) {
+                                                final tool =
+                                                    context
+                                                        .read<ToolbarBloc>()
+                                                        .state
+                                                        .tool;
+                                                final handler =
+                                                    ToolHandlerFactory.getHandler(
+                                                      tool,
+                                                    );
+                                                handler.onPanStart(
+                                                  details,
+                                                  context,
+                                                  _controller,
+                                                );
+                                              },
+                                      onPanUpdate:
+                                          state.panEnabled
+                                              ? null
+                                              : (details) {
+                                                final tool =
+                                                    context
+                                                        .read<ToolbarBloc>()
+                                                        .state
+                                                        .tool;
+                                                final handler =
+                                                    ToolHandlerFactory.getHandler(
+                                                      tool,
+                                                    );
+                                                handler.onPanUpdate(
+                                                  details,
+                                                  context,
+                                                  _controller,
+                                                );
+                                              },
+                                      onPanEnd:
+                                          state.panEnabled
+                                              ? null
+                                              : (details) {
+                                                final tool =
+                                                    context
+                                                        .read<ToolbarBloc>()
+                                                        .state
+                                                        .tool;
+                                                final handler =
+                                                    ToolHandlerFactory.getHandler(
+                                                      tool,
+                                                    );
+                                                handler.onPanEnd(
+                                                  details,
+                                                  context,
+                                                  _controller,
+                                                );
+                                              },
                                       child: Stack(
                                         children: [
                                           CustomPaint(
@@ -153,34 +258,24 @@ class _SpacePageState extends State<SpacePage> {
                                             ),
                                           ),
                                           BlocBuilder<
-                                            SpacePageBloc,
-                                            SpacePageState
+                                            ShapeLayerBloc,
+                                            ShapeLayerState
                                           >(
                                             buildWhen: (p, c) {
-                                              return p.data.transformMatrix !=
-                                                      c.data.transformMatrix ||
-                                                  p.data.objects !=
-                                                      c.data.objects;
+                                              return p.data.objects !=
+                                                  c.data.objects;
                                             },
                                             builder: (context, state) {
                                               return CustomPaint(
-                                                // Set a size for the canvas world.
                                                 size: Size(
                                                   defaultWidth,
                                                   defaultHeight,
                                                 ),
-                                                // The painter gets the objects and the current transform matrix from the state.
                                                 painter: ObjectPainter(
                                                   objects:
                                                       state.data.objects.values
-                                                          .whereType<
-                                                            ShapeObject
-                                                          >()
                                                           .toList(),
-                                                  transform:
-                                                      state
-                                                          .data
-                                                          .transformMatrix,
+                                                  transform: _controller.value,
                                                 ),
                                               );
                                             },
@@ -198,6 +293,25 @@ class _SpacePageState extends State<SpacePage> {
                     ),
                     // Left-side main toolbar
                     Positioned(top: 16, left: 16, child: ToolBar()),
+
+                    // Shape Library Panel
+                    BlocBuilder<ToolbarBloc, ToolbarState>(
+                      builder: (context, state) {
+                        if (state.tool != SpaceTool.shape)
+                          return const SizedBox.shrink();
+                        return Positioned(
+                          top: 16,
+                          left: 90, // Next to toolbar
+                          child: ShapeLibrary(
+                            onShapeSelected: (type) {
+                              context.read<ToolbarBloc>().add(
+                                ToolbarEvent.shapeSelected(type),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 );
               default:
@@ -215,10 +329,6 @@ class _SpacePageState extends State<SpacePage> {
 
     super.dispose();
   }
-
-  void _onPanStart(DragStartDetails details) {}
-
-  void _onHorizontalDragStart(DragStartDetails details) {}
 }
 
 extension on ToolbarState {

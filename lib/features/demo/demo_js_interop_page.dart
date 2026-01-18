@@ -9,30 +9,28 @@ class DemoJsInteropPage extends StatefulWidget {
 }
 
 class _DemoJsInteropPageState extends State<DemoJsInteropPage> {
-  late final JsInteropService _service;
-
-  @override
-  void initState() {
-    super.initState();
-    _service = JsInteropService();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Wrap(
           children: [
-            ElevatedButton(onPressed: (){
-              final jsInteropService = JsInteropService();
-              jsInteropService.showAlert();
-            }, child: Text("Show Alert")),
-            ElevatedButton(onPressed: (){
-            requestFullScreen();
-            }, child: Text("Full Screen"))
+            ElevatedButton(
+              onPressed: () {
+                final jsInteropService = JsInteropService();
+                jsInteropService.showAlert();
+              },
+              child: Text("Show Alert"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                requestFullScreen();
+              },
+              child: Text("Full Screen"),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

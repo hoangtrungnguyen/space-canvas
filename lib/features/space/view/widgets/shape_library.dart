@@ -22,8 +22,8 @@ class ShapeLibrary extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const Divider(),
-            Row(
-              mainAxisSize: MainAxisSize.min,
+            Wrap(
+              spacing: 8,
               children: [
                 _buildShapeButton(
                   context,
@@ -34,6 +34,47 @@ class ShapeLibrary extends StatelessWidget {
                   context,
                   ShapeType.oval,
                   Icons.circle_outlined,
+                ),
+                _buildShapeButton(
+                  context,
+                  ShapeType.triangle,
+                  Icons.change_history,
+                ),
+                _buildShapeButton(
+                  context,
+                  ShapeType.diamond,
+                  Icons.diamond_outlined,
+                ),
+                _buildShapeButton(
+                  context,
+                  ShapeType.parallelogram,
+                  Icons.check_box_outline_blank_rounded, // Best approx or custom icon
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Cloud',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Divider(),
+            Wrap(
+              spacing: 8,
+              children: [
+                _buildShapeButton(
+                  context,
+                  ShapeType.database,
+                  Icons.storage,
+                ),
+                _buildShapeButton(
+                  context,
+                  ShapeType.server,
+                  Icons.dns,
+                ),
+                _buildShapeButton(
+                  context,
+                  ShapeType.cloud,
+                  Icons.cloud_queue,
                 ),
               ],
             ),
@@ -51,6 +92,9 @@ class ShapeLibrary extends StatelessWidget {
     return IconButton(
       icon: Icon(icon),
       onPressed: () => onShapeSelected(type),
+      // onPressed: () {
+      //   onShapeSelected(type);
+      // },
       tooltip: type.name,
     );
   }

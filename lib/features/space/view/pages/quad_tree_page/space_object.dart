@@ -10,14 +10,13 @@ class SpaceObject extends Rect {
   final Paint paint;
 
   SpaceObject({
-    required double x,
-    required double y,
-    required double width,
-    required double height,
+    required super.x,
+    required super.y,
+    required super.width,
+    required super.height,
     required Color color,
   }) : id = uuid.v4(),
-       paint = Paint()..color = color,
-       super(x: x, y: y, width: width, height: height);
+       paint = Paint()..color = color;
 
   // Override equality and hashCode to ensure objects are uniquely identified by their ID.
   // This is crucial for collections like Set or for removing objects from a list.

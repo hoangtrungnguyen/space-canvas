@@ -102,7 +102,7 @@ class WhiteboardState extends ChangeNotifier {
       _quadtree.insert(obj);
     }
 
-    print("Quadtree expanded. New bounds: $_currentBounds");
+    // print("Quadtree expanded. New bounds: $_currentBounds");
   }
 
   /// Queries the quadtree to get only the objects visible within a given rectangle.

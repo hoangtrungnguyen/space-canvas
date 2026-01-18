@@ -1,0 +1,83 @@
+# CanvasBloc Technical Documentation
+
+## Overview
+The `CanvasBloc` is a specialized BLoC component dedicated to managing the transformation state and object collection of the infinite canvas in the Space feature. It serves as the central logic unit for handling canvas interactions such as panning, zooming, and object synchronization.
+
+## Architecture
+
+### CanvasBloc
+- **Type**: `Bloc<CanvasEvent, CanvasState>`
+- **Purpose**: Handles business logic for canvas transformations and object updates.
+
+### ActiveLayerBloc
+- **Type**: `Bloc<ActiveLayerEvent, ActiveLayerState>`
+- **Purpose**: Manages the state of objects currently being manipulated (dragged, resized) to isolate high-frequency updates from the main ShapeLayer.
+- **Key Logic**: Receives objects from `ShapeLayer` on interactions, updates them locally, and pushes them back upon completion.
+
+### CanvasState
+The state is implemented using the `freezed` package for immutability and value equality.
+
+#### Properties
+- `objects` (`Map<int, SpaceObject>`):
+  - Stores all objects present on the canvas, mapped by their unique integer ID.
+  - **Default**: `{}` (Empty Key-Value Map).
+  - Used for efficient O(1) lookup of objects during rendering or interaction handling.
+  
+- `transformMatrix` (`Matrix4`):
+  - Represents the current 2D transformation of the canvas view (translation and scale).
+  - **Required**: Must be provided during initialization (typically `Matrix4.identity()` for initial state).
+  - Used by the `Transform` widget or custom painters to render the canvas from the correct viewpoint.
+
+### CanvasEvent
+Events are defined as a Freezed union to represent distinct actions.
+
+- `started`: Triggered when the Bloc is first initialized.
+- `transformUpdated(Matrix4 matrix)`: Dispatched when the user pans or zooms the canvas. Updates the `transformMatrix`.
+- `objectsUpdated(Map<int, SpaceObject> objects)`: Dispatched when the collection of objects changes (added, removed, or modified).
+
+## Usage Example
+
+```
+// Initialization
+final canvasBloc = CanvasBloc();
+
+// Updating Transform (e.g., from a GestureDetector)
+canvasBloc.add(CanvasEvent.transformUpdated(newMatrix));
+
+// Consuming State
+BlocBuilder<CanvasBloc, CanvasState>(
+  builder: (context, state) {
+    return Transform(
+      transform: state.transformMatrix,
+      child: Stack(
+        children: state.objects.values.map((obj) => ObjectWidget(obj)).toList(),
+      ),
+    );
+  },
+);
+```
+
+## Rendering Layer System
+The rendering architecture is composed of four distinct layers, stacked from bottom to top to ensure correct visibility and performance:
+
+1. **Canvas Layer (Base)**: The foundational layer providing the workspace context.
+   - **Structure**:
+     - `Container`: Provides the solid background color.
+     - `CustomPaint` (Grid): Draws the infinite grid lines or dots.
+   - **Optimization**: The Grid `CustomPaint` is wrapped in a `RepaintBoundary`. This ensures that expensive grid drawing operations only occur when the viewport transform changes, disjoint from shape updates.
+
+2. **Shape Layer**: Displays the persistent content of the space (all static shapes and components).
+   - **Optimization**: Wrapped in a `RepaintBoundary` to prevent rasterization when interacting with active objects or tools on layers above.
+
+3. **Active Layer**: Dedicated to currently selected items or components being manipulated (e.g., dragged, resized).
+   - **Purpose**: Separating active items isolates high-frequency frame updates to this lightweight layer, avoiding full scene repaints.
+
+4. **Tool Layer (Top)**: Handles temporary visual feedback for active tools.
+   - **Examples**: Selection rubber bands, snap guides, measurement labels, laser trails.
+   - **Position**: Placed at the very top to ensure UI guides are always visible over shapes.
+
+## Dependencies
+- `package:bloc`
+- `package:flutter_bloc`
+- `package:freezed_annotation`
+- `package:vector_math` (implicitly via `Matrix4` in Flutter)
