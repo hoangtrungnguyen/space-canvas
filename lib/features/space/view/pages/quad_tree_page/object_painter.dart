@@ -85,7 +85,7 @@ class ObjectPainter extends CustomPainter {
     // Paint for quadtree nodes
     final nodePaint =
         Paint()
-          ..color = Colors.green.withOpacity(0.5)
+          ..color = Colors.green.withValues(alpha: 0.5)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.0;
 

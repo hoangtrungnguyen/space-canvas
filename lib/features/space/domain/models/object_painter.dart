@@ -127,7 +127,7 @@ class ObjectPainter extends CustomPainter {
         canvas.drawOval(
           topRect,
           Paint()
-            ..color = shape.paint.color.withOpacity(0.5)
+            ..color = shape.paint.color.withValues(alpha: 0.5)
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1,
         );
@@ -136,7 +136,7 @@ class ObjectPainter extends CustomPainter {
         canvas.drawRect(shape.rect, shape.paint);
         final linePaint =
             Paint()
-              ..color = Colors.black.withOpacity(0.2)
+              ..color = Colors.black.withValues(alpha: 0.2)
               ..strokeWidth = 2;
         canvas.drawLine(
           Offset(shape.rect.left + 5, shape.rect.top + 10),
@@ -208,7 +208,7 @@ class ObjectPainter extends CustomPainter {
   void _drawImage(Canvas canvas, ImageObject imageObject) {
     canvas.drawRect(
       imageObject.rect,
-      Paint()..color = Colors.grey.withOpacity(0.3),
+      Paint()..color = Colors.grey.withValues(alpha: 0.3),
     );
     final tp = TextPainter(
       text: const TextSpan(

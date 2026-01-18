@@ -7,15 +7,10 @@ part 'page_state.dart';
 part 'page_bloc.freezed.dart';
 
 class SpacePageBloc extends Bloc<PageEvent, PageState> {
-  final String _id;
-  final SpaceDataService _spaceDataService;
-
   SpacePageBloc({
     required String id,
     required SpaceDataService spaceDataService,
-  }) : _id = id,
-       _spaceDataService = spaceDataService,
-       super(const PageState.init()) {
+  }) : super(const PageState.init()) {
     on<PageLoad>(_onLoad);
     on<PageSave>(_onSave);
   }

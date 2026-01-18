@@ -15,7 +15,7 @@ class FlavorConfig {
     required this.token,
   });
 
-  static initialize({
+  static void initialize({
     required String apiUrl,
     required String appName,
     required String flavor,

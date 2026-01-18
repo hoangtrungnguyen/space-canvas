@@ -9,9 +9,8 @@ mixin NetworkListenerMixin<T extends StatefulWidget> on State<T> {
       _isDialogShowing = true;
       _overlayEntry = OverlayEntry(
         builder:
-            (context) => WillPopScope(
-              onWillPop:
-                  () async => false, // Prevent dialog from being dismissed
+            (context) => PopScope(
+              canPop: false, // Prevent dialog from being dismissed
               child: AlertDialog(
                 title: const Text('No Internet Connection'),
                 content: const Text(

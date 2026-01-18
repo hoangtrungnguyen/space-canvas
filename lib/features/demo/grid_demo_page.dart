@@ -114,12 +114,12 @@ class _GridInteractionDemoState extends State<GridInteractionDemo> {
         width: 180,
         height: 100,
         decoration: BoxDecoration(
-          color: isDragging ? Colors.teal.withOpacity(0.8) : Colors.teal,
+          color: isDragging ? Colors.teal.withValues(alpha: 0.8) : Colors.teal,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             if (!isDragging)
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),

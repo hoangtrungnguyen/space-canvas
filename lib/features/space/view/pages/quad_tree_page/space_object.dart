@@ -21,11 +21,9 @@ class SpaceObject extends Rect {
   // Override equality and hashCode to ensure objects are uniquely identified by their ID.
   // This is crucial for collections like Set or for removing objects from a list.
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SpaceObject &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+  bool operator ==(Object o) =>
+      identical(this, o) ||
+      o is SpaceObject && runtimeType == o.runtimeType && id == o.id;
 
   @override
   int get hashCode => id.hashCode;

@@ -19,7 +19,7 @@ class Sidebar extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_filled),
             title: const Text('Home'),
-            tileColor: Colors.blue.withOpacity(0.1),
+            tileColor: Colors.blue.withValues(alpha: 0.1),
             onTap: () {
               context.go('/home');
             },

@@ -130,7 +130,7 @@ class SpacePainter extends CustomPainter {
         canvas.drawOval(
           topRect,
           Paint()
-            ..color = shape.paint.color.withOpacity(0.5)
+            ..color = shape.paint.color.withValues(alpha: 0.5)
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1,
         ); // Outline for top
@@ -142,7 +142,7 @@ class SpacePainter extends CustomPainter {
         // Draw simplified server lights/lines
         final linePaint =
             Paint()
-              ..color = Colors.black.withOpacity(0.2)
+              ..color = Colors.black.withValues(alpha: 0.2)
               ..strokeWidth = 2;
         canvas.drawLine(
           Offset(shape.rect.left + 5, shape.rect.top + 10),
@@ -203,7 +203,7 @@ class SpacePainter extends CustomPainter {
     // Placeholder for now
     canvas.drawRect(
       imageObject.rect,
-      Paint()..color = Colors.grey.withOpacity(0.3),
+      Paint()..color = Colors.grey.withValues(alpha: 0.3),
     );
     final textPainter = TextPainter(
       text: const TextSpan(

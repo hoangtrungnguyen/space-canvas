@@ -16,7 +16,7 @@ class SpaceDemoPage extends StatefulWidget {
 class _SpaceDemoPageState extends State<SpaceDemoPage> {
   Map<int, SpaceObject> objects = {};
   late TransformationController _controller;
-  Matrix4 _transformMatrix = Matrix4.identity();
+  final Matrix4 _transformMatrix = Matrix4.identity();
   bool _panEnabled = false;
 
   final List<PathObject> _paths = [];
@@ -78,7 +78,7 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
                         size: Size(double.infinity, double.infinity),
                         // The painter gets the objects and the current transform matrix from the state.
                         painter: ObjectPainter(
-                          objects: this._paths,
+                          objects: _paths,
                           transform: _transformMatrix,
                         ),
                       ),

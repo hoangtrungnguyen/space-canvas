@@ -1,5 +1,5 @@
 @JS()
-library js_interop_service;
+library;
 
 import 'dart:js_interop';
 
