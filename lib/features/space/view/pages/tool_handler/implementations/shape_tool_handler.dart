@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/bloc.dart';
+import 'package:ideascape/aliases.dart';
+import 'package:ideascape/domain/space_data_service.dart';
+import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
+import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 
@@ -18,9 +22,17 @@ class ShapeToolHandler extends ToolHandler {
       details.localPosition,
     );
     final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
-    context.read<ShapeLayerBloc>().add(
-      ShapeLayerEvent.shapeAdded(type: shapeType, position: worldPoint),
+
+    // Create object using Factory
+    final id = getIt<SpaceDataService>().nextUniqueId;
+    final newShape = SpaceObjectFactory.createShape(
+      id: id,
+      type: shapeType,
+      center: worldPoint,
     );
+
+    // Execute via HistoryManager (Command Pattern)
+    context.read<HistoryManager>().execute(AddShapeCommand(newShape));
   }
 
   @override
@@ -29,10 +41,7 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      details.localPosition,
-    );
+    // Intentionally empty for now
   }
 
   @override

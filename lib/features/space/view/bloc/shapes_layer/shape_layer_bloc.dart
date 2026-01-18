@@ -24,6 +24,18 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
 
     on<_ObjectDragged>((event, emit) {});
 
+    on<_AddObject>((event, emit) {
+      final newObjects = Map<int, SpaceObject>.from(state.data.objects);
+      newObjects[event.object.id] = event.object;
+      emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
+    });
+
+    on<_RemoveObject>((event, emit) {
+      final newObjects = Map<int, SpaceObject>.from(state.data.objects);
+      newObjects.remove(event.objectId);
+      emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
+    });
+
     on<_ShapeAdded>((event, emit) {
       final id = _spaceDataService.nextUniqueId;
       final newObject = ShapeObject(
@@ -47,7 +59,7 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
         text: event.text,
         position: event.position,
         fontSize: 20,
-        color: Colors.black.value,
+        color: Colors.black.toARGB32(),
       );
       final newObjects = Map<int, SpaceObject>.from(state.data.objects);
       newObjects[id] = newObject;
@@ -70,7 +82,7 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
         startPoint: startObj.rect.center,
         endPoint: endObj.rect.center,
         strokeWidth: 2,
-        color: Colors.black.value,
+        color: Colors.black.toARGB32(),
       );
       final newObjects = Map<int, SpaceObject>.from(state.data.objects);
       newObjects[id] = newObject;

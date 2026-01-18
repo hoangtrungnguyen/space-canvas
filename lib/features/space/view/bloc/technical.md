@@ -81,3 +81,48 @@ The rendering architecture is composed of four distinct layers, stacked from bot
 - `package:flutter_bloc`
 - `package:freezed_annotation`
 - `package:vector_math` (implicitly via `Matrix4` in Flutter)
+
+## Design Patterns & Architecture
+
+To ensure scalability and maintainability, the following design patterns are adopted for the Space feature:
+
+### 1. Command Pattern (Undo/Redo)
+**Problem**: We need to support undoing and redoing complex actions (e.g., adding shapes, transforming objects) without coupling the UI to the specific execution logic.
+**Solution**: Encapsulate every significant state change as a `SpaceCommand` object.
+
+#### Structure
+- **Command Interface**:
+  ```dart
+  abstract class SpaceCommand {
+    /// Executes the logic against the provided Bloc
+    Future<void> execute(ShapeLayerBloc bloc);
+    
+    /// Reverts the changes made by execute
+    Future<void> undo(ShapeLayerBloc bloc);
+  }
+  ```
+- **Invoker (`HistoryManager`)**:
+  - Maintains a `undoStack` and `redoStack` of `SpaceCommand`s.
+  - When a new command is executed, `redoStack` is cleared.
+
+**Example Commands**:
+- `AddObjectCommand(SpaceObject object)`
+- `TransformObjectCommand(int id, Matrix4 oldMatrix, Matrix4 newMatrix)`
+- `DeleteObjectCommand(int id)`
+
+### 2. State Pattern (Tool Handling)
+**Problem**: The `SpacePage` needs to handle gestures differently depending on the active tool (e.g., Panning vs. Drawing vs. Selecting), leading to complex `switch` statements.
+**Solution**: Delegate gesture handling to concrete `ToolHandler` implementations.
+
+#### Structure
+- **Context**: `SpacePage` / `ToolHandlerFactory`.
+- **State Interface**: `ToolHandler` (already implemented).
+- **Concrete States**: `PenToolHandler`, `ShapeToolHandler`, `PanToolHandler`.
+
+### 3. Factory Method (Object Creation)
+**Problem**: Creating different instances of `SpaceObject` (Circle, Square, Star) requires complex initialization logic scattered across the UI.
+**Solution**: Centralize object creation.
+
+- **Usage**: `SpaceObjectFactory.create(SpaceShapeType type, Offset position)`
+- This ensures that default properties (color, size, ID generation) are handled consistently in one place.
+

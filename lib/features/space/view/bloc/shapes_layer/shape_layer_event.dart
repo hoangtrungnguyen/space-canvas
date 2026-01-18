@@ -9,7 +9,9 @@ class ShapeLayerEvent with _$ShapeLayerEvent {
     required Offset delta,
   }) = _ObjectDragged;
 
-  const factory ShapeLayerEvent.addObject(int objectId) = _AddObject;
+  const factory ShapeLayerEvent.addObject(SpaceObject object) = _AddObject;
+
+  const factory ShapeLayerEvent.removeObject(int objectId) = _RemoveObject;
 
   const factory ShapeLayerEvent.shapeAdded({
     required ShapeType type,

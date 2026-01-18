@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/models/grid_painter.dart';
-import 'package:ideascape/features/space/domain/models/object_painter.dart';
-
-import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/bloc/page_bloc.dart';
-import 'package:ideascape/features/space/view/widgets/toolbar.dart';
-import 'package:ideascape/features/space/view/widgets/shape_library.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler_factory.dart';
+import 'package:ideascape/features/space/view/pages/canvas_layer/canvas_layer.dart';
+import 'package:ideascape/features/space/view/pages/toolbar/toolbar_layer.dart';
 
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import '../constant.dart';
+import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 
 class IdeaSpace extends StatelessWidget {
   static const String routePath = '/idea-space/:id';
@@ -26,8 +21,10 @@ class IdeaSpace extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
-          (context) =>
-              SpacePageBloc(id: id, spaceDataService: getIt<SpaceDataService>()),
+          (context) => SpacePageBloc(
+            id: id,
+            spaceDataService: getIt<SpaceDataService>(),
+          ),
       child: BlocBuilder<SpacePageBloc, PageState>(
         buildWhen: (p, c) {
           return p != c;
@@ -48,7 +45,12 @@ class IdeaSpace extends StatelessWidget {
                     BlocProvider(create: (_) => ActiveLayerBloc()),
                     BlocProvider(create: (context) => ToolbarBloc()),
                   ],
-                  child: const SpaceView(),
+                  child: RepositoryProvider(
+                    create:
+                        (context) =>
+                            HistoryManager(context.read<ShapeLayerBloc>()),
+                    child: const SpaceView(),
+                  ),
                 ),
           );
         },
@@ -74,7 +76,7 @@ class _SpaceViewState extends State<SpaceView> {
     super.initState();
     // Initialize the controller with the desired initial scale.
     _controller = TransformationController(
-      Matrix4.identity()..scale(_initialScale),
+      Matrix4.diagonal3Values(_initialScale, _initialScale, _initialScale),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,7 +111,12 @@ class _SpaceViewState extends State<SpaceView> {
           },
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.undo), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.undo),
+            onPressed: () {
+              context.read<HistoryManager>().undo();
+            },
+          ),
           IconButton(icon: const Icon(Icons.share), onPressed: () {}),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -124,10 +131,13 @@ class _SpaceViewState extends State<SpaceView> {
               return p.offset != c.offset || p.scale != c.scale;
             },
             listener: (BuildContext context, CanvasState state) {
-              final newMatrix =
-                  Matrix4.identity()
-                    ..translate(state.offset.dx, state.offset.dy)
-                    ..scale(state.scale);
+              final newMatrix = Matrix4.translationValues(
+                state.offset.dx,
+                state.offset.dy,
+                0.0,
+              )..multiply(
+                Matrix4.diagonal3Values(state.scale, state.scale, state.scale),
+              );
               if (_controller.value != newMatrix) {
                 _controller.value = newMatrix;
               }
@@ -150,168 +160,8 @@ class _SpaceViewState extends State<SpaceView> {
                 return Stack(
                   children: [
                     // The main interactive canvas area
-                    GestureDetector(
-                      child: Stack(
-                        children: [
-                          BlocBuilder<ToolbarBloc, ToolbarState>(
-                            buildWhen: (p, c) {
-                              return p.tool != c.tool;
-                            },
-                            builder: (context, state) {
-                              return InteractiveViewer(
-                                panEnabled: state.panEnabled,
-                                transformationController: _controller,
-                                boundaryMargin: const EdgeInsets.all(
-                                  double.infinity,
-                                ),
-                                // panEnabled: _selectedTool == SpaceTool.pan,
-                                minScale: 0.02,
-                                scaleFactor: 0.1,
-                                maxScale: 100.0,
-                                child: AnimatedBuilder(
-                                  animation: _controller,
-                                  builder: (
-                                    BuildContext context,
-                                    Widget? child,
-                                  ) {
-                                    return GestureDetector(
-                                      onTapUp: (details) {
-                                        final tool =
-                                            context
-                                                .read<ToolbarBloc>()
-                                                .state
-                                                .tool;
-                                        final handler =
-                                            ToolHandlerFactory.getHandler(tool);
-                                        handler.onTapUp(
-                                          details,
-                                          context,
-                                          _controller,
-                                        );
-                                      },
-                                      onPanStart:
-                                          state.panEnabled
-                                              ? null
-                                              : (details) {
-                                                final tool =
-                                                    context
-                                                        .read<ToolbarBloc>()
-                                                        .state
-                                                        .tool;
-                                                final handler =
-                                                    ToolHandlerFactory.getHandler(
-                                                      tool,
-                                                    );
-                                                handler.onPanStart(
-                                                  details,
-                                                  context,
-                                                  _controller,
-                                                );
-                                              },
-                                      onPanUpdate:
-                                          state.panEnabled
-                                              ? null
-                                              : (details) {
-                                                final tool =
-                                                    context
-                                                        .read<ToolbarBloc>()
-                                                        .state
-                                                        .tool;
-                                                final handler =
-                                                    ToolHandlerFactory.getHandler(
-                                                      tool,
-                                                    );
-                                                handler.onPanUpdate(
-                                                  details,
-                                                  context,
-                                                  _controller,
-                                                );
-                                              },
-                                      onPanEnd:
-                                          state.panEnabled
-                                              ? null
-                                              : (details) {
-                                                final tool =
-                                                    context
-                                                        .read<ToolbarBloc>()
-                                                        .state
-                                                        .tool;
-                                                final handler =
-                                                    ToolHandlerFactory.getHandler(
-                                                      tool,
-                                                    );
-                                                handler.onPanEnd(
-                                                  details,
-                                                  context,
-                                                  _controller,
-                                                );
-                                              },
-                                      child: Stack(
-                                        children: [
-                                          CustomPaint(
-                                            size:
-                                                MediaQuery.of(context).size *
-                                                15,
-                                            painter: GridPainter(
-                                              transformationController:
-                                                  _controller,
-                                            ),
-                                          ),
-                                          BlocBuilder<
-                                            ShapeLayerBloc,
-                                            ShapeLayerState
-                                          >(
-                                            buildWhen: (p, c) {
-                                              return p.data.objects !=
-                                                  c.data.objects;
-                                            },
-                                            builder: (context, state) {
-                                              return CustomPaint(
-                                                size: Size(
-                                                  defaultWidth,
-                                                  defaultHeight,
-                                                ),
-                                                painter: ObjectPainter(
-                                                  objects:
-                                                      state.data.objects.values
-                                                          .toList(),
-                                                  transform: _controller.value,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Left-side main toolbar
-                    Positioned(top: 16, left: 16, child: ToolBar()),
-
-                    // Shape Library Panel
-                    BlocBuilder<ToolbarBloc, ToolbarState>(
-                      builder: (context, state) {
-                        if (state.tool != SpaceTool.shape)
-                          return const SizedBox.shrink();
-                        return Positioned(
-                          top: 16,
-                          left: 90, // Next to toolbar
-                          child: ShapeLibrary(
-                            onShapeSelected: (type) {
-                              context.read<ToolbarBloc>().add(
-                                ToolbarEvent.shapeSelected(type),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
+                    CanvasLayer(transformationController: _controller),
+                    const ToolbarLayer(),
                   ],
                 );
               default:
@@ -329,8 +179,4 @@ class _SpaceViewState extends State<SpaceView> {
 
     super.dispose();
   }
-}
-
-extension on ToolbarState {
-  get panEnabled => this.tool == SpaceTool.pan;
 }
