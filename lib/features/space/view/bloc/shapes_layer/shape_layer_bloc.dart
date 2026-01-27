@@ -109,10 +109,7 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
 
       emit(
         ShapeLayerState.success(
-          data: ShapeLayerData(
-            title: data?.name ?? '',
-            objects: generatedObjects,
-          ),
+          data: ShapeLayerData(objects: generatedObjects),
         ),
       );
     } on Exception catch (e) {

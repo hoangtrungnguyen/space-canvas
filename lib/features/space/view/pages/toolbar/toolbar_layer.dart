@@ -11,6 +11,8 @@ class ToolbarLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
       children: [
         // Left-side main toolbar
         const Positioned(top: 16, left: 16, child: ToolbarWidget()),

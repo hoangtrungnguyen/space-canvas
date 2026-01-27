@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    // Note: The following plugins are recommended/required for this pipeline to function optimally:
+    // 1. Pipeline: Basic Steps (workflow-basic-steps)
+    // 2. Pipeline: SCM Step (workflow-scm-step) - for git checkout
+    // 3. Git Plugin (git)
+    // 4. Warnings Next Generation (warnings-ng) - optional but good for parsing flutter analyze output
+    // 5. JUnit Plugin (junit) - optional, for test result reporting if we export them to XML
+    
+    // Environment variables can be set here if needed
+    environment {
+        FLUTTER_CHANNEL = 'stable'
+        // If flutter is not in PATH, uncomment and set the path:
+        // PATH = "/path/to/flutter/bin:$PATH"
+    }
+
+    triggers {
+        // Trigger on SCM changes (polling is less efficient, webhooks are better)
+        // For Multibranch pipelines, this block is often not strictly needed as Jenkins handles it.
+        // However, to poll every hour if no webhook is set:
+        pollSCM('H * * * *')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the scm repository
+                checkout scm
+            }
+        }
+
+        stage('Setup') {
+            steps {
+                echo 'Cleaning and installing dependencies...'
+                // Ensure dependencies are installed
+                sh 'flutter pub get'
+            }
+        }
+
+        stage('Analyze') {
+            steps {
+                echo 'Running static analysis...'
+                // Run flutter analyze
+                // You can pipe this to a file for the Warnings NG plugin if installed
+                sh 'flutter analyze'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Run flutter tests
+                sh 'flutter test'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Build finished.'
+        }
+        success {
+            echo 'Build succeeded!'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+}

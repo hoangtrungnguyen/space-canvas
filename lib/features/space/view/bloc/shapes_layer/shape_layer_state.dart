@@ -20,7 +20,6 @@ abstract class ShapeLayerState with _$ShapeLayerState {
 @freezed
 abstract class ShapeLayerData with _$ShapeLayerData {
   const factory ShapeLayerData({
-    @Default("") String title,
     @Default({}) Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,

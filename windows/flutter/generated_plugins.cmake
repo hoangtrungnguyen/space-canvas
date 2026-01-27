@@ -4,7 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
-  flutter_js
+  powersync_flutter_libs
+  sqlcipher_flutter_libs
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

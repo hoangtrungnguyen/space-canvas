@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "unidea_space",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "unidea_space (dev)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_development.dart",
+            "flutterMode": "debug"
+        },
+        {
+            "name": "unidea_space (web-dev)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_web_development.dart",
+            "toolArgs": [
+                "--wasm"
+            ],
+            "deviceId": "chrome"
+        }
+    ]
+}

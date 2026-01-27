@@ -1,0 +1,22 @@
+name: Flutter CI
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    environment: staging
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'staging'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Tweet about new changes
+        uses: ethomson/send-tweet-action@v1
+        with:
+          status: "🚀 Changes merged to staging! New features are ready to test: ${{ github.event.pull_request.html_url }}"
+          consumer-key: ${{ secrets.TWITTER_CONSUMER_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
