@@ -42,4 +42,23 @@ class SpaceObjectFactory {
       color: color.toARGB32(),
     );
   }
+
+  /// Creates a standard [PathObject].
+  static PathObject createPath({
+    required int id,
+    required Path path,
+    Color color = Colors.black,
+    double strokeWidth = 2.0,
+  }) {
+    return PathObject(
+      id: id,
+      path: path,
+      paint:
+          Paint()
+            ..color = color
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = strokeWidth
+            ..strokeCap = StrokeCap.round,
+    );
+  }
 }
