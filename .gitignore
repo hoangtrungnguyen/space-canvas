@@ -90,7 +90,6 @@ windows/runner/*.vsproj
 windows/runner/*.vsprops
 windows/runner/*.vstemplate
 windows/runner/*.vsz
-windows/runner/*.pdb
 windows/runner/*.idb
 windows/runner/*.iobj
 windows/runner/*.ipdb

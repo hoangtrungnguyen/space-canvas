@@ -263,7 +263,7 @@ class SpacePainter extends CustomPainter {
     // Assuming flat list structure for now based on Plan (using childrenIds).
 
     // Draw bounding box debug
-    // canvas.drawRect(group.rect, Paint()..style = PaintingStyle.stroke..color = Colors.blue.withOpacity(0.2));
+    // canvas.drawRect(group.rect, Paint()..style = PaintingStyle.stroke..color = Colors.blue.withValues(alpha: 0.2));
   }
 
   @override

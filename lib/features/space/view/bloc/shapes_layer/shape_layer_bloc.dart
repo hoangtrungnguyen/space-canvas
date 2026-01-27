@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/aliases.dart';
-import 'package:ideascape/data_layer/repositories/space_view_repository.dart';
 import 'package:ideascape/domain/failure.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
@@ -13,7 +12,6 @@ part 'shape_layer_state.dart';
 
 // A unique ID generator for our objects to simplify finding them.
 class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
-  final SpaceViewRepository _spaceViewRepository = getIt();
   final SpaceDataService _spaceDataService = getIt();
 
   final String id;
@@ -104,7 +102,6 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
   ) async {
     try {
       emit(ShapeLayerState.loading(data: state.data));
-      final data = await _spaceViewRepository.findById(id);
       final generatedObjects = _spaceDataService.generateInitialObjects();
 
       emit(
