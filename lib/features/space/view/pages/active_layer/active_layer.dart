@@ -14,7 +14,6 @@ class ActiveLayer extends StatelessWidget {
     return BlocBuilder<ActiveLayerBloc, ActiveLayerState>(
       builder: (context, state) {
         if (state.activeObjects.isEmpty) return const SizedBox.shrink();
-
         return AnimatedBuilder(
           animation: transformationController,
           builder: (context, child) {

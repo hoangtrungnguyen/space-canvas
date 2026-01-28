@@ -10,4 +10,6 @@ sealed class ToolbarEvent with _$ToolbarEvent {
   const factory ToolbarEvent.selected(SpaceTool tool) = _Selected;
   const factory ToolbarEvent.shapeSelected(ShapeType type) = _ShapeSelected;
   const factory ToolbarEvent.toDefault() = _ToDefault;
+  const factory ToolbarEvent.updateDrawingObject(SpaceObject? object) =
+      _UpdateDrawingObject;
 }

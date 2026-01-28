@@ -2562,3 +2562,449 @@ class __$GroupObjectCopyWithImpl<$Res> implements _$GroupObjectCopyWith<$Res> {
     );
   }
 }
+
+/// @nodoc
+mixin _$ListOfPointObject {
+  List<Offset> get points;
+  double get strokeWidth;
+  int get color;
+  int get id;
+  int get zIndex;
+
+  /// Create a copy of ListOfPointObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ListOfPointObjectCopyWith<ListOfPointObject> get copyWith =>
+      _$ListOfPointObjectCopyWithImpl<ListOfPointObject>(
+        this as ListOfPointObject,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ListOfPointObject &&
+            const DeepCollectionEquality().equals(other.points, points) &&
+            (identical(other.strokeWidth, strokeWidth) ||
+                other.strokeWidth == strokeWidth) &&
+            (identical(other.color, color) || other.color == color) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(points),
+    strokeWidth,
+    color,
+    id,
+    zIndex,
+  );
+
+  @override
+  String toString() {
+    return 'ListOfPointObject(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ListOfPointObjectCopyWith<$Res> {
+  factory $ListOfPointObjectCopyWith(
+    ListOfPointObject value,
+    $Res Function(ListOfPointObject) _then,
+  ) = _$ListOfPointObjectCopyWithImpl;
+  @useResult
+  $Res call({
+    List<Offset> points,
+    double strokeWidth,
+    int color,
+    int id,
+    int zIndex,
+  });
+}
+
+/// @nodoc
+class _$ListOfPointObjectCopyWithImpl<$Res>
+    implements $ListOfPointObjectCopyWith<$Res> {
+  _$ListOfPointObjectCopyWithImpl(this._self, this._then);
+
+  final ListOfPointObject _self;
+  final $Res Function(ListOfPointObject) _then;
+
+  /// Create a copy of ListOfPointObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? points = null,
+    Object? strokeWidth = null,
+    Object? color = null,
+    Object? id = null,
+    Object? zIndex = null,
+  }) {
+    return _then(
+      _self.copyWith(
+        points:
+            null == points
+                ? _self.points
+                : points // ignore: cast_nullable_to_non_nullable
+                    as List<Offset>,
+        strokeWidth:
+            null == strokeWidth
+                ? _self.strokeWidth
+                : strokeWidth // ignore: cast_nullable_to_non_nullable
+                    as double,
+        color:
+            null == color
+                ? _self.color
+                : color // ignore: cast_nullable_to_non_nullable
+                    as int,
+        id:
+            null == id
+                ? _self.id
+                : id // ignore: cast_nullable_to_non_nullable
+                    as int,
+        zIndex:
+            null == zIndex
+                ? _self.zIndex
+                : zIndex // ignore: cast_nullable_to_non_nullable
+                    as int,
+      ),
+    );
+  }
+}
+
+/// Adds pattern-matching-related methods to [ListOfPointObject].
+extension ListOfPointObjectPatterns on ListOfPointObject {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ListOfPointObject value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ListOfPointObject value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ListOfPointObject value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+      List<Offset> points,
+      double strokeWidth,
+      int color,
+      int id,
+      int zIndex,
+    )?
+    $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject() when $default != null:
+        return $default(
+          _that.points,
+          _that.strokeWidth,
+          _that.color,
+          _that.id,
+          _that.zIndex,
+        );
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+      List<Offset> points,
+      double strokeWidth,
+      int color,
+      int id,
+      int zIndex,
+    )
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject():
+        return $default(
+          _that.points,
+          _that.strokeWidth,
+          _that.color,
+          _that.id,
+          _that.zIndex,
+        );
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+      List<Offset> points,
+      double strokeWidth,
+      int color,
+      int id,
+      int zIndex,
+    )?
+    $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ListOfPointObject() when $default != null:
+        return $default(
+          _that.points,
+          _that.strokeWidth,
+          _that.color,
+          _that.id,
+          _that.zIndex,
+        );
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class _ListOfPointObject extends ListOfPointObject {
+  _ListOfPointObject({
+    required final List<Offset> points,
+    required this.strokeWidth,
+    required this.color,
+    required this.id,
+    this.zIndex = 0,
+  }) : _points = points,
+       super._();
+
+  final List<Offset> _points;
+  @override
+  List<Offset> get points {
+    if (_points is EqualUnmodifiableListView) return _points;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_points);
+  }
+
+  @override
+  final double strokeWidth;
+  @override
+  final int color;
+  @override
+  final int id;
+  @override
+  @JsonKey()
+  final int zIndex;
+
+  /// Create a copy of ListOfPointObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ListOfPointObjectCopyWith<_ListOfPointObject> get copyWith =>
+      __$ListOfPointObjectCopyWithImpl<_ListOfPointObject>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ListOfPointObject &&
+            const DeepCollectionEquality().equals(other._points, _points) &&
+            (identical(other.strokeWidth, strokeWidth) ||
+                other.strokeWidth == strokeWidth) &&
+            (identical(other.color, color) || other.color == color) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_points),
+    strokeWidth,
+    color,
+    id,
+    zIndex,
+  );
+
+  @override
+  String toString() {
+    return 'ListOfPointObject(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ListOfPointObjectCopyWith<$Res>
+    implements $ListOfPointObjectCopyWith<$Res> {
+  factory _$ListOfPointObjectCopyWith(
+    _ListOfPointObject value,
+    $Res Function(_ListOfPointObject) _then,
+  ) = __$ListOfPointObjectCopyWithImpl;
+  @override
+  @useResult
+  $Res call({
+    List<Offset> points,
+    double strokeWidth,
+    int color,
+    int id,
+    int zIndex,
+  });
+}
+
+/// @nodoc
+class __$ListOfPointObjectCopyWithImpl<$Res>
+    implements _$ListOfPointObjectCopyWith<$Res> {
+  __$ListOfPointObjectCopyWithImpl(this._self, this._then);
+
+  final _ListOfPointObject _self;
+  final $Res Function(_ListOfPointObject) _then;
+
+  /// Create a copy of ListOfPointObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? points = null,
+    Object? strokeWidth = null,
+    Object? color = null,
+    Object? id = null,
+    Object? zIndex = null,
+  }) {
+    return _then(
+      _ListOfPointObject(
+        points:
+            null == points
+                ? _self._points
+                : points // ignore: cast_nullable_to_non_nullable
+                    as List<Offset>,
+        strokeWidth:
+            null == strokeWidth
+                ? _self.strokeWidth
+                : strokeWidth // ignore: cast_nullable_to_non_nullable
+                    as double,
+        color:
+            null == color
+                ? _self.color
+                : color // ignore: cast_nullable_to_non_nullable
+                    as int,
+        id:
+            null == id
+                ? _self.id
+                : id // ignore: cast_nullable_to_non_nullable
+                    as int,
+        zIndex:
+            null == zIndex
+                ? _self.zIndex
+                : zIndex // ignore: cast_nullable_to_non_nullable
+                    as int,
+      ),
+    );
+  }
+}

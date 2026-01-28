@@ -6,7 +6,6 @@ import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/active_layer.dart';
 import 'package:ideascape/features/space/view/pages/shapes_layer/shapes_layer.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler_factory.dart';
 
 class CanvasLayer extends StatefulWidget {
   const CanvasLayer({super.key, required this.transformationController});
@@ -53,70 +52,21 @@ class _CanvasLayerState extends State<CanvasLayer> {
           child: AnimatedBuilder(
             animation: widget.transformationController,
             builder: (BuildContext context, Widget? child) {
-              return GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTapUp: (details) {
-                  final tool = context.read<ToolbarBloc>().state.tool;
-                  final handler = ToolHandlerFactory.getHandler(tool);
-                  handler.onTapUp(
-                    details,
-                    context,
-                    widget.transformationController,
-                  );
-                },
-                onPanStart:
-                    state.panEnabled
-                        ? null
-                        : (details) {
-                          final tool = context.read<ToolbarBloc>().state.tool;
-                          final handler = ToolHandlerFactory.getHandler(tool);
-                          handler.onPanStart(
-                            details,
-                            context,
-                            widget.transformationController,
-                          );
-                        },
-                onPanUpdate:
-                    state.panEnabled
-                        ? null
-                        : (details) {
-                          final tool = context.read<ToolbarBloc>().state.tool;
-                          final handler = ToolHandlerFactory.getHandler(tool);
-                          handler.onPanUpdate(
-                            details,
-                            context,
-                            widget.transformationController,
-                          );
-                        },
-                onPanEnd:
-                    state.panEnabled
-                        ? null
-                        : (details) {
-                          final tool = context.read<ToolbarBloc>().state.tool;
-                          final handler = ToolHandlerFactory.getHandler(tool);
-                          handler.onPanEnd(
-                            details,
-                            context,
-                            widget.transformationController,
-                          );
-                        },
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      size: MediaQuery.of(context).size * 15,
-                      painter: GridPainter(
-                        transformationController:
-                            widget.transformationController,
-                      ),
-                    ),
-                    ShapesLayer(
+              return Stack(
+                children: [
+                  CustomPaint(
+                    size: MediaQuery.of(context).size * 15,
+                    painter: GridPainter(
                       transformationController: widget.transformationController,
                     ),
-                    ActiveLayer(
-                      transformationController: widget.transformationController,
-                    ),
-                  ],
-                ),
+                  ),
+                  ShapesLayer(
+                    transformationController: widget.transformationController,
+                  ),
+                  ActiveLayer(
+                    transformationController: widget.transformationController,
+                  ),
+                ],
               );
             },
           ),

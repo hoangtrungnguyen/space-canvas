@@ -12,7 +12,7 @@ enum ShapeType {
   parallelogram,
   database,
   server,
-  cloud
+  cloud,
 }
 
 abstract class SpaceObject {
@@ -75,7 +75,12 @@ abstract class TextObject extends SpaceObject with _$TextObject {
   Rect get rect {
     // simplified rect calculation, ideally requires TextPainter layout
     // Assuming strict estimation for now
-    return Rect.fromLTWH(position.dx, position.dy, text.length * fontSize * 0.6, fontSize);
+    return Rect.fromLTWH(
+      position.dx,
+      position.dy,
+      text.length * fontSize * 0.6,
+      fontSize,
+    );
   }
 }
 
@@ -120,4 +125,35 @@ abstract class GroupObject extends SpaceObject with _$GroupObject {
   }) = _GroupObject;
 
   GroupObject._();
+}
+
+@freezed
+abstract class ListOfPointObject extends SpaceObject with _$ListOfPointObject {
+  factory ListOfPointObject({
+    required List<Offset> points,
+    required double strokeWidth,
+    required int color,
+    required int id,
+    @Default(0) int zIndex,
+  }) = _ListOfPointObject;
+
+  ListOfPointObject._() : super();
+
+  @override
+  Rect get rect {
+    if (points.isEmpty) return Rect.zero;
+    double minX = points.first.dx;
+    double minY = points.first.dy;
+    double maxX = points.first.dx;
+    double maxY = points.first.dy;
+
+    for (final p in points) {
+      if (p.dx < minX) minX = p.dx;
+      if (p.dx > maxX) maxX = p.dx;
+      if (p.dy < minY) minY = p.dy;
+      if (p.dy > maxY) maxY = p.dy;
+    }
+
+    return Rect.fromLTRB(minX, minY, maxX, maxY).inflate(strokeWidth / 2);
+  }
 }

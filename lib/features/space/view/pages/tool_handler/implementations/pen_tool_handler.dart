@@ -8,6 +8,7 @@ import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
+import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 
 class PenToolHandler extends ToolHandler {
@@ -32,14 +33,20 @@ class PenToolHandler extends ToolHandler {
     );
 
     final id = getIt<SpaceDataService>().nextUniqueId;
-    final path = Path()..moveTo(worldPoint.dx, worldPoint.dy);
-    final newPathObject = SpaceObjectFactory.createPath(id: id, path: path);
+    final newListObject = SpaceObjectFactory.createListOfPoint(
+      id: id,
+      points: [worldPoint],
+    );
 
     context.read<ActiveLayerBloc>().add(
       ActiveLayerEvent.interactionStarted(
-        object: newPathObject,
+        object: newListObject,
         point: worldPoint,
       ),
+    );
+
+    context.read<ToolbarBloc>().add(
+      ToolbarEvent.updateDrawingObject(newListObject),
     );
   }
 
@@ -54,26 +61,30 @@ class PenToolHandler extends ToolHandler {
     if (activeState.activeObjects.isNotEmpty) {
       final currentObject = activeState.activeObjects.values.first;
 
-      if (currentObject is PathObject) {
+      if (currentObject is ListOfPointObject) {
         final worldPoint = MatrixUtils.transformPoint(
           Matrix4.inverted(controller.value),
           details.localPosition,
         );
 
-        // Create new path by adding line to current point
-        // We need to copy the path primarily because Path is mutable but we want immutable state updates if possible,
-        // or just append to it. However, since we are replacing the object in bloc, let's append.
-        // Actually, Path in Flutter is a native object. Modifying it in place might not trigger Bloc equality check if reference is same.
-        // Better to effectively "evolve" it.
-        // For performance in high frequency pan updates, modifying the path object itself and emitting a new state with SAME path object
-        // might be tricky for Bloc's check.
-        // But let's assume standard flow: modify the path, emit new state.
+        // Optimization: Only add point if it's far enough from the last point
+        const distanceThreshold = 2.0;
+        final lastPoint = currentObject.points.last;
+        final distance = (worldPoint - lastPoint).distance;
 
-        currentObject.path.lineTo(worldPoint.dx, worldPoint.dy);
+        if (distance > distanceThreshold) {
+          final updatedObject = currentObject.copyWith(
+            points: [...currentObject.points, worldPoint],
+          );
 
-        context.read<ActiveLayerBloc>().add(
-          ActiveLayerEvent.objectChanged(currentObject),
-        );
+          context.read<ActiveLayerBloc>().add(
+            ActiveLayerEvent.objectChanged(updatedObject),
+          );
+
+          context.read<ToolbarBloc>().add(
+            ToolbarEvent.updateDrawingObject(updatedObject),
+          );
+        }
       }
     }
   }
@@ -95,6 +106,10 @@ class PenToolHandler extends ToolHandler {
       // Clear active layer
       context.read<ActiveLayerBloc>().add(
         ActiveLayerEvent.objectDeactivated(finalObject.id),
+      );
+
+      context.read<ToolbarBloc>().add(
+        const ToolbarEvent.updateDrawingObject(null),
       );
     }
   }

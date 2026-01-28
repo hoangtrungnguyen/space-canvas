@@ -106,7 +106,7 @@ class _SpaceViewState extends State<SpaceView> {
                 clipBehavior: Clip.none,
                 children: [
                   CanvasLayer(transformationController: _controller),
-                  const ToolbarLayer(),
+                  ToolbarLayer(transformationController: _controller),
                 ],
               );
             default:

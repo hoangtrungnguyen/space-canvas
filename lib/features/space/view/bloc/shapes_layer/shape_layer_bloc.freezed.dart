@@ -56,11 +56,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(_ObjectDragged value)? objectDragged,
     TResult Function(_AddObject value)? addObject,
     TResult Function(_RemoveObject value)? removeObject,
-    TResult Function(_ShapeAdded value)? shapeAdded,
     TResult Function(_ShapeSelected value)? shapeSelected,
-    TResult Function(_TextAdded value)? textAdded,
-    TResult Function(_ImageAdded value)? imageAdded,
-    TResult Function(_ConnectorAdded value)? connectorAdded,
     TResult Function(_ObjectSelected value)? objectSelected,
     required TResult orElse(),
   }) {
@@ -74,16 +70,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that);
       case _RemoveObject() when removeObject != null:
         return removeObject(_that);
-      case _ShapeAdded() when shapeAdded != null:
-        return shapeAdded(_that);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that);
-      case _TextAdded() when textAdded != null:
-        return textAdded(_that);
-      case _ImageAdded() when imageAdded != null:
-        return imageAdded(_that);
-      case _ConnectorAdded() when connectorAdded != null:
-        return connectorAdded(_that);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that);
       case _:
@@ -110,11 +98,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(_ObjectDragged value) objectDragged,
     required TResult Function(_AddObject value) addObject,
     required TResult Function(_RemoveObject value) removeObject,
-    required TResult Function(_ShapeAdded value) shapeAdded,
     required TResult Function(_ShapeSelected value) shapeSelected,
-    required TResult Function(_TextAdded value) textAdded,
-    required TResult Function(_ImageAdded value) imageAdded,
-    required TResult Function(_ConnectorAdded value) connectorAdded,
     required TResult Function(_ObjectSelected value) objectSelected,
   }) {
     final _that = this;
@@ -127,16 +111,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that);
       case _RemoveObject():
         return removeObject(_that);
-      case _ShapeAdded():
-        return shapeAdded(_that);
       case _ShapeSelected():
         return shapeSelected(_that);
-      case _TextAdded():
-        return textAdded(_that);
-      case _ImageAdded():
-        return imageAdded(_that);
-      case _ConnectorAdded():
-        return connectorAdded(_that);
       case _ObjectSelected():
         return objectSelected(_that);
       case _:
@@ -162,11 +138,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(_ObjectDragged value)? objectDragged,
     TResult? Function(_AddObject value)? addObject,
     TResult? Function(_RemoveObject value)? removeObject,
-    TResult? Function(_ShapeAdded value)? shapeAdded,
     TResult? Function(_ShapeSelected value)? shapeSelected,
-    TResult? Function(_TextAdded value)? textAdded,
-    TResult? Function(_ImageAdded value)? imageAdded,
-    TResult? Function(_ConnectorAdded value)? connectorAdded,
     TResult? Function(_ObjectSelected value)? objectSelected,
   }) {
     final _that = this;
@@ -179,16 +151,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that);
       case _RemoveObject() when removeObject != null:
         return removeObject(_that);
-      case _ShapeAdded() when shapeAdded != null:
-        return shapeAdded(_that);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that);
-      case _TextAdded() when textAdded != null:
-        return textAdded(_that);
-      case _ImageAdded() when imageAdded != null:
-        return imageAdded(_that);
-      case _ConnectorAdded() when connectorAdded != null:
-        return connectorAdded(_that);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that);
       case _:
@@ -214,11 +178,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(int objectId, Offset delta)? objectDragged,
     TResult Function(SpaceObject object)? addObject,
     TResult Function(int objectId)? removeObject,
-    TResult Function(ShapeType type, Offset position)? shapeAdded,
     TResult Function(int objectId)? shapeSelected,
-    TResult Function(String text, Offset position)? textAdded,
-    TResult Function(Offset position)? imageAdded,
-    TResult Function(int startId, int endId)? connectorAdded,
     TResult Function(int? objectId)? objectSelected,
     required TResult orElse(),
   }) {
@@ -232,16 +192,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that.object);
       case _RemoveObject() when removeObject != null:
         return removeObject(_that.objectId);
-      case _ShapeAdded() when shapeAdded != null:
-        return shapeAdded(_that.type, _that.position);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that.objectId);
-      case _TextAdded() when textAdded != null:
-        return textAdded(_that.text, _that.position);
-      case _ImageAdded() when imageAdded != null:
-        return imageAdded(_that.position);
-      case _ConnectorAdded() when connectorAdded != null:
-        return connectorAdded(_that.startId, _that.endId);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that.objectId);
       case _:
@@ -268,11 +220,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(int objectId, Offset delta) objectDragged,
     required TResult Function(SpaceObject object) addObject,
     required TResult Function(int objectId) removeObject,
-    required TResult Function(ShapeType type, Offset position) shapeAdded,
     required TResult Function(int objectId) shapeSelected,
-    required TResult Function(String text, Offset position) textAdded,
-    required TResult Function(Offset position) imageAdded,
-    required TResult Function(int startId, int endId) connectorAdded,
     required TResult Function(int? objectId) objectSelected,
   }) {
     final _that = this;
@@ -285,16 +233,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that.object);
       case _RemoveObject():
         return removeObject(_that.objectId);
-      case _ShapeAdded():
-        return shapeAdded(_that.type, _that.position);
       case _ShapeSelected():
         return shapeSelected(_that.objectId);
-      case _TextAdded():
-        return textAdded(_that.text, _that.position);
-      case _ImageAdded():
-        return imageAdded(_that.position);
-      case _ConnectorAdded():
-        return connectorAdded(_that.startId, _that.endId);
       case _ObjectSelected():
         return objectSelected(_that.objectId);
       case _:
@@ -320,11 +260,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(int objectId, Offset delta)? objectDragged,
     TResult? Function(SpaceObject object)? addObject,
     TResult? Function(int objectId)? removeObject,
-    TResult? Function(ShapeType type, Offset position)? shapeAdded,
     TResult? Function(int objectId)? shapeSelected,
-    TResult? Function(String text, Offset position)? textAdded,
-    TResult? Function(Offset position)? imageAdded,
-    TResult? Function(int startId, int endId)? connectorAdded,
     TResult? Function(int? objectId)? objectSelected,
   }) {
     final _that = this;
@@ -337,16 +273,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return addObject(_that.object);
       case _RemoveObject() when removeObject != null:
         return removeObject(_that.objectId);
-      case _ShapeAdded() when shapeAdded != null:
-        return shapeAdded(_that.type, _that.position);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that.objectId);
-      case _TextAdded() when textAdded != null:
-        return textAdded(_that.text, _that.position);
-      case _ImageAdded() when imageAdded != null:
-        return imageAdded(_that.position);
-      case _ConnectorAdded() when connectorAdded != null:
-        return connectorAdded(_that.startId, _that.endId);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that.objectId);
       case _:
@@ -594,79 +522,6 @@ class __$RemoveObjectCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _ShapeAdded implements ShapeLayerEvent {
-  const _ShapeAdded({required this.type, required this.position});
-
-  final ShapeType type;
-  final Offset position;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ShapeAddedCopyWith<_ShapeAdded> get copyWith =>
-      __$ShapeAddedCopyWithImpl<_ShapeAdded>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ShapeAdded &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.position, position) ||
-                other.position == position));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, type, position);
-
-  @override
-  String toString() {
-    return 'ShapeLayerEvent.shapeAdded(type: $type, position: $position)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$ShapeAddedCopyWith<$Res>
-    implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$ShapeAddedCopyWith(
-    _ShapeAdded value,
-    $Res Function(_ShapeAdded) _then,
-  ) = __$ShapeAddedCopyWithImpl;
-  @useResult
-  $Res call({ShapeType type, Offset position});
-}
-
-/// @nodoc
-class __$ShapeAddedCopyWithImpl<$Res> implements _$ShapeAddedCopyWith<$Res> {
-  __$ShapeAddedCopyWithImpl(this._self, this._then);
-
-  final _ShapeAdded _self;
-  final $Res Function(_ShapeAdded) _then;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? type = null, Object? position = null}) {
-    return _then(
-      _ShapeAdded(
-        type:
-            null == type
-                ? _self.type
-                : type // ignore: cast_nullable_to_non_nullable
-                    as ShapeType,
-        position:
-            null == position
-                ? _self.position
-                : position // ignore: cast_nullable_to_non_nullable
-                    as Offset,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
 class _ShapeSelected implements ShapeLayerEvent {
   const _ShapeSelected({required this.objectId});
 
@@ -726,218 +581,6 @@ class __$ShapeSelectedCopyWithImpl<$Res>
             null == objectId
                 ? _self.objectId
                 : objectId // ignore: cast_nullable_to_non_nullable
-                    as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _TextAdded implements ShapeLayerEvent {
-  const _TextAdded({required this.text, required this.position});
-
-  final String text;
-  final Offset position;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$TextAddedCopyWith<_TextAdded> get copyWith =>
-      __$TextAddedCopyWithImpl<_TextAdded>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _TextAdded &&
-            (identical(other.text, text) || other.text == text) &&
-            (identical(other.position, position) ||
-                other.position == position));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, text, position);
-
-  @override
-  String toString() {
-    return 'ShapeLayerEvent.textAdded(text: $text, position: $position)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$TextAddedCopyWith<$Res>
-    implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$TextAddedCopyWith(
-    _TextAdded value,
-    $Res Function(_TextAdded) _then,
-  ) = __$TextAddedCopyWithImpl;
-  @useResult
-  $Res call({String text, Offset position});
-}
-
-/// @nodoc
-class __$TextAddedCopyWithImpl<$Res> implements _$TextAddedCopyWith<$Res> {
-  __$TextAddedCopyWithImpl(this._self, this._then);
-
-  final _TextAdded _self;
-  final $Res Function(_TextAdded) _then;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? text = null, Object? position = null}) {
-    return _then(
-      _TextAdded(
-        text:
-            null == text
-                ? _self.text
-                : text // ignore: cast_nullable_to_non_nullable
-                    as String,
-        position:
-            null == position
-                ? _self.position
-                : position // ignore: cast_nullable_to_non_nullable
-                    as Offset,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _ImageAdded implements ShapeLayerEvent {
-  const _ImageAdded({required this.position});
-
-  final Offset position;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ImageAddedCopyWith<_ImageAdded> get copyWith =>
-      __$ImageAddedCopyWithImpl<_ImageAdded>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ImageAdded &&
-            (identical(other.position, position) ||
-                other.position == position));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, position);
-
-  @override
-  String toString() {
-    return 'ShapeLayerEvent.imageAdded(position: $position)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$ImageAddedCopyWith<$Res>
-    implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$ImageAddedCopyWith(
-    _ImageAdded value,
-    $Res Function(_ImageAdded) _then,
-  ) = __$ImageAddedCopyWithImpl;
-  @useResult
-  $Res call({Offset position});
-}
-
-/// @nodoc
-class __$ImageAddedCopyWithImpl<$Res> implements _$ImageAddedCopyWith<$Res> {
-  __$ImageAddedCopyWithImpl(this._self, this._then);
-
-  final _ImageAdded _self;
-  final $Res Function(_ImageAdded) _then;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? position = null}) {
-    return _then(
-      _ImageAdded(
-        position:
-            null == position
-                ? _self.position
-                : position // ignore: cast_nullable_to_non_nullable
-                    as Offset,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _ConnectorAdded implements ShapeLayerEvent {
-  const _ConnectorAdded({required this.startId, required this.endId});
-
-  final int startId;
-  final int endId;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$ConnectorAddedCopyWith<_ConnectorAdded> get copyWith =>
-      __$ConnectorAddedCopyWithImpl<_ConnectorAdded>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _ConnectorAdded &&
-            (identical(other.startId, startId) || other.startId == startId) &&
-            (identical(other.endId, endId) || other.endId == endId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, startId, endId);
-
-  @override
-  String toString() {
-    return 'ShapeLayerEvent.connectorAdded(startId: $startId, endId: $endId)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$ConnectorAddedCopyWith<$Res>
-    implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$ConnectorAddedCopyWith(
-    _ConnectorAdded value,
-    $Res Function(_ConnectorAdded) _then,
-  ) = __$ConnectorAddedCopyWithImpl;
-  @useResult
-  $Res call({int startId, int endId});
-}
-
-/// @nodoc
-class __$ConnectorAddedCopyWithImpl<$Res>
-    implements _$ConnectorAddedCopyWith<$Res> {
-  __$ConnectorAddedCopyWithImpl(this._self, this._then);
-
-  final _ConnectorAdded _self;
-  final $Res Function(_ConnectorAdded) _then;
-
-  /// Create a copy of ShapeLayerEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  $Res call({Object? startId = null, Object? endId = null}) {
-    return _then(
-      _ConnectorAdded(
-        startId:
-            null == startId
-                ? _self.startId
-                : startId // ignore: cast_nullable_to_non_nullable
-                    as int,
-        endId:
-            null == endId
-                ? _self.endId
-                : endId // ignore: cast_nullable_to_non_nullable
                     as int,
       ),
     );
@@ -1652,7 +1295,6 @@ class _$ShapeLayerStateFailureCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$ShapeLayerData {
-  String get title;
   Map<int, SpaceObject> get objects;
   int? get selectedTool;
   int? get selectedObjectId;
@@ -1672,7 +1314,6 @@ mixin _$ShapeLayerData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ShapeLayerData &&
-            (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality().equals(other.objects, objects) &&
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
@@ -1683,7 +1324,6 @@ mixin _$ShapeLayerData {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    title,
     const DeepCollectionEquality().hash(objects),
     selectedTool,
     selectedObjectId,
@@ -1691,7 +1331,7 @@ mixin _$ShapeLayerData {
 
   @override
   String toString() {
-    return 'ShapeLayerData(title: $title, objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
+    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
   }
 }
 
@@ -1703,7 +1343,6 @@ abstract mixin class $ShapeLayerDataCopyWith<$Res> {
   ) = _$ShapeLayerDataCopyWithImpl;
   @useResult
   $Res call({
-    String title,
     Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,
@@ -1723,18 +1362,12 @@ class _$ShapeLayerDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
     Object? objects = null,
     Object? selectedTool = freezed,
     Object? selectedObjectId = freezed,
   }) {
     return _then(
       _self.copyWith(
-        title:
-            null == title
-                ? _self.title
-                : title // ignore: cast_nullable_to_non_nullable
-                    as String,
         objects:
             null == objects
                 ? _self.objects
@@ -1849,7 +1482,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-      String title,
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
@@ -1861,7 +1493,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData() when $default != null:
         return $default(
-          _that.title,
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
@@ -1887,7 +1518,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-      String title,
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
@@ -1898,7 +1528,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData():
         return $default(
-          _that.title,
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
@@ -1923,7 +1552,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-      String title,
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
@@ -1934,7 +1562,6 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData() when $default != null:
         return $default(
-          _that.title,
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
@@ -1949,15 +1576,11 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
 
 class _ShapeLayerData implements ShapeLayerData {
   const _ShapeLayerData({
-    this.title = "",
     final Map<int, SpaceObject> objects = const {},
     this.selectedTool,
     this.selectedObjectId,
   }) : _objects = objects;
 
-  @override
-  @JsonKey()
-  final String title;
   final Map<int, SpaceObject> _objects;
   @override
   @JsonKey()
@@ -1985,7 +1608,6 @@ class _ShapeLayerData implements ShapeLayerData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ShapeLayerData &&
-            (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality().equals(other._objects, _objects) &&
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
@@ -1996,7 +1618,6 @@ class _ShapeLayerData implements ShapeLayerData {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    title,
     const DeepCollectionEquality().hash(_objects),
     selectedTool,
     selectedObjectId,
@@ -2004,7 +1625,7 @@ class _ShapeLayerData implements ShapeLayerData {
 
   @override
   String toString() {
-    return 'ShapeLayerData(title: $title, objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
+    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
   }
 }
 
@@ -2018,7 +1639,6 @@ abstract mixin class _$ShapeLayerDataCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String title,
     Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,
@@ -2038,18 +1658,12 @@ class __$ShapeLayerDataCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? title = null,
     Object? objects = null,
     Object? selectedTool = freezed,
     Object? selectedObjectId = freezed,
   }) {
     return _then(
       _ShapeLayerData(
-        title:
-            null == title
-                ? _self.title
-                : title // ignore: cast_nullable_to_non_nullable
-                    as String,
         objects:
             null == objects
                 ? _self._objects

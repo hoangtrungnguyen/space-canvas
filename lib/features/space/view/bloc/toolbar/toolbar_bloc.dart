@@ -14,6 +14,7 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     on<_Selected>(_onSelected);
     on<_ShapeSelected>(_onShapeSelected);
     on<_ToDefault>(_onToDefault);
+    on<_UpdateDrawingObject>(_onUpdateDrawingObject);
   }
 
   FutureOr<void> _onSelected(_Selected event, Emitter<ToolbarState> emit) {
@@ -24,7 +25,17 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     emit(ToolbarState());
   }
 
-  FutureOr<void> _onShapeSelected(_ShapeSelected event, Emitter<ToolbarState> emit) {
+  FutureOr<void> _onShapeSelected(
+    _ShapeSelected event,
+    Emitter<ToolbarState> emit,
+  ) {
     emit(state.copyWith(tool: SpaceTool.shape, activeShapeType: event.type));
+  }
+
+  FutureOr<void> _onUpdateDrawingObject(
+    _UpdateDrawingObject event,
+    Emitter<ToolbarState> emit,
+  ) {
+    emit(state.copyWith(activeDrawingObject: event.object));
   }
 }

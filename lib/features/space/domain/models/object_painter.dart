@@ -42,6 +42,8 @@ class ObjectPainter extends CustomPainter {
         _drawConnector(canvas, object);
       } else if (object is GroupObject) {
         _drawGroup(canvas, object);
+      } else if (object is ListOfPointObject) {
+        _drawListOfPoint(canvas, object);
       }
     }
 
@@ -258,6 +260,26 @@ class ObjectPainter extends CustomPainter {
 
   void _drawGroup(Canvas canvas, GroupObject group) {
     // No op for now
+  }
+
+  void _drawListOfPoint(Canvas canvas, ListOfPointObject object) {
+    if (object.points.length < 2) return;
+
+    final paint =
+        Paint()
+          ..color = Color(object.color)
+          ..strokeWidth = object.strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+
+    final path = Path();
+    path.moveTo(object.points.first.dx, object.points.first.dy);
+    for (int i = 1; i < object.points.length; i++) {
+      path.lineTo(object.points[i].dx, object.points[i].dy);
+    }
+
+    canvas.drawPath(path, paint);
   }
 
   Rect _calculateVisibleRect(Canvas canvas, Size size) {

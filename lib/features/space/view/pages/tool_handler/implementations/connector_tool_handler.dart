@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ideascape/aliases.dart';
+import 'package:ideascape/domain/space_data_service.dart';
+import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
+import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
@@ -65,12 +70,21 @@ class ConnectorToolHandler extends ToolHandler {
       if (state is ShapeLayerStateSuccess) {
         final endId = _findObjectAt(_currentDragPosition!, state.data.objects);
         if (endId != null && endId != _startObjectId) {
-          context.read<ShapeLayerBloc>().add(
-            ShapeLayerEvent.connectorAdded(
+          final startObj = state.data.objects[_startObjectId];
+          final endObj = state.data.objects[endId];
+
+          if (startObj != null && endObj != null) {
+            final id = getIt<SpaceDataService>().nextUniqueId;
+            final connector = SpaceObjectFactory.createConnector(
+              id: id,
               startId: _startObjectId!,
               endId: endId,
-            ),
-          );
+              startPoint: startObj.rect.center,
+              endPoint: endObj.rect.center,
+            );
+
+            context.read<HistoryManager>().execute(AddShapeCommand(connector));
+          }
         }
       }
     }

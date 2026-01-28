@@ -34,59 +34,6 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
       emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
     });
 
-    on<_ShapeAdded>((event, emit) {
-      final id = _spaceDataService.nextUniqueId;
-      final newObject = ShapeObject(
-        id: id,
-        type: event.type,
-        rect: Rect.fromCenter(center: event.position, width: 100, height: 100),
-        paint:
-            Paint()
-              ..color = Colors.blue
-              ..style = PaintingStyle.fill,
-      );
-      final newObjects = Map<int, SpaceObject>.from(state.data.objects);
-      newObjects[id] = newObject;
-      emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
-    });
-
-    on<_TextAdded>((event, emit) {
-      final id = _spaceDataService.nextUniqueId;
-      final newObject = TextObject(
-        id: id,
-        text: event.text,
-        position: event.position,
-        fontSize: 20,
-        color: Colors.black.toARGB32(),
-      );
-      final newObjects = Map<int, SpaceObject>.from(state.data.objects);
-      newObjects[id] = newObject;
-      emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
-    });
-
-    on<_ConnectorAdded>((event, emit) {
-      final id = _spaceDataService.nextUniqueId;
-      // Need to find start and end objects to get their centers?
-      // For now assuming startPoint and endPoint are calculated by UI or we use object centers.
-      // The event passes IDs.
-      final startObj = state.data.objects[event.startId];
-      final endObj = state.data.objects[event.endId];
-      if (startObj == null || endObj == null) return;
-
-      final newObject = ConnectorObject(
-        id: id,
-        startObjectId: event.startId,
-        endObjectId: event.endId,
-        startPoint: startObj.rect.center,
-        endPoint: endObj.rect.center,
-        strokeWidth: 2,
-        color: Colors.black.toARGB32(),
-      );
-      final newObjects = Map<int, SpaceObject>.from(state.data.objects);
-      newObjects[id] = newObject;
-      emit(state.copyWith(data: state.data.copyWith(objects: newObjects)));
-    });
-
     on<_ObjectSelected>((event, emit) {
       emit(
         state.copyWith(

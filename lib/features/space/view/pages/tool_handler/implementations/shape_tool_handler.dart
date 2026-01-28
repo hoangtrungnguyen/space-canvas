@@ -68,6 +68,10 @@ class ShapeToolHandler extends ToolHandler {
         point: worldPoint,
       ),
     );
+
+    context.read<ToolbarBloc>().add(
+      ToolbarEvent.updateDrawingObject(zeroSizeShape),
+    );
   }
 
   @override
@@ -95,6 +99,10 @@ class ShapeToolHandler extends ToolHandler {
         context.read<ActiveLayerBloc>().add(
           ActiveLayerEvent.objectChanged(updatedShape),
         );
+
+        context.read<ToolbarBloc>().add(
+          ToolbarEvent.updateDrawingObject(updatedShape),
+        );
       }
     }
   }
@@ -116,6 +124,10 @@ class ShapeToolHandler extends ToolHandler {
       // Clear active layer
       context.read<ActiveLayerBloc>().add(
         ActiveLayerEvent.objectDeactivated(finalObject.id),
+      );
+
+      context.read<ToolbarBloc>().add(
+        const ToolbarEvent.updateDrawingObject(null),
       );
     }
   }

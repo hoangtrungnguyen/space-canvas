@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/bloc.dart';
+import 'package:ideascape/aliases.dart';
+import 'package:ideascape/domain/space_data_service.dart';
+import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
+import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 
 class TextToolHandler extends ToolHandler {
@@ -38,9 +42,14 @@ class TextToolHandler extends ToolHandler {
       },
     ).then((result) {
       if (result != null && result.isNotEmpty && context.mounted) {
-        context.read<ShapeLayerBloc>().add(
-          ShapeLayerEvent.textAdded(text: result, position: worldPoint),
+        final id = getIt<SpaceDataService>().nextUniqueId;
+        final textObject = SpaceObjectFactory.createText(
+          id: id,
+          text: result,
+          position: worldPoint,
         );
+
+        context.read<HistoryManager>().execute(AddShapeCommand(textObject));
       }
     });
   }

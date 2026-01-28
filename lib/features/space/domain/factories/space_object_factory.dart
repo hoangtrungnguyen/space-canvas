@@ -61,4 +61,40 @@ class SpaceObjectFactory {
             ..strokeCap = StrokeCap.round,
     );
   }
+
+  /// Creates a standard [ConnectorObject].
+  static ConnectorObject createConnector({
+    required int id,
+    required int startId,
+    required int endId,
+    required Offset startPoint,
+    required Offset endPoint,
+    double strokeWidth = 2.0,
+    Color color = Colors.black,
+  }) {
+    return ConnectorObject(
+      id: id,
+      startObjectId: startId,
+      endObjectId: endId,
+      startPoint: startPoint,
+      endPoint: endPoint,
+      strokeWidth: strokeWidth,
+      color: color.toARGB32(),
+    );
+  }
+
+  /// Creates a standard [ListOfPointObject].
+  static ListOfPointObject createListOfPoint({
+    required int id,
+    required List<Offset> points,
+    Color color = Colors.black,
+    double strokeWidth = 2.0,
+  }) {
+    return ListOfPointObject(
+      id: id,
+      points: points,
+      color: color.toARGB32(),
+      strokeWidth: strokeWidth,
+    );
+  }
 }

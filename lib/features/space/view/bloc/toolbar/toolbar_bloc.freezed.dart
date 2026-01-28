@@ -52,6 +52,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult Function(_Selected value)? selected,
     TResult Function(_ShapeSelected value)? shapeSelected,
     TResult Function(_ToDefault value)? toDefault,
+    TResult Function(_UpdateDrawingObject value)? updateDrawingObject,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -62,6 +63,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that);
       case _ToDefault() when toDefault != null:
         return toDefault(_that);
+      case _UpdateDrawingObject() when updateDrawingObject != null:
+        return updateDrawingObject(_that);
       case _:
         return orElse();
     }
@@ -85,6 +88,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     required TResult Function(_Selected value) selected,
     required TResult Function(_ShapeSelected value) shapeSelected,
     required TResult Function(_ToDefault value) toDefault,
+    required TResult Function(_UpdateDrawingObject value) updateDrawingObject,
   }) {
     final _that = this;
     switch (_that) {
@@ -94,6 +98,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that);
       case _ToDefault():
         return toDefault(_that);
+      case _UpdateDrawingObject():
+        return updateDrawingObject(_that);
     }
   }
 
@@ -114,6 +120,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult? Function(_Selected value)? selected,
     TResult? Function(_ShapeSelected value)? shapeSelected,
     TResult? Function(_ToDefault value)? toDefault,
+    TResult? Function(_UpdateDrawingObject value)? updateDrawingObject,
   }) {
     final _that = this;
     switch (_that) {
@@ -123,6 +130,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that);
       case _ToDefault() when toDefault != null:
         return toDefault(_that);
+      case _UpdateDrawingObject() when updateDrawingObject != null:
+        return updateDrawingObject(_that);
       case _:
         return null;
     }
@@ -145,6 +154,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult Function(SpaceTool tool)? selected,
     TResult Function(ShapeType type)? shapeSelected,
     TResult Function()? toDefault,
+    TResult Function(SpaceObject? object)? updateDrawingObject,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -155,6 +165,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that.type);
       case _ToDefault() when toDefault != null:
         return toDefault();
+      case _UpdateDrawingObject() when updateDrawingObject != null:
+        return updateDrawingObject(_that.object);
       case _:
         return orElse();
     }
@@ -178,6 +190,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     required TResult Function(SpaceTool tool) selected,
     required TResult Function(ShapeType type) shapeSelected,
     required TResult Function() toDefault,
+    required TResult Function(SpaceObject? object) updateDrawingObject,
   }) {
     final _that = this;
     switch (_that) {
@@ -187,6 +200,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that.type);
       case _ToDefault():
         return toDefault();
+      case _UpdateDrawingObject():
+        return updateDrawingObject(_that.object);
     }
   }
 
@@ -207,6 +222,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult? Function(SpaceTool tool)? selected,
     TResult? Function(ShapeType type)? shapeSelected,
     TResult? Function()? toDefault,
+    TResult? Function(SpaceObject? object)? updateDrawingObject,
   }) {
     final _that = this;
     switch (_that) {
@@ -216,6 +232,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return shapeSelected(_that.type);
       case _ToDefault() when toDefault != null:
         return toDefault();
+      case _UpdateDrawingObject() when updateDrawingObject != null:
+        return updateDrawingObject(_that.object);
       case _:
         return null;
     }
@@ -383,9 +401,78 @@ class __$ToDefaultCopyWithImpl<$Res> implements _$ToDefaultCopyWith<$Res> {
 }
 
 /// @nodoc
+
+class _UpdateDrawingObject implements ToolbarEvent {
+  const _UpdateDrawingObject(this.object);
+
+  final SpaceObject? object;
+
+  /// Create a copy of ToolbarEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UpdateDrawingObjectCopyWith<_UpdateDrawingObject> get copyWith =>
+      __$UpdateDrawingObjectCopyWithImpl<_UpdateDrawingObject>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UpdateDrawingObject &&
+            (identical(other.object, object) || other.object == object));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, object);
+
+  @override
+  String toString() {
+    return 'ToolbarEvent.updateDrawingObject(object: $object)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UpdateDrawingObjectCopyWith<$Res>
+    implements $ToolbarEventCopyWith<$Res> {
+  factory _$UpdateDrawingObjectCopyWith(
+    _UpdateDrawingObject value,
+    $Res Function(_UpdateDrawingObject) _then,
+  ) = __$UpdateDrawingObjectCopyWithImpl;
+  @useResult
+  $Res call({SpaceObject? object});
+}
+
+/// @nodoc
+class __$UpdateDrawingObjectCopyWithImpl<$Res>
+    implements _$UpdateDrawingObjectCopyWith<$Res> {
+  __$UpdateDrawingObjectCopyWithImpl(this._self, this._then);
+
+  final _UpdateDrawingObject _self;
+  final $Res Function(_UpdateDrawingObject) _then;
+
+  /// Create a copy of ToolbarEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? object = freezed}) {
+    return _then(
+      _UpdateDrawingObject(
+        freezed == object
+            ? _self.object
+            : object // ignore: cast_nullable_to_non_nullable
+                as SpaceObject?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
 mixin _$ToolbarState {
   SpaceTool get tool;
   ShapeType get activeShapeType;
+  SpaceObject? get activeDrawingObject;
 
   /// Create a copy of ToolbarState
   /// with the given fields replaced by the non-null parameter values.
@@ -404,15 +491,18 @@ mixin _$ToolbarState {
             other is ToolbarState &&
             (identical(other.tool, tool) || other.tool == tool) &&
             (identical(other.activeShapeType, activeShapeType) ||
-                other.activeShapeType == activeShapeType));
+                other.activeShapeType == activeShapeType) &&
+            (identical(other.activeDrawingObject, activeDrawingObject) ||
+                other.activeDrawingObject == activeDrawingObject));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tool, activeShapeType);
+  int get hashCode =>
+      Object.hash(runtimeType, tool, activeShapeType, activeDrawingObject);
 
   @override
   String toString() {
-    return 'ToolbarState(tool: $tool, activeShapeType: $activeShapeType)';
+    return 'ToolbarState(tool: $tool, activeShapeType: $activeShapeType, activeDrawingObject: $activeDrawingObject)';
   }
 }
 
@@ -423,7 +513,11 @@ abstract mixin class $ToolbarStateCopyWith<$Res> {
     $Res Function(ToolbarState) _then,
   ) = _$ToolbarStateCopyWithImpl;
   @useResult
-  $Res call({SpaceTool tool, ShapeType activeShapeType});
+  $Res call({
+    SpaceTool tool,
+    ShapeType activeShapeType,
+    SpaceObject? activeDrawingObject,
+  });
 }
 
 /// @nodoc
@@ -437,7 +531,11 @@ class _$ToolbarStateCopyWithImpl<$Res> implements $ToolbarStateCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? tool = null, Object? activeShapeType = null}) {
+  $Res call({
+    Object? tool = null,
+    Object? activeShapeType = null,
+    Object? activeDrawingObject = freezed,
+  }) {
     return _then(
       _self.copyWith(
         tool:
@@ -450,6 +548,11 @@ class _$ToolbarStateCopyWithImpl<$Res> implements $ToolbarStateCopyWith<$Res> {
                 ? _self.activeShapeType
                 : activeShapeType // ignore: cast_nullable_to_non_nullable
                     as ShapeType,
+        activeDrawingObject:
+            freezed == activeDrawingObject
+                ? _self.activeDrawingObject
+                : activeDrawingObject // ignore: cast_nullable_to_non_nullable
+                    as SpaceObject?,
       ),
     );
   }
@@ -548,13 +651,22 @@ extension ToolbarStatePatterns on ToolbarState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SpaceTool tool, ShapeType activeShapeType)? $default, {
+    TResult Function(
+      SpaceTool tool,
+      ShapeType activeShapeType,
+      SpaceObject? activeDrawingObject,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ToolbarState() when $default != null:
-        return $default(_that.tool, _that.activeShapeType);
+        return $default(
+          _that.tool,
+          _that.activeShapeType,
+          _that.activeDrawingObject,
+        );
       case _:
         return orElse();
     }
@@ -575,12 +687,21 @@ extension ToolbarStatePatterns on ToolbarState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SpaceTool tool, ShapeType activeShapeType) $default,
+    TResult Function(
+      SpaceTool tool,
+      ShapeType activeShapeType,
+      SpaceObject? activeDrawingObject,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ToolbarState():
-        return $default(_that.tool, _that.activeShapeType);
+        return $default(
+          _that.tool,
+          _that.activeShapeType,
+          _that.activeDrawingObject,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -600,12 +721,21 @@ extension ToolbarStatePatterns on ToolbarState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SpaceTool tool, ShapeType activeShapeType)? $default,
+    TResult? Function(
+      SpaceTool tool,
+      ShapeType activeShapeType,
+      SpaceObject? activeDrawingObject,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ToolbarState() when $default != null:
-        return $default(_that.tool, _that.activeShapeType);
+        return $default(
+          _that.tool,
+          _that.activeShapeType,
+          _that.activeDrawingObject,
+        );
       case _:
         return null;
     }
@@ -618,6 +748,7 @@ class _ToolbarState implements ToolbarState {
   _ToolbarState({
     this.tool = SpaceTool.pan,
     this.activeShapeType = ShapeType.rectangle,
+    this.activeDrawingObject,
   });
 
   @override
@@ -626,6 +757,8 @@ class _ToolbarState implements ToolbarState {
   @override
   @JsonKey()
   final ShapeType activeShapeType;
+  @override
+  final SpaceObject? activeDrawingObject;
 
   /// Create a copy of ToolbarState
   /// with the given fields replaced by the non-null parameter values.
@@ -642,15 +775,18 @@ class _ToolbarState implements ToolbarState {
             other is _ToolbarState &&
             (identical(other.tool, tool) || other.tool == tool) &&
             (identical(other.activeShapeType, activeShapeType) ||
-                other.activeShapeType == activeShapeType));
+                other.activeShapeType == activeShapeType) &&
+            (identical(other.activeDrawingObject, activeDrawingObject) ||
+                other.activeDrawingObject == activeDrawingObject));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tool, activeShapeType);
+  int get hashCode =>
+      Object.hash(runtimeType, tool, activeShapeType, activeDrawingObject);
 
   @override
   String toString() {
-    return 'ToolbarState(tool: $tool, activeShapeType: $activeShapeType)';
+    return 'ToolbarState(tool: $tool, activeShapeType: $activeShapeType, activeDrawingObject: $activeDrawingObject)';
   }
 }
 
@@ -663,7 +799,11 @@ abstract mixin class _$ToolbarStateCopyWith<$Res>
   ) = __$ToolbarStateCopyWithImpl;
   @override
   @useResult
-  $Res call({SpaceTool tool, ShapeType activeShapeType});
+  $Res call({
+    SpaceTool tool,
+    ShapeType activeShapeType,
+    SpaceObject? activeDrawingObject,
+  });
 }
 
 /// @nodoc
@@ -678,7 +818,11 @@ class __$ToolbarStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? tool = null, Object? activeShapeType = null}) {
+  $Res call({
+    Object? tool = null,
+    Object? activeShapeType = null,
+    Object? activeDrawingObject = freezed,
+  }) {
     return _then(
       _ToolbarState(
         tool:
@@ -691,6 +835,11 @@ class __$ToolbarStateCopyWithImpl<$Res>
                 ? _self.activeShapeType
                 : activeShapeType // ignore: cast_nullable_to_non_nullable
                     as ShapeType,
+        activeDrawingObject:
+            freezed == activeDrawingObject
+                ? _self.activeDrawingObject
+                : activeDrawingObject // ignore: cast_nullable_to_non_nullable
+                    as SpaceObject?,
       ),
     );
   }
