@@ -4,12 +4,20 @@ import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc
 
 /// Manages the execution and history (Undo/Redo) of [SpaceCommand]s.
 class HistoryManager extends ChangeNotifier {
-  final ShapeLayerBloc _bloc;
+  ShapeLayerBloc _bloc;
 
   final List<SpaceCommand> _undoStack = [];
   final List<SpaceCommand> _redoStack = [];
 
   HistoryManager(this._bloc);
+
+  void updateShapeLayerBloc(ShapeLayerBloc bloc) {
+    if (_bloc != bloc) {
+      _bloc = bloc;
+      // Optionally notify listeners if internal state depends on bloc identity,
+      // but usually we just want the new bloc for future commands.
+    }
+  }
 
   /// Executes a command and pushes it onto the undo stack.
   /// Clears the redo stack because a new history branch has started.

@@ -10,6 +10,7 @@ import 'package:ideascape/features/space/view/pages/toolbar/toolbar_layer.dart';
 
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
+import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 
 class IdeaSpace extends StatelessWidget {
@@ -51,10 +52,34 @@ class IdeaSpace extends StatelessWidget {
                     BlocProvider(create: (_) => ActiveLayerBloc()),
                     BlocProvider(create: (context) => ToolbarBloc()),
                   ],
-                  child: ChangeNotifierProvider(
-                    create:
-                        (context) =>
-                            HistoryManager(context.read<ShapeLayerBloc>()),
+                  child: MultiProvider(
+                    providers: [
+                      ChangeNotifierProxyProvider<
+                        ShapeLayerBloc,
+                        HistoryManager
+                      >(
+                        create:
+                            (context) =>
+                                HistoryManager(context.read<ShapeLayerBloc>()),
+                        update:
+                            (context, shapeBloc, history) =>
+                                history!..updateShapeLayerBloc(shapeBloc),
+                      ),
+                      ProxyProvider3<
+                        ShapeLayerBloc,
+                        ActiveLayerBloc,
+                        HistoryManager,
+                        CanvasInteractionMediator
+                      >(
+                        update:
+                            (context, shapeBloc, activeBloc, history, _) =>
+                                CanvasInteractionMediatorImpl(
+                                  shapeBloc: shapeBloc,
+                                  activeBloc: activeBloc,
+                                  history: history,
+                                ),
+                      ),
+                    ],
                     child: const SpaceListener(child: SpaceView()),
                   ),
                 ),

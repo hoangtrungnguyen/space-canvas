@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
-import 'package:ideascape/features/space/domain/managers/history_manager.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:provider/provider.dart';
 
 class SelectToolHandler extends ToolHandler {
   const SelectToolHandler();
@@ -18,7 +14,9 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    _handleSelection(details.localPosition, context, controller, isDrag: false);
+    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    mediator.selectAt(worldPoint, isDrag: false);
   }
 
   @override
@@ -27,69 +25,9 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    _handleSelection(details.localPosition, context, controller, isDrag: true);
-  }
-
-  void _handleSelection(
-    Offset localPosition,
-    BuildContext context,
-    TransformationController controller, {
-    required bool isDrag,
-  }) {
-    final worldPoint = MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      localPosition,
-    );
-
-    final shapeBloc = context.read<ShapeLayerBloc>();
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final history = context.read<HistoryManager>();
-
-    final activeState = activeBloc.state;
-    final visitor = HitTestVisitor(worldPoint);
-
-    // 1. Check if we hit an ALREADY active object
-    if (activeState.activeObjects.isNotEmpty) {
-      final activeObj = activeState.activeObjects.values.first;
-      if (activeObj.accept(visitor)) {
-        // If it's a drag, start interaction
-        if (isDrag) {
-          activeBloc.add(
-            ActiveLayerEvent.interactionStarted(
-              object: activeObj,
-              point: worldPoint,
-            ),
-          );
-        }
-        return;
-      } else {
-        // We clicked outside the active object.
-        // Commit it back to main layer first.
-        history.execute(AddShapeCommand(activeObj));
-        activeBloc.add(ActiveLayerEvent.objectDeactivated(activeObj.id));
-      }
-    }
-
-    // 2. Check if we hit a NEW object in ShapeLayer
-    final objects = shapeBloc.state.data.objects.values.toList();
-    final hitObjects = objects.where((obj) => obj.accept(visitor)).toList();
-
-    if (hitObjects.isNotEmpty) {
-      // Pick top-most
-      hitObjects.sort((a, b) => b.zIndex.compareTo(a.zIndex));
-      final selected = hitObjects.first;
-
-      // Transfer to active layer
-      shapeBloc.add(ShapeLayerEvent.removeObject(selected.id));
-      activeBloc.add(
-        ActiveLayerEvent.interactionStarted(
-          object: selected,
-          point: worldPoint,
-        ),
-      );
-    } else {
-      shapeBloc.add(const ShapeLayerEvent.objectSelected(null));
-    }
+    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    mediator.selectAt(worldPoint, isDrag: true);
   }
 
   @override
@@ -98,46 +36,34 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
+    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
+
+    // We need the delta in world coordinates.
+    // However, the mediator.dragActiveObject expects world worldPoint and delta.
+    // Let's calculate delta based on previous dragStartPoint from state.
+    // To keep handler simple, maybe mediator should handle delta internally?
+    // But delta depends on the previous event.
+    // For now, let's keep the delta calculation here or improve mediator.
+
+    // Actually, mediator's dragActiveObject needs to know where we are now
+    // and what the delta is since the LAST interaction started.
+    // In my mediator implementation, delta is world-point delta.
+
+    // Let's check how onPanUpdate was implemented before:
+    // final delta = worldPoint - state.dragStartPoint!;
+
+    // I will refactor mediator slightly to make this even easier if needed,
+    // but for now I'll use the existing mediator method.
+    // But I need the state from ActiveLayerBloc to get dragStartPoint.
+
+    // Wait, if I'm within the tool handler, I can still read the bloc state.
     final activeBloc = context.read<ActiveLayerBloc>();
     final state = activeBloc.state;
 
-    if (state.activeObjects.isNotEmpty && state.dragStartPoint != null) {
-      final worldPoint = MatrixUtils.transformPoint(
-        Matrix4.inverted(controller.value),
-        details.localPosition,
-      );
-
+    if (state.dragStartPoint != null) {
       final delta = worldPoint - state.dragStartPoint!;
-
-      // Update object position
-      final obj = state.activeObjects.values.first;
-
-      SpaceObject? updatedObj;
-      if (obj is ShapeObject) {
-        updatedObj = obj.copyWith(rect: obj.rect.shift(delta));
-      } else if (obj is TextObject) {
-        updatedObj = obj.copyWith(position: obj.position + delta);
-      } else if (obj is PathObject) {
-        updatedObj = obj.copyWith(path: obj.path.shift(delta));
-      } else if (obj is ListOfPointObject) {
-        updatedObj = obj.copyWith(
-          points: obj.points.map((p) => p + delta).toList(),
-        );
-      } else if (obj is ConnectorObject) {
-        updatedObj = obj.copyWith(
-          startPoint: obj.startPoint + delta,
-          endPoint: obj.endPoint + delta,
-        );
-      }
-
-      if (updatedObj != null) {
-        activeBloc.add(
-          ActiveLayerEvent.interactionStarted(
-            object: updatedObj,
-            point: worldPoint,
-          ),
-        );
-      }
+      mediator.dragActiveObject(worldPoint, delta);
     }
   }
 
@@ -147,17 +73,14 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
+    final mediator = context.read<CanvasInteractionMediator>();
+    mediator.finalizeInteraction();
+  }
 
-    // We do NOT deactivate here. Just stop the "drag" state by clearing dragStartPoint.
-    // However, ActiveLayerEvent.objectActivated keeps the object but sets dragStartPoint to null
-    // Actually, interactionStarted sets it. We need an event that just resets the point or
-    // we use objectActivated.
-
-    if (state.activeObjects.isNotEmpty) {
-      final obj = state.activeObjects.values.first;
-      activeBloc.add(ActiveLayerEvent.objectActivated(obj));
-    }
+  Offset _toWorldPoint(Offset local, TransformationController controller) {
+    return MatrixUtils.transformPoint(
+      Matrix4.inverted(controller.value),
+      local,
+    );
   }
 }

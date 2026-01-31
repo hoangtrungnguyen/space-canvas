@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
 import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
-import 'package:ideascape/features/space/domain/managers/history_manager.dart';
+import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:provider/provider.dart';
 
 class ConnectorToolHandler extends ToolHandler {
   // Maintaining state for dragging; in a real app this might be in BLoC or ephemeral state
@@ -29,10 +29,7 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      details.localPosition,
-    );
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
 
     final state = context.read<ShapeLayerBloc>().state;
     if (state is ShapeLayerStateSuccess) {
@@ -50,12 +47,8 @@ class ConnectorToolHandler extends ToolHandler {
     TransformationController controller,
   ) {
     if (_startObjectId != null) {
-      final worldPoint = MatrixUtils.transformPoint(
-        Matrix4.inverted(controller.value),
-        details.localPosition,
-      );
+      final worldPoint = _toWorldPoint(details.localPosition, controller);
       _currentDragPosition = worldPoint;
-      // Ideally trigger UI update here
     }
   }
 
@@ -67,6 +60,8 @@ class ConnectorToolHandler extends ToolHandler {
   ) {
     if (_startObjectId != null && _currentDragPosition != null) {
       final state = context.read<ShapeLayerBloc>().state;
+      final mediator = context.read<CanvasInteractionMediator>();
+
       if (state is ShapeLayerStateSuccess) {
         final endId = _findObjectAt(_currentDragPosition!, state.data.objects);
         if (endId != null && endId != _startObjectId) {
@@ -83,7 +78,7 @@ class ConnectorToolHandler extends ToolHandler {
               endPoint: endObj.rect.center,
             );
 
-            context.read<HistoryManager>().execute(AddShapeCommand(connector));
+            mediator.commitImmediate(connector);
           }
         }
       }
@@ -101,5 +96,12 @@ class ConnectorToolHandler extends ToolHandler {
       }
     }
     return null;
+  }
+
+  Offset _toWorldPoint(Offset local, TransformationController controller) {
+    return MatrixUtils.transformPoint(
+      Matrix4.inverted(controller.value),
+      local,
+    );
   }
 }

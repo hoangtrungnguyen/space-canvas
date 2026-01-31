@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/models/grid_painter.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
-import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/active_layer.dart';
 import 'package:ideascape/features/space/view/pages/shapes_layer/shapes_layer.dart';
 

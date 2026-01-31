@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
 import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
-import 'package:ideascape/features/space/domain/managers/history_manager.dart';
+import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:provider/provider.dart';
 
 class PenToolHandler extends ToolHandler {
   const PenToolHandler();
@@ -27,10 +26,8 @@ class PenToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      details.localPosition,
-    );
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final mediator = context.read<CanvasInteractionMediator>();
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final newListObject = SpaceObjectFactory.createListOfPoint(
@@ -38,12 +35,7 @@ class PenToolHandler extends ToolHandler {
       points: [worldPoint],
     );
 
-    context.read<ActiveLayerBloc>().add(
-      ActiveLayerEvent.interactionStarted(
-        object: newListObject,
-        point: worldPoint,
-      ),
-    );
+    mediator.startDrawing(newListObject, worldPoint);
 
     context.read<ToolbarBloc>().add(
       ToolbarEvent.updateDrawingObject(newListObject),
@@ -57,18 +49,16 @@ class PenToolHandler extends ToolHandler {
     TransformationController controller,
   ) {
     final activeState = context.read<ActiveLayerBloc>().state;
+    final mediator = context.read<CanvasInteractionMediator>();
 
     if (activeState.activeObjects.isNotEmpty) {
       final currentObject = activeState.activeObjects.values.first;
 
       if (currentObject is ListOfPointObject) {
-        final worldPoint = MatrixUtils.transformPoint(
-          Matrix4.inverted(controller.value),
-          details.localPosition,
-        );
+        final worldPoint = _toWorldPoint(details.localPosition, controller);
 
         // Optimization: Only add point if it's far enough from the last point
-        const distanceThreshold = 2.0;
+        const distanceThreshold = 0.5;
         final lastPoint = currentObject.points.last;
         final distance = (worldPoint - lastPoint).distance;
 
@@ -77,9 +67,7 @@ class PenToolHandler extends ToolHandler {
             points: [...currentObject.points, worldPoint],
           );
 
-          context.read<ActiveLayerBloc>().add(
-            ActiveLayerEvent.objectChanged(updatedObject),
-          );
+          mediator.updateDrawing(updatedObject, worldPoint);
 
           context.read<ToolbarBloc>().add(
             ToolbarEvent.updateDrawingObject(updatedObject),
@@ -95,22 +83,18 @@ class PenToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
+    final mediator = context.read<CanvasInteractionMediator>();
+    mediator.commitAndDeactivate();
 
-    if (activeState.activeObjects.isNotEmpty) {
-      final finalObject = activeState.activeObjects.values.first;
+    context.read<ToolbarBloc>().add(
+      const ToolbarEvent.updateDrawingObject(null),
+    );
+  }
 
-      // Commit to history/main layer
-      context.read<HistoryManager>().execute(AddShapeCommand(finalObject));
-
-      // Clear active layer
-      context.read<ActiveLayerBloc>().add(
-        ActiveLayerEvent.objectDeactivated(finalObject.id),
-      );
-
-      context.read<ToolbarBloc>().add(
-        const ToolbarEvent.updateDrawingObject(null),
-      );
-    }
+  Offset _toWorldPoint(Offset local, TransformationController controller) {
+    return MatrixUtils.transformPoint(
+      Matrix4.inverted(controller.value),
+      local,
+    );
   }
 }
