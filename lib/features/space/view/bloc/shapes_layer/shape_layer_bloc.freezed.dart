@@ -58,6 +58,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(_RemoveObject value)? removeObject,
     TResult Function(_ShapeSelected value)? shapeSelected,
     TResult Function(_ObjectSelected value)? objectSelected,
+    TResult Function(_SelectAtPoint value)? selectAtPoint,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -74,6 +75,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that);
+      case _SelectAtPoint() when selectAtPoint != null:
+        return selectAtPoint(_that);
       case _:
         return orElse();
     }
@@ -100,6 +103,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(_RemoveObject value) removeObject,
     required TResult Function(_ShapeSelected value) shapeSelected,
     required TResult Function(_ObjectSelected value) objectSelected,
+    required TResult Function(_SelectAtPoint value) selectAtPoint,
   }) {
     final _that = this;
     switch (_that) {
@@ -115,6 +119,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that);
       case _ObjectSelected():
         return objectSelected(_that);
+      case _SelectAtPoint():
+        return selectAtPoint(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -140,6 +146,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(_RemoveObject value)? removeObject,
     TResult? Function(_ShapeSelected value)? shapeSelected,
     TResult? Function(_ObjectSelected value)? objectSelected,
+    TResult? Function(_SelectAtPoint value)? selectAtPoint,
   }) {
     final _that = this;
     switch (_that) {
@@ -155,6 +162,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that);
+      case _SelectAtPoint() when selectAtPoint != null:
+        return selectAtPoint(_that);
       case _:
         return null;
     }
@@ -180,6 +189,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(int objectId)? removeObject,
     TResult Function(int objectId)? shapeSelected,
     TResult Function(int? objectId)? objectSelected,
+    TResult Function(Offset point)? selectAtPoint,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -196,6 +206,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that.objectId);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that.objectId);
+      case _SelectAtPoint() when selectAtPoint != null:
+        return selectAtPoint(_that.point);
       case _:
         return orElse();
     }
@@ -222,6 +234,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(int objectId) removeObject,
     required TResult Function(int objectId) shapeSelected,
     required TResult Function(int? objectId) objectSelected,
+    required TResult Function(Offset point) selectAtPoint,
   }) {
     final _that = this;
     switch (_that) {
@@ -237,6 +250,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that.objectId);
       case _ObjectSelected():
         return objectSelected(_that.objectId);
+      case _SelectAtPoint():
+        return selectAtPoint(_that.point);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -262,6 +277,7 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(int objectId)? removeObject,
     TResult? Function(int objectId)? shapeSelected,
     TResult? Function(int? objectId)? objectSelected,
+    TResult? Function(Offset point)? selectAtPoint,
   }) {
     final _that = this;
     switch (_that) {
@@ -277,6 +293,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return shapeSelected(_that.objectId);
       case _ObjectSelected() when objectSelected != null:
         return objectSelected(_that.objectId);
+      case _SelectAtPoint() when selectAtPoint != null:
+        return selectAtPoint(_that.point);
       case _:
         return null;
     }
@@ -648,6 +666,71 @@ class __$ObjectSelectedCopyWithImpl<$Res>
             ? _self.objectId
             : objectId // ignore: cast_nullable_to_non_nullable
                 as int?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _SelectAtPoint implements ShapeLayerEvent {
+  const _SelectAtPoint(this.point);
+
+  final Offset point;
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SelectAtPointCopyWith<_SelectAtPoint> get copyWith =>
+      __$SelectAtPointCopyWithImpl<_SelectAtPoint>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _SelectAtPoint &&
+            (identical(other.point, point) || other.point == point));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, point);
+
+  @override
+  String toString() {
+    return 'ShapeLayerEvent.selectAtPoint(point: $point)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SelectAtPointCopyWith<$Res>
+    implements $ShapeLayerEventCopyWith<$Res> {
+  factory _$SelectAtPointCopyWith(
+    _SelectAtPoint value,
+    $Res Function(_SelectAtPoint) _then,
+  ) = __$SelectAtPointCopyWithImpl;
+  @useResult
+  $Res call({Offset point});
+}
+
+/// @nodoc
+class __$SelectAtPointCopyWithImpl<$Res>
+    implements _$SelectAtPointCopyWith<$Res> {
+  __$SelectAtPointCopyWithImpl(this._self, this._then);
+
+  final _SelectAtPoint _self;
+  final $Res Function(_SelectAtPoint) _then;
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? point = null}) {
+    return _then(
+      _SelectAtPoint(
+        null == point
+            ? _self.point
+            : point // ignore: cast_nullable_to_non_nullable
+                as Offset,
       ),
     );
   }

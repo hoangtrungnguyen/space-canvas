@@ -17,4 +17,6 @@ class ShapeLayerEvent with _$ShapeLayerEvent {
       _ShapeSelected;
 
   const factory ShapeLayerEvent.objectSelected(int? objectId) = _ObjectSelected;
+
+  const factory ShapeLayerEvent.selectAtPoint(Offset point) = _SelectAtPoint;
 }

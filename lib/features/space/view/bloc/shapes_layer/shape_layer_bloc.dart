@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/failure.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'dart:ui';
 
 part 'shape_layer_bloc.freezed.dart';
 part 'shape_layer_event.dart';
@@ -40,6 +41,25 @@ class ShapeLayerBloc extends Bloc<ShapeLayerEvent, ShapeLayerState> {
           data: state.data.copyWith(selectedObjectId: event.objectId),
         ),
       );
+    });
+
+    on<_SelectAtPoint>((event, emit) {
+      final visitor = HitTestVisitor(event.point);
+
+      // Find all objects that contain the point
+      final hitObjects =
+          state.data.objects.values
+              .where((obj) => obj.accept(visitor))
+              .toList();
+
+      if (hitObjects.isEmpty) {
+        add(const ShapeLayerEvent.objectSelected(null));
+        return;
+      }
+
+      // Select the one with highest zIndex
+      hitObjects.sort((a, b) => b.zIndex.compareTo(a.zIndex));
+      add(ShapeLayerEvent.objectSelected(hitObjects.first.id));
     });
   }
 

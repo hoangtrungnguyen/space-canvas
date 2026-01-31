@@ -17,14 +17,24 @@ enum ShapeType {
 
 abstract class SpaceObject {
   int get id;
-
-  int get zIndex => 0;
-
+  int get zIndex;
   Rect get rect;
+
+  T accept<T>(SpaceObjectVisitor<T> visitor);
 
   bool intersects(SpaceObject other) {
     return rect.overlaps(other.rect);
   }
+}
+
+abstract class SpaceObjectVisitor<T> {
+  T visitPath(PathObject object);
+  T visitShape(ShapeObject object);
+  T visitText(TextObject object);
+  T visitImage(ImageObject object);
+  T visitConnector(ConnectorObject object);
+  T visitGroup(GroupObject object);
+  T visitListOfPoint(ListOfPointObject object);
 }
 
 // Represents a freehand drawing.
@@ -41,6 +51,9 @@ abstract class PathObject extends SpaceObject with _$PathObject {
 
   @override
   Rect get rect => path.getBounds();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitPath(this);
 }
 
 @freezed
@@ -55,6 +68,9 @@ abstract class ShapeObject extends SpaceObject with _$ShapeObject {
   }) = _ShapeObject;
 
   ShapeObject._();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitShape(this);
 }
 
 @freezed
@@ -70,6 +86,9 @@ abstract class TextObject extends SpaceObject with _$TextObject {
   }) = _TextObject;
 
   TextObject._();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitText(this);
 
   @override
   Rect get rect {
@@ -94,6 +113,9 @@ abstract class ImageObject extends SpaceObject with _$ImageObject {
   }) = _ImageObject;
 
   ImageObject._();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitImage(this);
 }
 
 @freezed
@@ -112,6 +134,9 @@ abstract class ConnectorObject extends SpaceObject with _$ConnectorObject {
   ConnectorObject._();
 
   @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitConnector(this);
+
+  @override
   Rect get rect => Rect.fromPoints(startPoint, endPoint).inflate(strokeWidth);
 }
 
@@ -125,6 +150,9 @@ abstract class GroupObject extends SpaceObject with _$GroupObject {
   }) = _GroupObject;
 
   GroupObject._();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitGroup(this);
 }
 
 @freezed
@@ -138,6 +166,9 @@ abstract class ListOfPointObject extends SpaceObject with _$ListOfPointObject {
   }) = _ListOfPointObject;
 
   ListOfPointObject._() : super();
+
+  @override
+  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitListOfPoint(this);
 
   @override
   Rect get rect {

@@ -23,6 +23,12 @@ class ToolbarWidget extends StatelessWidget {
               children: [
                 _buildToolButton(
                   context,
+                  SpaceTool.select,
+                  Icons.ads_click,
+                  state,
+                ),
+                _buildToolButton(
+                  context,
                   SpaceTool.pen,
                   Icons.draw_outlined,
                   state,
