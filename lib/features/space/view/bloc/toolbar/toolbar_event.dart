@@ -12,4 +12,7 @@ sealed class ToolbarEvent with _$ToolbarEvent {
   const factory ToolbarEvent.toDefault() = _ToDefault;
   const factory ToolbarEvent.updateDrawingObject(SpaceObject? object) =
       _UpdateDrawingObject;
+  const factory ToolbarEvent.startedEditing(TextObject object) =
+      _StartedEditing;
+  const factory ToolbarEvent.endedEditing() = _EndedEditing;
 }

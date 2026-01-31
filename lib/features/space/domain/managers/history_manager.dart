@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 /// Manages the execution and history (Undo/Redo) of [SpaceCommand]s.
-class HistoryManager {
+class HistoryManager extends ChangeNotifier {
   final ShapeLayerBloc _bloc;
 
   final List<SpaceCommand> _undoStack = [];
@@ -16,6 +17,7 @@ class HistoryManager {
     await command.execute(_bloc);
     _undoStack.add(command);
     _redoStack.clear();
+    notifyListeners();
   }
 
   /// Reverts the most recent command.
@@ -25,6 +27,7 @@ class HistoryManager {
     final command = _undoStack.removeLast();
     await command.undo(_bloc);
     _redoStack.add(command);
+    notifyListeners();
   }
 
   /// Re-executes the most recently undone command.
@@ -34,6 +37,7 @@ class HistoryManager {
     final command = _redoStack.removeLast();
     await command.execute(_bloc);
     _undoStack.add(command);
+    notifyListeners();
   }
 
   bool get canUndo => _undoStack.isNotEmpty;
@@ -42,5 +46,6 @@ class HistoryManager {
   void clear() {
     _undoStack.clear();
     _redoStack.clear();
+    notifyListeners();
   }
 }

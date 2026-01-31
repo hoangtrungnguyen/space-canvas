@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/bloc/page_bloc.dart';
 import 'package:ideascape/features/space/view/pages/canvas_layer/canvas_layer.dart';
@@ -50,7 +51,7 @@ class IdeaSpace extends StatelessWidget {
                     BlocProvider(create: (_) => ActiveLayerBloc()),
                     BlocProvider(create: (context) => ToolbarBloc()),
                   ],
-                  child: RepositoryProvider(
+                  child: ChangeNotifierProvider(
                     create:
                         (context) =>
                             HistoryManager(context.read<ShapeLayerBloc>()),

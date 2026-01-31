@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 
 class ToolbarWidget extends StatelessWidget {
   const ToolbarWidget({super.key});
@@ -51,11 +52,50 @@ class ToolbarWidget extends StatelessWidget {
                   Icons.pan_tool_outlined,
                   state,
                 ),
+                const Divider(height: 16, indent: 8, endIndent: 8),
+                ListenableBuilder(
+                  listenable: context.read<HistoryManager>(),
+                  builder: (context, _) {
+                    final history = context.read<HistoryManager>();
+                    return Column(
+                      children: [
+                        _buildActionButton(
+                          context,
+                          Icons.undo,
+                          'UNDO',
+                          history.canUndo ? () => history.undo() : null,
+                        ),
+                        _buildActionButton(
+                          context,
+                          Icons.redo,
+                          'REDO',
+                          history.canRedo ? () => history.redo() : null,
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    IconData icon,
+    String tooltip,
+    VoidCallback? onPressed,
+  ) {
+    return IconButton(
+      icon: Icon(
+        icon,
+        color: onPressed != null ? Colors.grey[800] : Colors.grey[300],
+      ),
+      onPressed: onPressed,
+      tooltip: tooltip,
     );
   }
 

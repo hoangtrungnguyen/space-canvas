@@ -8,9 +8,11 @@ import Foundation
 import connectivity_plus
 import powersync_flutter_libs
 import sqlcipher_flutter_libs
+import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   ConnectivityPlusPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlusPlugin"))
   PowersyncFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "PowersyncFlutterLibsPlugin"))
   Sqlite3FlutterLibsPlugin.register(with: registry.registrar(forPlugin: "Sqlite3FlutterLibsPlugin"))
+  UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
 }

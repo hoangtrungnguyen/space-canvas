@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   powersync_flutter_libs
   sqlcipher_flutter_libs
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

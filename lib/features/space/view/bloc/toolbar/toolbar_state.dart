@@ -6,5 +6,6 @@ abstract class ToolbarState with _$ToolbarState {
     @Default(SpaceTool.pan) SpaceTool tool,
     @Default(ShapeType.rectangle) ShapeType activeShapeType,
     SpaceObject? activeDrawingObject,
+    TextObject? editingObject,
   }) = _ToolbarState;
 }

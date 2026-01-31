@@ -15,6 +15,8 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     on<_ShapeSelected>(_onShapeSelected);
     on<_ToDefault>(_onToDefault);
     on<_UpdateDrawingObject>(_onUpdateDrawingObject);
+    on<_StartedEditing>(_onStartedEditing);
+    on<_EndedEditing>(_onEndedEditing);
   }
 
   FutureOr<void> _onSelected(_Selected event, Emitter<ToolbarState> emit) {
@@ -37,5 +39,19 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     Emitter<ToolbarState> emit,
   ) {
     emit(state.copyWith(activeDrawingObject: event.object));
+  }
+
+  FutureOr<void> _onStartedEditing(
+    _StartedEditing event,
+    Emitter<ToolbarState> emit,
+  ) {
+    emit(state.copyWith(editingObject: event.object));
+  }
+
+  FutureOr<void> _onEndedEditing(
+    _EndedEditing event,
+    Emitter<ToolbarState> emit,
+  ) {
+    emit(state.copyWith(editingObject: null));
   }
 }
