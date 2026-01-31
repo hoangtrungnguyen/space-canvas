@@ -38,5 +38,6 @@ bloc:
 analyzer:
   exclude:
     - "**/*.freezed.dart"
+    - "archive/**"
   errors:
     invalid_annotation_target: ignore

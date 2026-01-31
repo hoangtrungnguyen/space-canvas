@@ -41,7 +41,7 @@ dependencies:
 
   dart_scope_functions: ^1.0.0
 
-  quadtree_dart: ^1.1.1
+  # quadtree_dart: ^1.1.1
 
   # For simple state management
   provider: ^6.0.5
