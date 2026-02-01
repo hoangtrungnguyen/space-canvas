@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
+import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
@@ -17,6 +19,8 @@ abstract class CanvasInteractionMediator {
   void updateNewShape(SpaceObject object, Offset worldPoint);
   void startDrawing(ListOfPointObject object, Offset worldPoint);
   void updateDrawing(ListOfPointObject object, Offset worldPoint);
+  void deleteObject(SpaceObject object);
+  void deleteObjects(List<SpaceObject> objects);
 }
 
 class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
@@ -125,9 +129,7 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
 
   @override
   void updateNewShape(SpaceObject object, Offset worldPoint) {
-    activeBloc.add(
-      ActiveLayerEvent.interactionStarted(object: object, point: worldPoint),
-    );
+    activeBloc.add(ActiveLayerEvent.shapeUpdated(object));
   }
 
   @override
@@ -142,6 +144,21 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
     activeBloc.add(
       ActiveLayerEvent.interactionStarted(object: object, point: worldPoint),
     );
+  }
+
+  @override
+  void deleteObject(SpaceObject object) {
+    history.execute(DeleteObjectCommand(object));
+  }
+
+  @override
+  void deleteObjects(List<SpaceObject> objects) {
+    if (objects.isEmpty) return;
+    if (objects.length == 1) {
+      deleteObject(objects.first);
+    } else {
+      history.execute(BatchDeleteCommand(objects));
+    }
   }
 
   SpaceObject? _moveObject(SpaceObject obj, Offset delta) {

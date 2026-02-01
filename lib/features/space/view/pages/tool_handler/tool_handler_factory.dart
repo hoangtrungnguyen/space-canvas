@@ -19,7 +19,7 @@ class ToolHandlerFactory {
       case SpaceTool.text:
         return const TextToolHandler();
       case SpaceTool.eraser:
-        return const EraserToolHandler();
+        return EraserToolHandler();
       case SpaceTool.connector:
         return const ConnectorToolHandler();
       case SpaceTool.pen:

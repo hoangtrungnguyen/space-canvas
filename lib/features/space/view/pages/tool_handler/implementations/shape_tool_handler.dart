@@ -8,6 +8,7 @@ import 'package:ideascape/features/space/domain/models/objects/space_object.dart
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
 import 'package:provider/provider.dart';
 
 class ShapeToolHandler extends ToolHandler {
@@ -19,7 +20,10 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = CanvasUtils.toWorldPoint(
+      details.localPosition,
+      controller,
+    );
     final mediator = context.read<CanvasInteractionMediator>();
     final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
 
@@ -39,7 +43,10 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = CanvasUtils.toWorldPoint(
+      details.localPosition,
+      controller,
+    );
     final mediator = context.read<CanvasInteractionMediator>();
     final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
 
@@ -75,7 +82,10 @@ class ShapeToolHandler extends ToolHandler {
       final currentObject = activeState.activeObjects.values.first;
 
       if (currentObject is ShapeObject) {
-        final currentPoint = _toWorldPoint(details.localPosition, controller);
+        final currentPoint = CanvasUtils.toWorldPoint(
+          details.localPosition,
+          controller,
+        );
         final newRect = Rect.fromPoints(startPoint, currentPoint);
         final updatedShape = currentObject.copyWith(rect: newRect);
 
@@ -99,13 +109,6 @@ class ShapeToolHandler extends ToolHandler {
 
     context.read<ToolbarBloc>().add(
       const ToolbarEvent.updateDrawingObject(null),
-    );
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
     );
   }
 }

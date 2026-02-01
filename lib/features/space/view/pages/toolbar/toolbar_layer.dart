@@ -103,6 +103,7 @@ class ToolbarLayer extends StatelessWidget {
                   top: 16,
                   left: 90, // Next to toolbar
                   child: ShapeLibrary(
+                    selectedShapeType: state.activeShapeType,
                     onShapeSelected: (type) {
                       context.read<ToolbarBloc>().add(
                         ToolbarEvent.shapeSelected(type),

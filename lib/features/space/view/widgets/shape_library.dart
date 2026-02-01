@@ -4,8 +4,13 @@ import '../../domain/models/objects/space_object.dart';
 
 class ShapeLibrary extends StatelessWidget {
   final ValueChanged<ShapeType> onShapeSelected;
+  final ShapeType? selectedShapeType;
 
-  const ShapeLibrary({super.key, required this.onShapeSelected});
+  const ShapeLibrary({
+    super.key,
+    required this.onShapeSelected,
+    this.selectedShapeType,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,34 +53,20 @@ class ShapeLibrary extends StatelessWidget {
                 _buildShapeButton(
                   context,
                   ShapeType.parallelogram,
-                  Icons.check_box_outline_blank_rounded, // Best approx or custom icon
+                  Icons
+                      .check_box_outline_blank_rounded, // Best approx or custom icon
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Cloud',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            const Text('Cloud', style: TextStyle(fontWeight: FontWeight.bold)),
             const Divider(),
             Wrap(
               spacing: 8,
               children: [
-                _buildShapeButton(
-                  context,
-                  ShapeType.database,
-                  Icons.storage,
-                ),
-                _buildShapeButton(
-                  context,
-                  ShapeType.server,
-                  Icons.dns,
-                ),
-                _buildShapeButton(
-                  context,
-                  ShapeType.cloud,
-                  Icons.cloud_queue,
-                ),
+                _buildShapeButton(context, ShapeType.database, Icons.storage),
+                _buildShapeButton(context, ShapeType.server, Icons.dns),
+                _buildShapeButton(context, ShapeType.cloud, Icons.cloud_queue),
               ],
             ),
           ],
@@ -89,13 +80,20 @@ class ShapeLibrary extends StatelessWidget {
     ShapeType type,
     IconData icon,
   ) {
+    final isSelected = selectedShapeType == type;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return IconButton(
       icon: Icon(icon),
       onPressed: () => onShapeSelected(type),
-      // onPressed: () {
-      //   onShapeSelected(type);
-      // },
       tooltip: type.name,
+      style:
+          isSelected
+              ? IconButton.styleFrom(
+                backgroundColor: colorScheme.primaryContainer,
+                foregroundColor: colorScheme.onPrimaryContainer,
+              )
+              : null,
     );
   }
 }

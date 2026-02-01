@@ -23,6 +23,11 @@ class ActiveLayerEvent with _$ActiveLayerEvent {
     required Offset point,
   }) = _InteractionStarted;
 
+  /// Triggered when a shape is updated during creation (dragging).
+  /// Does NOT modify dragStartPoint - preserves original start point.
+  const factory ActiveLayerEvent.shapeUpdated(SpaceObject object) =
+      _ShapeUpdated;
+
   /// Triggered when interaction is done.
   /// The object should be committed back to ShapeLayer.
   const factory ActiveLayerEvent.objectDeactivated(int objectId) =
