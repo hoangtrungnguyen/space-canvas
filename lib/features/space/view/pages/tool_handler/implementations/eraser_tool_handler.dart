@@ -55,10 +55,9 @@ class EraserToolHandler extends ToolHandler {
 
     if (hitObject != null && !_erasedObjects.any((o) => o.id == hitObject.id)) {
       _erasedObjects.add(hitObject);
-      // Immediately remove from view for responsive feedback
-      context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(hitObject.id),
-      );
+      // Delete object through mediator which records to history
+      final mediator = context.read<CanvasInteractionMediator>();
+      mediator.deleteObject(hitObject);
     }
   }
 
@@ -68,16 +67,8 @@ class EraserToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    if (_erasedObjects.isNotEmpty) {
-      // Re-add objects first (they were visually removed)
-      for (final obj in _erasedObjects) {
-        context.read<ShapeLayerBloc>().add(ShapeLayerEvent.addObject(obj));
-      }
-      // Then execute batch delete command for proper undo/redo
-      final mediator = context.read<CanvasInteractionMediator>();
-      mediator.deleteObjects(_erasedObjects.toList());
-      _erasedObjects.clear();
-    }
+    // Just clear the tracking set - deletions were already recorded to history
+    _erasedObjects.clear();
   }
 
   /// Hit-test using the Visitor pattern for accurate shape detection.
