@@ -3,7 +3,7 @@ import 'package:ideascape/features/space/domain/models/objects/space_object.dart
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 /// Composite Command Pattern - Batch multiple deletions into a single undo operation.
-class BatchDeleteCommand implements SpaceCommand {
+class BatchDeleteCommand extends SpaceCommand with DefaultComment {
   final List<SpaceObject> objects;
 
   BatchDeleteCommand(this.objects);

@@ -37,10 +37,25 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
         objectDeactivated: (e) {
           final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
           newObjects.remove(e.objectId);
-          emit(state.copyWith(activeObjects: newObjects, dragStartPoint: null));
+          emit(
+            state.copyWith(
+              activeObjects: newObjects,
+              dragStartPoint: null,
+              originalObject: null,
+            ),
+          );
+        },
+        originalObjectSet: (e) {
+          emit(state.copyWith(originalObject: e.object));
         },
         clear: (_) {
-          emit(state.copyWith(activeObjects: {}, dragStartPoint: null));
+          emit(
+            state.copyWith(
+              activeObjects: {},
+              dragStartPoint: null,
+              originalObject: null,
+            ),
+          );
         },
       );
     });

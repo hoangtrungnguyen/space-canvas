@@ -33,6 +33,11 @@ class ActiveLayerEvent with _$ActiveLayerEvent {
   const factory ActiveLayerEvent.objectDeactivated(int objectId) =
       _ObjectDeactivated;
 
+  /// Sets the original object state before a move operation.
+  /// Used for creating MoveObjectCommand for undo/redo.
+  const factory ActiveLayerEvent.originalObjectSet(SpaceObject? object) =
+      _OriginalObjectSet;
+
   /// Clears all active objects (e.g. when clicking empty space).
   const factory ActiveLayerEvent.clear() = _Clear;
 }

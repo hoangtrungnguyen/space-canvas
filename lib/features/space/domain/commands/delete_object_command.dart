@@ -2,7 +2,7 @@ import 'package:ideascape/features/space/domain/commands/space_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
-class DeleteObjectCommand implements SpaceCommand {
+class DeleteObjectCommand extends SpaceCommand with DefaultComment {
   final SpaceObject object;
 
   DeleteObjectCommand(this.object);

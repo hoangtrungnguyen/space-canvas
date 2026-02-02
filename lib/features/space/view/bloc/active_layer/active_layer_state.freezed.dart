@@ -16,6 +16,10 @@ mixin _$ActiveLayerState {
   Map<int, SpaceObject> get activeObjects;
   Offset? get dragStartPoint;
 
+  /// The original object state before a move operation started.
+  /// Used for creating MoveObjectCommand for undo/redo.
+  SpaceObject? get originalObject;
+
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,7 +40,9 @@ mixin _$ActiveLayerState {
               activeObjects,
             ) &&
             (identical(other.dragStartPoint, dragStartPoint) ||
-                other.dragStartPoint == dragStartPoint));
+                other.dragStartPoint == dragStartPoint) &&
+            (identical(other.originalObject, originalObject) ||
+                other.originalObject == originalObject));
   }
 
   @override
@@ -44,11 +50,12 @@ mixin _$ActiveLayerState {
     runtimeType,
     const DeepCollectionEquality().hash(activeObjects),
     dragStartPoint,
+    originalObject,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject)';
   }
 }
 
@@ -59,7 +66,11 @@ abstract mixin class $ActiveLayerStateCopyWith<$Res> {
     $Res Function(ActiveLayerState) _then,
   ) = _$ActiveLayerStateCopyWithImpl;
   @useResult
-  $Res call({Map<int, SpaceObject> activeObjects, Offset? dragStartPoint});
+  $Res call({
+    Map<int, SpaceObject> activeObjects,
+    Offset? dragStartPoint,
+    SpaceObject? originalObject,
+  });
 }
 
 /// @nodoc
@@ -74,7 +85,11 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? activeObjects = null, Object? dragStartPoint = freezed}) {
+  $Res call({
+    Object? activeObjects = null,
+    Object? dragStartPoint = freezed,
+    Object? originalObject = freezed,
+  }) {
     return _then(
       _self.copyWith(
         activeObjects:
@@ -87,6 +102,11 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.dragStartPoint
                 : dragStartPoint // ignore: cast_nullable_to_non_nullable
                     as Offset?,
+        originalObject:
+            freezed == originalObject
+                ? _self.originalObject
+                : originalObject // ignore: cast_nullable_to_non_nullable
+                    as SpaceObject?,
       ),
     );
   }
@@ -188,6 +208,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     TResult Function(
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
+      SpaceObject? originalObject,
     )?
     $default, {
     required TResult orElse(),
@@ -195,7 +216,11 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     final _that = this;
     switch (_that) {
       case _ActiveLayerState() when $default != null:
-        return $default(_that.activeObjects, _that.dragStartPoint);
+        return $default(
+          _that.activeObjects,
+          _that.dragStartPoint,
+          _that.originalObject,
+        );
       case _:
         return orElse();
     }
@@ -219,13 +244,18 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     TResult Function(
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
+      SpaceObject? originalObject,
     )
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ActiveLayerState():
-        return $default(_that.activeObjects, _that.dragStartPoint);
+        return $default(
+          _that.activeObjects,
+          _that.dragStartPoint,
+          _that.originalObject,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -248,13 +278,18 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     TResult? Function(
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
+      SpaceObject? originalObject,
     )?
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ActiveLayerState() when $default != null:
-        return $default(_that.activeObjects, _that.dragStartPoint);
+        return $default(
+          _that.activeObjects,
+          _that.dragStartPoint,
+          _that.originalObject,
+        );
       case _:
         return null;
     }
@@ -267,6 +302,7 @@ class _ActiveLayerState implements ActiveLayerState {
   const _ActiveLayerState({
     final Map<int, SpaceObject> activeObjects = const {},
     this.dragStartPoint,
+    this.originalObject,
   }) : _activeObjects = activeObjects;
 
   final Map<int, SpaceObject> _activeObjects;
@@ -280,6 +316,11 @@ class _ActiveLayerState implements ActiveLayerState {
 
   @override
   final Offset? dragStartPoint;
+
+  /// The original object state before a move operation started.
+  /// Used for creating MoveObjectCommand for undo/redo.
+  @override
+  final SpaceObject? originalObject;
 
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
@@ -299,7 +340,9 @@ class _ActiveLayerState implements ActiveLayerState {
               _activeObjects,
             ) &&
             (identical(other.dragStartPoint, dragStartPoint) ||
-                other.dragStartPoint == dragStartPoint));
+                other.dragStartPoint == dragStartPoint) &&
+            (identical(other.originalObject, originalObject) ||
+                other.originalObject == originalObject));
   }
 
   @override
@@ -307,11 +350,12 @@ class _ActiveLayerState implements ActiveLayerState {
     runtimeType,
     const DeepCollectionEquality().hash(_activeObjects),
     dragStartPoint,
+    originalObject,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject)';
   }
 }
 
@@ -324,7 +368,11 @@ abstract mixin class _$ActiveLayerStateCopyWith<$Res>
   ) = __$ActiveLayerStateCopyWithImpl;
   @override
   @useResult
-  $Res call({Map<int, SpaceObject> activeObjects, Offset? dragStartPoint});
+  $Res call({
+    Map<int, SpaceObject> activeObjects,
+    Offset? dragStartPoint,
+    SpaceObject? originalObject,
+  });
 }
 
 /// @nodoc
@@ -339,7 +387,11 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({Object? activeObjects = null, Object? dragStartPoint = freezed}) {
+  $Res call({
+    Object? activeObjects = null,
+    Object? dragStartPoint = freezed,
+    Object? originalObject = freezed,
+  }) {
     return _then(
       _ActiveLayerState(
         activeObjects:
@@ -352,6 +404,11 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.dragStartPoint
                 : dragStartPoint // ignore: cast_nullable_to_non_nullable
                     as Offset?,
+        originalObject:
+            freezed == originalObject
+                ? _self.originalObject
+                : originalObject // ignore: cast_nullable_to_non_nullable
+                    as SpaceObject?,
       ),
     );
   }

@@ -9,5 +9,9 @@ abstract class ActiveLayerState with _$ActiveLayerState {
   const factory ActiveLayerState({
     @Default({}) Map<int, SpaceObject> activeObjects,
     Offset? dragStartPoint,
+
+    /// The original object state before a move operation started.
+    /// Used for creating MoveObjectCommand for undo/redo.
+    SpaceObject? originalObject,
   }) = _ActiveLayerState;
 }

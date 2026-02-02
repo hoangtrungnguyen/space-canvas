@@ -58,6 +58,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(_InteractionStarted value)? interactionStarted,
     TResult Function(_ShapeUpdated value)? shapeUpdated,
     TResult Function(_ObjectDeactivated value)? objectDeactivated,
+    TResult Function(_OriginalObjectSet value)? originalObjectSet,
     TResult Function(_Clear value)? clear,
     required TResult orElse(),
   }) {
@@ -75,6 +76,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that);
       case _ObjectDeactivated() when objectDeactivated != null:
         return objectDeactivated(_that);
+      case _OriginalObjectSet() when originalObjectSet != null:
+        return originalObjectSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
       case _:
@@ -103,6 +106,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(_InteractionStarted value) interactionStarted,
     required TResult Function(_ShapeUpdated value) shapeUpdated,
     required TResult Function(_ObjectDeactivated value) objectDeactivated,
+    required TResult Function(_OriginalObjectSet value) originalObjectSet,
     required TResult Function(_Clear value) clear,
   }) {
     final _that = this;
@@ -119,6 +123,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that);
       case _ObjectDeactivated():
         return objectDeactivated(_that);
+      case _OriginalObjectSet():
+        return originalObjectSet(_that);
       case _Clear():
         return clear(_that);
       case _:
@@ -146,6 +152,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(_InteractionStarted value)? interactionStarted,
     TResult? Function(_ShapeUpdated value)? shapeUpdated,
     TResult? Function(_ObjectDeactivated value)? objectDeactivated,
+    TResult? Function(_OriginalObjectSet value)? originalObjectSet,
     TResult? Function(_Clear value)? clear,
   }) {
     final _that = this;
@@ -162,6 +169,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that);
       case _ObjectDeactivated() when objectDeactivated != null:
         return objectDeactivated(_that);
+      case _OriginalObjectSet() when originalObjectSet != null:
+        return originalObjectSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
       case _:
@@ -189,6 +198,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(SpaceObject object, Offset point)? interactionStarted,
     TResult Function(SpaceObject object)? shapeUpdated,
     TResult Function(int objectId)? objectDeactivated,
+    TResult Function(SpaceObject? object)? originalObjectSet,
     TResult Function()? clear,
     required TResult orElse(),
   }) {
@@ -206,6 +216,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that.object);
       case _ObjectDeactivated() when objectDeactivated != null:
         return objectDeactivated(_that.objectId);
+      case _OriginalObjectSet() when originalObjectSet != null:
+        return originalObjectSet(_that.object);
       case _Clear() when clear != null:
         return clear();
       case _:
@@ -235,6 +247,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     interactionStarted,
     required TResult Function(SpaceObject object) shapeUpdated,
     required TResult Function(int objectId) objectDeactivated,
+    required TResult Function(SpaceObject? object) originalObjectSet,
     required TResult Function() clear,
   }) {
     final _that = this;
@@ -251,6 +264,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that.object);
       case _ObjectDeactivated():
         return objectDeactivated(_that.objectId);
+      case _OriginalObjectSet():
+        return originalObjectSet(_that.object);
       case _Clear():
         return clear();
       case _:
@@ -278,6 +293,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(SpaceObject object, Offset point)? interactionStarted,
     TResult? Function(SpaceObject object)? shapeUpdated,
     TResult? Function(int objectId)? objectDeactivated,
+    TResult? Function(SpaceObject? object)? originalObjectSet,
     TResult? Function()? clear,
   }) {
     final _that = this;
@@ -294,6 +310,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return shapeUpdated(_that.object);
       case _ObjectDeactivated() when objectDeactivated != null:
         return objectDeactivated(_that.objectId);
+      case _OriginalObjectSet() when originalObjectSet != null:
+        return originalObjectSet(_that.object);
       case _Clear() when clear != null:
         return clear();
       case _:
@@ -664,6 +682,71 @@ class __$ObjectDeactivatedCopyWithImpl<$Res>
             ? _self.objectId
             : objectId // ignore: cast_nullable_to_non_nullable
                 as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _OriginalObjectSet implements ActiveLayerEvent {
+  const _OriginalObjectSet(this.object);
+
+  final SpaceObject? object;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$OriginalObjectSetCopyWith<_OriginalObjectSet> get copyWith =>
+      __$OriginalObjectSetCopyWithImpl<_OriginalObjectSet>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _OriginalObjectSet &&
+            (identical(other.object, object) || other.object == object));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, object);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.originalObjectSet(object: $object)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$OriginalObjectSetCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$OriginalObjectSetCopyWith(
+    _OriginalObjectSet value,
+    $Res Function(_OriginalObjectSet) _then,
+  ) = __$OriginalObjectSetCopyWithImpl;
+  @useResult
+  $Res call({SpaceObject? object});
+}
+
+/// @nodoc
+class __$OriginalObjectSetCopyWithImpl<$Res>
+    implements _$OriginalObjectSetCopyWith<$Res> {
+  __$OriginalObjectSetCopyWithImpl(this._self, this._then);
+
+  final _OriginalObjectSet _self;
+  final $Res Function(_OriginalObjectSet) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? object = freezed}) {
+    return _then(
+      _OriginalObjectSet(
+        freezed == object
+            ? _self.object
+            : object // ignore: cast_nullable_to_non_nullable
+                as SpaceObject?,
       ),
     );
   }

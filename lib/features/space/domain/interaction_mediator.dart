@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
+import 'package:ideascape/features/space/domain/commands/move_object_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
@@ -44,6 +45,8 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
       final activeObj = activeState.activeObjects.values.first;
       if (activeObj.accept(visitor)) {
         if (isDrag) {
+          // Store the original object state for undo/redo
+          activeBloc.add(ActiveLayerEvent.originalObjectSet(activeObj));
           activeBloc.add(
             ActiveLayerEvent.interactionStarted(
               object: activeObj,
@@ -66,6 +69,9 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
       hitObjects.sort((a, b) => b.zIndex.compareTo(a.zIndex));
       final selected = hitObjects.first;
 
+      // Store the original object state for undo/redo when selecting from ShapeLayer
+      activeBloc.add(ActiveLayerEvent.originalObjectSet(selected));
+
       shapeBloc.add(ShapeLayerEvent.removeObject(selected.id));
       activeBloc.add(
         ActiveLayerEvent.interactionStarted(
@@ -74,6 +80,7 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
         ),
       );
     } else {
+      activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
       shapeBloc.add(const ShapeLayerEvent.objectSelected(null));
     }
   }
@@ -101,8 +108,43 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
     final state = activeBloc.state;
     if (state.activeObjects.isNotEmpty) {
       final obj = state.activeObjects.values.first;
+      final originalObject = state.originalObject;
+
+      // If we have an original object and position changed, record the move
+      if (originalObject != null && originalObject.id == obj.id) {
+        // Check if the object actually moved
+        if (_hasObjectMoved(originalObject, obj)) {
+          history.execute(
+            MoveObjectCommand(originalObject: originalObject, movedObject: obj),
+          );
+        }
+        // Clear the original object
+        activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
+      }
+
       activeBloc.add(ActiveLayerEvent.objectActivated(obj));
     }
+  }
+
+  /// Checks if an object has actually moved from its original position.
+  bool _hasObjectMoved(SpaceObject original, SpaceObject current) {
+    if (original is ShapeObject && current is ShapeObject) {
+      return original.rect != current.rect;
+    } else if (original is TextObject && current is TextObject) {
+      return original.position != current.position;
+    } else if (original is PathObject && current is PathObject) {
+      return original.path != current.path;
+    } else if (original is ListOfPointObject && current is ListOfPointObject) {
+      if (original.points.length != current.points.length) return true;
+      for (var i = 0; i < original.points.length; i++) {
+        if (original.points[i] != current.points[i]) return true;
+      }
+      return false;
+    } else if (original is ConnectorObject && current is ConnectorObject) {
+      return original.startPoint != current.startPoint ||
+          original.endPoint != current.endPoint;
+    }
+    return false;
   }
 
   @override
@@ -110,7 +152,17 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
     final state = activeBloc.state;
     if (state.activeObjects.isNotEmpty) {
       final obj = state.activeObjects.values.first;
-      history.execute(AddShapeCommand(obj));
+
+      // Check if the object already exists in ShapeLayer (e.g., from MoveObjectCommand)
+      // If it does, we don't need to add it again
+      final existsInShapeLayer = shapeBloc.state.data.objects.containsKey(
+        obj.id,
+      );
+
+      if (!existsInShapeLayer) {
+        history.execute(AddShapeCommand(obj));
+      }
+
       activeBloc.add(ActiveLayerEvent.objectDeactivated(obj.id));
     }
   }
