@@ -9,6 +9,7 @@ import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/models/objects/extensions/space_object_extensions.dart';
 
 abstract class CanvasInteractionMediator {
   void selectAt(Offset worldPoint, {required bool isDrag});
@@ -127,24 +128,9 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
   }
 
   /// Checks if an object has actually moved from its original position.
+  /// Uses the HasMovedVisitor via the extension method for clean, polymorphic logic.
   bool _hasObjectMoved(SpaceObject original, SpaceObject current) {
-    if (original is ShapeObject && current is ShapeObject) {
-      return original.rect != current.rect;
-    } else if (original is TextObject && current is TextObject) {
-      return original.position != current.position;
-    } else if (original is PathObject && current is PathObject) {
-      return original.path != current.path;
-    } else if (original is ListOfPointObject && current is ListOfPointObject) {
-      if (original.points.length != current.points.length) return true;
-      for (var i = 0; i < original.points.length; i++) {
-        if (original.points[i] != current.points[i]) return true;
-      }
-      return false;
-    } else if (original is ConnectorObject && current is ConnectorObject) {
-      return original.startPoint != current.startPoint ||
-          original.endPoint != current.endPoint;
-    }
-    return false;
+    return current.hasMovedFrom(original);
   }
 
   @override
@@ -213,21 +199,9 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
     }
   }
 
+  /// Moves an object by the given delta.
+  /// Uses the MoveVisitor via the extension method for clean, polymorphic logic.
   SpaceObject? _moveObject(SpaceObject obj, Offset delta) {
-    if (obj is ShapeObject) {
-      return obj.copyWith(rect: obj.rect.shift(delta));
-    } else if (obj is TextObject) {
-      return obj.copyWith(position: obj.position + delta);
-    } else if (obj is PathObject) {
-      return obj.copyWith(path: obj.path.shift(delta));
-    } else if (obj is ListOfPointObject) {
-      return obj.copyWith(points: obj.points.map((p) => p + delta).toList());
-    } else if (obj is ConnectorObject) {
-      return obj.copyWith(
-        startPoint: obj.startPoint + delta,
-        endPoint: obj.endPoint + delta,
-      );
-    }
-    return null;
+    return obj.move(delta);
   }
 }
