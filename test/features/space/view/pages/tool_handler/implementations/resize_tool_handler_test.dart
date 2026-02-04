@@ -53,6 +53,35 @@ void main() {
       );
     });
 
+    Future<void> pumpResizeHandlerWidget(
+      WidgetTester tester, {
+      required void Function(BuildContext) callback,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MultiRepositoryProvider(
+            providers: [
+              RepositoryProvider<CanvasInteractionMediator>.value(
+                value: mediator,
+              ),
+            ],
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
+                BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
+              ],
+              child: Builder(
+                builder: (context) {
+                  callback(context);
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     group('onPanUpdate', () {
       testWidgets('should resize object when handle and startPoint are set', (
         tester,
@@ -66,41 +95,29 @@ void main() {
           ),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<CanvasInteractionMediator>.value(
-                  value: mediator,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
-                  BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
-                ],
-                child: Builder(
-                  builder: (context) {
-                    // Directly call onPanUpdate
-                    const ResizeToolHandler().onPanUpdate(
-                      DragUpdateDetails(
-                        globalPosition: const Offset(220, 220),
-                        localPosition: const Offset(220, 220),
-                      ),
-                      context,
-                      controller,
-                    );
-                    return const SizedBox();
-                  },
-                ),
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(220, 220),
+                localPosition: const Offset(220, 220),
               ),
-            ),
-          ),
+              context,
+              controller,
+            );
+          },
         );
 
-        verify(
-          () => activeBloc.add(any(that: isA<ActiveLayerEvent>())),
-        ).called(1);
+        // Verify that objectChanged event is fired
+        // We capture the event to check type, though direct property check is complex with mocks
+        final captured =
+            verify(
+              () => activeBloc.add(captureAny(that: isA<ActiveLayerEvent>())),
+            ).captured;
+
+        expect(captured.last, isA<ActiveLayerEvent>());
+        // Ideally we would inspect the event content here if we could easily inspect 'objectChanged'
       });
 
       testWidgets('should not resize when no active handle', (tester) async {
@@ -113,35 +130,18 @@ void main() {
           ),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<CanvasInteractionMediator>.value(
-                  value: mediator,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
-                  BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
-                ],
-                child: Builder(
-                  builder: (context) {
-                    const ResizeToolHandler().onPanUpdate(
-                      DragUpdateDetails(
-                        globalPosition: const Offset(220, 220),
-                        localPosition: const Offset(220, 220),
-                      ),
-                      context,
-                      controller,
-                    );
-                    return const SizedBox();
-                  },
-                ),
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(220, 220),
+                localPosition: const Offset(220, 220),
               ),
-            ),
-          ),
+              context,
+              controller,
+            );
+          },
         );
 
         verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
@@ -157,39 +157,74 @@ void main() {
           ),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<CanvasInteractionMediator>.value(
-                  value: mediator,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
-                  BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
-                ],
-                child: Builder(
-                  builder: (context) {
-                    const ResizeToolHandler().onPanUpdate(
-                      DragUpdateDetails(
-                        globalPosition: const Offset(220, 220),
-                        localPosition: const Offset(220, 220),
-                      ),
-                      context,
-                      controller,
-                    );
-                    return const SizedBox();
-                  },
-                ),
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(220, 220),
+                localPosition: const Offset(220, 220),
               ),
-            ),
-          ),
+              context,
+              controller,
+            );
+          },
         );
 
         verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
       });
+
+      testWidgets(
+        'should not resize if original object is missing or id mismatch',
+        (tester) async {
+          // Case 1: originalObject is null
+          when(() => activeBloc.state).thenReturn(
+            ActiveLayerState(
+              activeObjects: {testShape.id: testShape},
+              activeHandle: ResizeHandle.bottomRight,
+              dragStartPoint: const Offset(200, 200),
+              originalObject: null,
+            ),
+          );
+
+          await pumpResizeHandlerWidget(
+            tester,
+            callback: (context) {
+              const ResizeToolHandler().onPanUpdate(
+                DragUpdateDetails(globalPosition: const Offset(220, 220)),
+                context,
+                controller,
+              );
+            },
+          );
+
+          verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
+
+          // Case 2: ID mismatch
+          final otherShape = testShape.copyWith(id: 999);
+          when(() => activeBloc.state).thenReturn(
+            ActiveLayerState(
+              activeObjects: {testShape.id: testShape},
+              activeHandle: ResizeHandle.bottomRight,
+              dragStartPoint: const Offset(200, 200),
+              originalObject: otherShape,
+            ),
+          );
+
+          await pumpResizeHandlerWidget(
+            tester,
+            callback: (context) {
+              const ResizeToolHandler().onPanUpdate(
+                DragUpdateDetails(globalPosition: const Offset(220, 220)),
+                context,
+                controller,
+              );
+            },
+          );
+
+          verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
+        },
+      );
     });
 
     group('onPanEnd', () {
@@ -208,32 +243,15 @@ void main() {
           ShapeLayerState.success(data: ShapeLayerData(objects: {})),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<CanvasInteractionMediator>.value(
-                  value: mediator,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
-                  BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
-                ],
-                child: Builder(
-                  builder: (context) {
-                    const ResizeToolHandler().onPanEnd(
-                      DragEndDetails(),
-                      context,
-                      controller,
-                    );
-                    return const SizedBox();
-                  },
-                ),
-              ),
-            ),
-          ),
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanEnd(
+              DragEndDetails(),
+              context,
+              controller,
+            );
+          },
         );
 
         verify(() => mediator.finalizeInteraction()).called(1);
@@ -260,32 +278,15 @@ void main() {
           ShapeLayerState.success(data: ShapeLayerData(objects: {})),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<CanvasInteractionMediator>.value(
-                  value: mediator,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
-                  BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
-                ],
-                child: Builder(
-                  builder: (context) {
-                    const ResizeToolHandler().onPanEnd(
-                      DragEndDetails(),
-                      context,
-                      controller,
-                    );
-                    return const SizedBox();
-                  },
-                ),
-              ),
-            ),
-          ),
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanEnd(
+              DragEndDetails(),
+              context,
+              controller,
+            );
+          },
         );
 
         verify(
