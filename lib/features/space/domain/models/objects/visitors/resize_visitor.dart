@@ -56,12 +56,10 @@ class ResizeVisitor implements SpaceObjectVisitor<SpaceObject> {
     }
 
     // Normalize coordinates (handle flipping)
-    print('Before Swap: L=$left, R=$right, Handle=$handle, Delta=$delta');
     if (left > right) {
       final tmp = left;
       left = right;
       right = tmp;
-      print('Swapped X: L=$left, R=$right');
     }
     if (top > bottom) {
       final tmp = top;

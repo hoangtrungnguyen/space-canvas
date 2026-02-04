@@ -71,8 +71,14 @@ class HitTestVisitor implements SpaceObjectVisitor<bool> {
     final ab = b - a;
     final ap = p - a;
 
-    double t =
-        (ap.dx * ab.dx + ap.dy * ab.dy) / (ab.dx * ab.dx + ab.dy * ab.dy);
+    // Guard against zero-length segments (a == b) to prevent division by zero.
+    final abLengthSquared = ab.dx * ab.dx + ab.dy * ab.dy;
+    if (abLengthSquared == 0) {
+      // Segment is a point; return distance from p to a.
+      return ap.distance;
+    }
+
+    double t = (ap.dx * ab.dx + ap.dy * ab.dy) / abLengthSquared;
     t = t.clamp(0.0, 1.0);
 
     final closestPoint = a + ab * t;

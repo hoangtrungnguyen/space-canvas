@@ -186,7 +186,12 @@ class PaintVisitor implements SpaceObjectVisitor<void> {
         bodyPath.close();
 
         canvas.drawPath(bodyPath, shape.paint);
-        canvas.drawOval(topRect, shape.paint..style = PaintingStyle.fill);
+        // Clone the paint to avoid mutating the original object's paint.
+        final fillPaint =
+            Paint()
+              ..color = shape.paint.color
+              ..style = PaintingStyle.fill;
+        canvas.drawOval(topRect, fillPaint);
         canvas.drawOval(
           topRect,
           Paint()
