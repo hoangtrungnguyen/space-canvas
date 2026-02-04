@@ -114,13 +114,18 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
       // If we have an original object and position changed, record the move
       if (originalObject != null && originalObject.id == obj.id) {
         // Check if the object actually moved
+        // Check if the object actually moved
         if (_hasObjectMoved(originalObject, obj)) {
           history.execute(
             MoveObjectCommand(originalObject: originalObject, movedObject: obj),
           );
         }
-        // Clear the original object
-        activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
+        // Do NOT clear the original object here.
+        // It serves as a reference for 'commitAndDeactivate' to know
+        // that this object is a modified version of an existing one (identity match),
+        // preventing it from being added as a 'new' shape command.
+        // The original object will be cleared when the object is finally deactivated.
+        // activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
       }
 
       activeBloc.add(ActiveLayerEvent.objectActivated(obj));
@@ -146,7 +151,18 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
       );
 
       if (!existsInShapeLayer) {
-        history.execute(AddShapeCommand(obj));
+        // If the object was originally in the ShapeLayer (we have an original reference)
+        // AND it hasn't effectively changed identity (id match),
+        // we should just put it back without a History Command (AddShapeCommand).
+        // Using AddShapeCommand here would mean "Undo" deletes the object, which is wrong
+        // if we just selected it and clicked away/undo.
+        final original = state.originalObject;
+        if (original != null && original.id == obj.id) {
+          shapeBloc.add(ShapeLayerEvent.addObject(obj));
+        } else {
+          // It's a truly new object (or we lost tracking), so add it via Command
+          history.execute(AddShapeCommand(obj));
+        }
       }
 
       activeBloc.add(ActiveLayerEvent.objectDeactivated(obj.id));

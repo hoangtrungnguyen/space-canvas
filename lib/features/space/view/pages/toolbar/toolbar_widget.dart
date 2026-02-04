@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
+import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 
 class ToolbarWidget extends StatelessWidget {
   const ToolbarWidget({super.key});
@@ -69,7 +70,16 @@ class ToolbarWidget extends StatelessWidget {
                           context,
                           Icons.undo,
                           'UNDO',
-                          history.canUndo ? () => history.undo() : null,
+                          history.canUndo
+                              ? () {
+                                // Deselect and commit any pending changes first
+                                final mediator =
+                                    context.read<CanvasInteractionMediator>();
+                                mediator.commitAndDeactivate();
+                                // Then perform undo
+                                history.undo();
+                              }
+                              : null,
                         ),
                         _buildActionButton(
                           context,
