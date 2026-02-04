@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -29,6 +30,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeActiveLayerEvent());
     registerFallbackValue(FakeShapeLayerEvent());
+    registerFallbackValue(const Offset(0, 0));
   });
 
   group('SelectToolHandler', () {
@@ -51,6 +53,32 @@ void main() {
         paint: Paint()..color = const Color(0xFF0000FF),
       );
     });
+
+    tearDown(() {
+      controller.dispose();
+    });
+
+    void setupActiveState({
+      Map<int, SpaceObject>? objects,
+      ResizeHandle? handle,
+      Offset? startPoint,
+      SpaceObject? originalObject,
+    }) {
+      when(() => activeBloc.state).thenReturn(
+        ActiveLayerState(
+          activeObjects: objects ?? {testShape.id: testShape},
+          activeHandle: handle,
+          dragStartPoint: startPoint,
+          originalObject: originalObject ?? testShape,
+        ),
+      );
+    }
+
+    void setupShapeState() {
+      when(
+        () => shapeBloc.state,
+      ).thenReturn(ShapeLayerState.initialize(data: const ShapeLayerData()));
+    }
 
     Future<void> pumpHandlerWidget(
       WidgetTester tester, {
@@ -81,29 +109,73 @@ void main() {
       );
     }
 
-    group('onPanStart', () {
-      testWidgets('should select handle if hit', (tester) async {
-        // Setup state with active object
-        when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
-            activeHandle: null,
-            dragStartPoint: null,
-            originalObject: testShape,
-          ),
-        );
-        // We need ShapeLayerBloc subscription to be happy?
-        when(
-          () => shapeBloc.state,
-        ).thenReturn(ShapeLayerState.initialize(data: const ShapeLayerData()));
+    // =========================================================================
+    // onTapUp Tests
+    // =========================================================================
+    group('onTapUp', () {
+      testWidgets('should call mediator.selectAt with correct point', (
+        tester,
+      ) async {
+        setupActiveState();
+        setupShapeState();
 
         await pumpHandlerWidget(
           tester,
           callback: (context) {
-            // Tap on TopLeft handle (90, 90) or similar.
-            // Shape is at 100,100. Inflated by 4.0 -> 96,96.
-            // Radius is 20.0.
-            // Tapping at 100,100 should hit TopLeft.
+            const SelectToolHandler().onTapUp(
+              TapUpDetails(
+                globalPosition: const Offset(100, 100),
+                localPosition: const Offset(100, 100),
+                kind: PointerDeviceKind.touch,
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verify(
+          () => mediator.selectAt(const Offset(100, 100), isDrag: false),
+        ).called(1);
+      });
+
+      testWidgets('should handle zoomed canvas', (tester) async {
+        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onTapUp(
+              TapUpDetails(
+                globalPosition: const Offset(200, 200),
+                localPosition: const Offset(200, 200),
+                kind: PointerDeviceKind.touch,
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verify(
+          () => mediator.selectAt(const Offset(100, 100), isDrag: false),
+        ).called(1);
+      });
+    });
+
+    // =========================================================================
+    // onPanStart Tests
+    // =========================================================================
+    group('onPanStart', () {
+      testWidgets('should select topLeft handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(100, 100),
@@ -115,31 +187,230 @@ void main() {
           },
         );
 
-        // Verify handle changed
-        verify(
-          () => activeBloc.add(any(that: isA<ActiveLayerEvent>())),
-        ).called(greaterThanOrEqualTo(2));
-
-        // Verify shape removed from layer (to prevent ghosting)
-        // verify(() => shapeBloc.add(any(that: isA<ShapeLayerEvent>()))).called(1); // Usually logic does this
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        expect(handleEvents, isNotEmpty);
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.topLeft),
+        );
       });
 
-      testWidgets('should select body via mediator if no handle hit', (
-        tester,
-      ) async {
-        when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
-            activeHandle: null,
-            dragStartPoint: null,
-            originalObject: testShape,
-          ),
-        );
+      testWidgets('should select topRight handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
 
         await pumpHandlerWidget(
           tester,
           callback: (context) {
-            // Tap far away at 500,500
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(200, 100),
+                localPosition: const Offset(200, 100),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.topRight),
+        );
+      });
+
+      testWidgets('should select bottomLeft handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(100, 200),
+                localPosition: const Offset(100, 200),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.bottomLeft),
+        );
+      });
+
+      testWidgets('should select bottomRight handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(200, 200),
+                localPosition: const Offset(200, 200),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.bottomRight),
+        );
+      });
+
+      testWidgets('should select topCenter handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(150, 96),
+                localPosition: const Offset(150, 96),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.topCenter),
+        );
+      });
+
+      testWidgets('should select bottomCenter handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(150, 204),
+                localPosition: const Offset(150, 204),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.bottomCenter),
+        );
+      });
+
+      testWidgets('should select centerLeft handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(96, 150),
+                localPosition: const Offset(96, 150),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.centerLeft),
+        );
+      });
+
+      testWidgets('should select centerRight handle when hit', (tester) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(204, 150),
+                localPosition: const Offset(204, 150),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.centerRight),
+        );
+      });
+
+      testWidgets('should call mediator.selectAt when no handle hit', (
+        tester,
+      ) async {
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(500, 500),
@@ -151,65 +422,88 @@ void main() {
           },
         );
 
-        // Verify mediator selectAt called
         verify(
           () => mediator.selectAt(const Offset(500, 500), isDrag: true),
         ).called(1);
-        // Verify handle cleared
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, isNull),
+        );
+      });
+
+      testWidgets('should handle zoomed canvas correctly', (tester) async {
+        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        setupActiveState();
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanStart(
+              DragStartDetails(
+                globalPosition: const Offset(200, 200),
+                localPosition: const Offset(200, 200),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, ResizeHandle.topLeft),
+        );
+      });
+
+      testWidgets('should not crash with empty activeObjects', (tester) async {
+        setupActiveState(objects: {});
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            expect(
+              () => const SelectToolHandler().onPanStart(
+                DragStartDetails(
+                  globalPosition: const Offset(100, 100),
+                  localPosition: const Offset(100, 100),
+                ),
+                context,
+                controller,
+              ),
+              returnsNormally,
+            );
+          },
+        );
+
         verify(
-          () => activeBloc.add(const ActiveLayerEvent.handleChanged(null)),
+          () => mediator.selectAt(const Offset(100, 100), isDrag: true),
         ).called(1);
       });
     });
 
+    // =========================================================================
+    // onPanUpdate Tests
+    // =========================================================================
     group('onPanUpdate', () {
       testWidgets(
-        'should delegate to ResizeToolHandler (ActiveLayerEvent.objectChanged) if activeHandle is set',
+        'should delegate to ResizeToolHandler when activeHandle set',
         (tester) async {
-          // Setup state for resizing
-          when(() => activeBloc.state).thenReturn(
-            ActiveLayerState(
-              activeObjects: {testShape.id: testShape},
-              activeHandle: ResizeHandle.bottomRight,
-              dragStartPoint: const Offset(200, 200), // Start at corner
-              originalObject: testShape,
-            ),
-          );
-
-          await pumpHandlerWidget(
-            tester,
-            callback: (context) {
-              // Drag to 210, 210
-              const SelectToolHandler().onPanUpdate(
-                DragUpdateDetails(
-                  globalPosition: const Offset(210, 210),
-                  localPosition: const Offset(210, 210),
-                ),
-                context,
-                controller,
-              );
-            },
-          );
-
-          // ResizeToolHandler should calculate new object and add event
-          verify(
-            () => activeBloc.add(any(that: isA<ActiveLayerEvent>())),
-          ).called(1);
-          // Note: checking specifically for objectChanged is hard with mocks/fakes without capturing
-        },
-      );
-
-      testWidgets(
-        'should delegate to Mediator (dragActiveObject) if activeHandle is null',
-        (tester) async {
-          // Setup state for moving
-          when(() => activeBloc.state).thenReturn(
-            ActiveLayerState(
-              activeObjects: {testShape.id: testShape},
-              activeHandle: null,
-              dragStartPoint: const Offset(200, 200),
-              originalObject: testShape,
-            ),
+          setupActiveState(
+            handle: ResizeHandle.bottomRight,
+            startPoint: const Offset(200, 200),
           );
 
           await pumpHandlerWidget(
@@ -226,28 +520,106 @@ void main() {
             },
           );
 
-          verify(
-            () => mediator.dragActiveObject(
-              const Offset(210, 210),
-              const Offset(10, 10),
-            ),
-          ).called(1);
+          final captured = verify(() => activeBloc.add(captureAny())).captured;
+          expect(captured.length, 1);
+          expect(
+            (captured.first as ActiveLayerEvent).mapOrNull(
+                  objectChanged: (_) => true,
+                ) ??
+                false,
+            isTrue,
+          );
         },
       );
-    });
 
-    group('onPanEnd', () {
-      testWidgets('should finalize interaction and clear handle on end', (
+      testWidgets('should call mediator.dragActiveObject when no handle', (
         tester,
       ) async {
-        // Setup state (doesn't matter much if handle is null or not for finalize)
-        // If handle is null
-        when(() => activeBloc.state).thenReturn(
-          const ActiveLayerState(activeObjects: {}, activeHandle: null),
+        setupActiveState(handle: null, startPoint: const Offset(200, 200));
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(210, 210),
+                localPosition: const Offset(210, 210),
+              ),
+              context,
+              controller,
+            );
+          },
         );
-        when(
-          () => shapeBloc.state,
-        ).thenReturn(ShapeLayerState.initialize(data: const ShapeLayerData()));
+
+        verify(
+          () => mediator.dragActiveObject(
+            const Offset(210, 210),
+            const Offset(10, 10),
+          ),
+        ).called(1);
+      });
+
+      testWidgets('should not call mediator when dragStartPoint is null', (
+        tester,
+      ) async {
+        setupActiveState(handle: null, startPoint: null);
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            expect(
+              () => const SelectToolHandler().onPanUpdate(
+                DragUpdateDetails(
+                  globalPosition: const Offset(210, 210),
+                  localPosition: const Offset(210, 210),
+                ),
+                context,
+                controller,
+              ),
+              returnsNormally,
+            );
+          },
+        );
+
+        verifyNever(() => mediator.dragActiveObject(any(), any()));
+      });
+
+      testWidgets('should correctly transform with zoomed canvas', (
+        tester,
+      ) async {
+        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        setupActiveState(handle: null, startPoint: const Offset(100, 100));
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(220, 220),
+                localPosition: const Offset(220, 220),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verify(
+          () => mediator.dragActiveObject(
+            const Offset(110, 110),
+            const Offset(10, 10),
+          ),
+        ).called(1);
+      });
+    });
+
+    // =========================================================================
+    // onPanEnd Tests
+    // =========================================================================
+    group('onPanEnd', () {
+      testWidgets('should finalize interaction when no handle', (tester) async {
+        setupActiveState(handle: null, objects: {});
+        setupShapeState();
 
         await pumpHandlerWidget(
           tester,
@@ -263,39 +635,58 @@ void main() {
         verify(() => mediator.finalizeInteraction()).called(1);
       });
 
-      testWidgets(
-        'should delegate onPanEnd to ResizeToolHandler if activeHandle set',
-        (tester) async {
-          // Setup state
-          when(() => activeBloc.state).thenReturn(
-            ActiveLayerState(
-              activeObjects: {testShape.id: testShape},
-              activeHandle: ResizeHandle.bottomRight,
-            ),
-          );
-          when(() => shapeBloc.state).thenReturn(
-            ShapeLayerState.initialize(data: const ShapeLayerData()),
-          );
+      testWidgets('should delegate to ResizeToolHandler when handle set', (
+        tester,
+      ) async {
+        setupActiveState(handle: ResizeHandle.bottomRight);
+        setupShapeState();
 
-          await pumpHandlerWidget(
-            tester,
-            callback: (context) {
-              const SelectToolHandler().onPanEnd(
-                DragEndDetails(),
-                context,
-                controller,
-              );
-            },
-          );
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanEnd(
+              DragEndDetails(),
+              context,
+              controller,
+            );
+          },
+        );
 
-          // SelectToolHandler delegates. ResizeToolHandler calls handleChanged(null).
-          // Then SelectToolHandler continues and calls finalize.
-          verify(
-            () => activeBloc.add(const ActiveLayerEvent.handleChanged(null)),
-          ).called(1);
-          verify(() => mediator.finalizeInteraction()).called(1);
-        },
-      );
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final handleEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(handleChanged: (_) => true) ??
+              false,
+        );
+        expect(handleEvents, isNotEmpty);
+        (handleEvents.first as ActiveLayerEvent).mapOrNull(
+          handleChanged: (e) => expect(e.handle, isNull),
+        );
+
+        verify(() => mediator.finalizeInteraction()).called(1);
+      });
+
+      testWidgets('should remove active object from ShapeLayer', (
+        tester,
+      ) async {
+        setupActiveState(handle: null);
+        setupShapeState();
+
+        await pumpHandlerWidget(
+          tester,
+          callback: (context) {
+            const SelectToolHandler().onPanEnd(
+              DragEndDetails(),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verify(
+          () => shapeBloc.add(ShapeLayerEvent.removeObject(testShape.id)),
+        ).called(1);
+      });
     });
   });
 }

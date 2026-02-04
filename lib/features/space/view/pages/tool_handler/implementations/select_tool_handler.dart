@@ -9,9 +9,16 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/resize_tool_handler.dart';
 
+/// Handles selection and manipulation (move/resize) of objects.
+///
+/// This handler serves as the primary entry point for object interaction.
+/// It delegates specific resize logic to [ResizeToolHandler] when a handle is hit.
 class SelectToolHandler extends ToolHandler {
   const SelectToolHandler();
 
+  /// Handles tap gestures to select objects.
+  ///
+  /// Uses [CanvasInteractionMediator.selectAt] to verify hits on the canvas.
   @override
   void onTapUp(
     TapUpDetails details,
@@ -23,6 +30,12 @@ class SelectToolHandler extends ToolHandler {
     mediator.selectAt(worldPoint, isDrag: false);
   }
 
+  /// Initiates a drag or resize operation.
+  ///
+  /// Performs hit-testing to determine if a [ResizeHandle] was touched.
+  /// If a handle is hit, it transitions to resize mode by setting the active handle
+  /// and firing [ActiveLayerEvent.interactionStarted].
+  /// Otherwise, it initiates a move or selection operation via [CanvasInteractionMediator].
   @override
   void onPanStart(
     DragStartDetails details,
@@ -79,6 +92,10 @@ class SelectToolHandler extends ToolHandler {
     }
   }
 
+  /// Handles ongoing drag gestures.
+  ///
+  /// Delegates to [ResizeToolHandler] if an [activeHandle] is present.
+  /// Otherwise, handles object movement via [CanvasInteractionMediator.dragActiveObject].
   @override
   void onPanUpdate(
     DragUpdateDetails details,
@@ -105,6 +122,11 @@ class SelectToolHandler extends ToolHandler {
     }
   }
 
+  /// Handles the end of a drag or resize operation.
+  ///
+  /// Delegates to [ResizeToolHandler] if resizing.
+  /// Otherwise, calls [CanvasInteractionMediator.finalizeInteraction] and ensures
+  /// proper visibility management in the [ShapeLayer].
   @override
   void onPanEnd(
     DragEndDetails details,
@@ -143,6 +165,7 @@ class SelectToolHandler extends ToolHandler {
     );
   }
 
+  /// Helper to determine if a point hits any of the resize handles.
   ResizeHandle? _getHitHandle(Offset elementPoint, Rect rect, double radius) {
     // Check all handles
     if ((elementPoint - rect.topLeft).distance <= radius)

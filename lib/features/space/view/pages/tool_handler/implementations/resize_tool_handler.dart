@@ -7,6 +7,11 @@ import 'package:ideascape/features/space/domain/models/objects/visitors/resize_v
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
+/// Handles resize interactions for selected objects.
+///
+/// This handler is typically invoked by [SelectToolHandler] when a resize handle
+/// is active. It calculates the new geometry using [ResizeVisitor] and updates
+/// the [ActiveLayerBloc].
 class ResizeToolHandler extends ToolHandler {
   const ResizeToolHandler();
 
@@ -24,6 +29,10 @@ class ResizeToolHandler extends ToolHandler {
     TransformationController controller,
   ) {}
 
+  /// Updates the object's geometry based on drag gestures.
+  ///
+  /// Uses [ResizeVisitor] to calculate the new [Rect] for the active object
+  /// by comparing the current drag position to the drag start point.
   @override
   void onPanUpdate(
     DragUpdateDetails details,
@@ -54,6 +63,11 @@ class ResizeToolHandler extends ToolHandler {
     }
   }
 
+  /// Finalizes the resize operation.
+  ///
+  /// Commits changes via [CanvasInteractionMediator], handles cleanup to prevent
+  /// "ghosting" in the [ShapeLayer], and updates the `originalObject` in
+  /// [ActiveLayerState] to support continuous interaction.
   @override
   void onPanEnd(
     DragEndDetails details,

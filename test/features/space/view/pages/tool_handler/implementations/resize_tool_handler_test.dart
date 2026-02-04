@@ -82,6 +82,50 @@ void main() {
       );
     }
 
+    group('constructor', () {
+      test('can be instantiated', () {
+        final handler = ResizeToolHandler();
+        expect(handler, isA<ResizeToolHandler>());
+      });
+    });
+
+    group('onTapUp', () {
+      testWidgets('should do nothing (no crash)', (tester) async {
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onTapUp(
+              TapUpDetails(kind: PointerDeviceKind.touch),
+              context,
+              controller,
+            );
+          },
+        );
+        // Verify no interactions with blocs/mediator
+        verifyZeroInteractions(activeBloc);
+        verifyZeroInteractions(shapeBloc);
+        verifyZeroInteractions(mediator);
+      });
+    });
+
+    group('onPanStart', () {
+      testWidgets('should do nothing (no crash)', (tester) async {
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanStart(
+              DragStartDetails(),
+              context,
+              controller,
+            );
+          },
+        );
+        verifyZeroInteractions(activeBloc);
+        verifyZeroInteractions(shapeBloc);
+        verifyZeroInteractions(mediator);
+      });
+    });
+
     group('onPanUpdate', () {
       testWidgets('should resize object when handle and startPoint are set', (
         tester,
@@ -109,15 +153,12 @@ void main() {
           },
         );
 
-        // Verify that objectChanged event is fired
-        // We capture the event to check type, though direct property check is complex with mocks
         final captured =
             verify(
               () => activeBloc.add(captureAny(that: isA<ActiveLayerEvent>())),
             ).captured;
 
         expect(captured.last, isA<ActiveLayerEvent>());
-        // Ideally we would inspect the event content here if we could easily inspect 'objectChanged'
       });
 
       testWidgets('should not resize when no active handle', (tester) async {
@@ -225,6 +266,36 @@ void main() {
           verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
         },
       );
+
+      // This is the new test for null dragStartPoint
+      testWidgets('should not resize when dragStartPoint is null', (
+        tester,
+      ) async {
+        when(() => activeBloc.state).thenReturn(
+          ActiveLayerState(
+            activeObjects: {testShape.id: testShape},
+            activeHandle: ResizeHandle.bottomRight,
+            dragStartPoint: null,
+            originalObject: testShape,
+          ),
+        );
+
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanUpdate(
+              DragUpdateDetails(
+                globalPosition: const Offset(220, 220),
+                localPosition: const Offset(220, 220),
+              ),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verifyNever(() => activeBloc.add(any(that: isA<ActiveLayerEvent>())));
+      });
     });
 
     group('onPanEnd', () {
@@ -292,6 +363,53 @@ void main() {
         verify(
           () => activeBloc.add(ActiveLayerEvent.originalObjectSet(testShape)),
         ).called(1);
+      });
+
+      testWidgets('should finalize but skip updates if activeObjects is empty', (
+        tester,
+      ) async {
+        when(() => activeBloc.state).thenReturn(
+          const ActiveLayerState(
+            activeObjects: {},
+            activeHandle: ResizeHandle.bottomRight,
+            dragStartPoint: Offset(200, 200),
+            originalObject: null,
+          ),
+        );
+
+        await pumpResizeHandlerWidget(
+          tester,
+          callback: (context) {
+            const ResizeToolHandler().onPanEnd(
+              DragEndDetails(),
+              context,
+              controller,
+            );
+          },
+        );
+
+        verify(() => mediator.finalizeInteraction()).called(1);
+        // Ensure no events sent to shapeBloc or activeBloc (logic inside 'isNotEmpty' blocks)
+        verifyNever(() => shapeBloc.add(any(that: isA<ShapeLayerEvent>())));
+        // originalObjectSet should NOT be called
+        final captured = verify(() => activeBloc.add(captureAny())).captured;
+        final originalSetEvents = captured.where(
+          (e) =>
+              (e as ActiveLayerEvent).mapOrNull(
+                originalObjectSet: (_) => true,
+              ) ??
+              false,
+        );
+        expect(originalSetEvents, isEmpty);
+
+        // Only handleChanged(null) is called at the very end
+        expect(
+          (captured.last as ActiveLayerEvent).mapOrNull(
+                handleChanged: (e) => e.handle == null,
+              ) ??
+              false,
+          isTrue,
+        );
       });
     });
   });
