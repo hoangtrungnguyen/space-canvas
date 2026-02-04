@@ -60,6 +60,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(_ObjectDeactivated value)? objectDeactivated,
     TResult Function(_OriginalObjectSet value)? originalObjectSet,
     TResult Function(_Clear value)? clear,
+    TResult Function(_HandleChanged value)? handleChanged,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -80,6 +81,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
+      case _HandleChanged() when handleChanged != null:
+        return handleChanged(_that);
       case _:
         return orElse();
     }
@@ -108,6 +111,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(_ObjectDeactivated value) objectDeactivated,
     required TResult Function(_OriginalObjectSet value) originalObjectSet,
     required TResult Function(_Clear value) clear,
+    required TResult Function(_HandleChanged value) handleChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -127,6 +131,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that);
       case _Clear():
         return clear(_that);
+      case _HandleChanged():
+        return handleChanged(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -154,6 +160,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(_ObjectDeactivated value)? objectDeactivated,
     TResult? Function(_OriginalObjectSet value)? originalObjectSet,
     TResult? Function(_Clear value)? clear,
+    TResult? Function(_HandleChanged value)? handleChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -173,6 +180,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
+      case _HandleChanged() when handleChanged != null:
+        return handleChanged(_that);
       case _:
         return null;
     }
@@ -200,6 +209,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(int objectId)? objectDeactivated,
     TResult Function(SpaceObject? object)? originalObjectSet,
     TResult Function()? clear,
+    TResult Function(ResizeHandle? handle)? handleChanged,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -220,6 +230,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that.object);
       case _Clear() when clear != null:
         return clear();
+      case _HandleChanged() when handleChanged != null:
+        return handleChanged(_that.handle);
       case _:
         return orElse();
     }
@@ -249,6 +261,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(int objectId) objectDeactivated,
     required TResult Function(SpaceObject? object) originalObjectSet,
     required TResult Function() clear,
+    required TResult Function(ResizeHandle? handle) handleChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -268,6 +281,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that.object);
       case _Clear():
         return clear();
+      case _HandleChanged():
+        return handleChanged(_that.handle);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -295,6 +310,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(int objectId)? objectDeactivated,
     TResult? Function(SpaceObject? object)? originalObjectSet,
     TResult? Function()? clear,
+    TResult? Function(ResizeHandle? handle)? handleChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -314,6 +330,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return originalObjectSet(_that.object);
       case _Clear() when clear != null:
         return clear();
+      case _HandleChanged() when handleChanged != null:
+        return handleChanged(_that.handle);
       case _:
         return null;
     }
@@ -783,4 +801,69 @@ class __$ClearCopyWithImpl<$Res> implements _$ClearCopyWith<$Res> {
 
   final _Clear _self;
   final $Res Function(_Clear) _then;
+}
+
+/// @nodoc
+
+class _HandleChanged implements ActiveLayerEvent {
+  const _HandleChanged(this.handle);
+
+  final ResizeHandle? handle;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$HandleChangedCopyWith<_HandleChanged> get copyWith =>
+      __$HandleChangedCopyWithImpl<_HandleChanged>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _HandleChanged &&
+            (identical(other.handle, handle) || other.handle == handle));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, handle);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.handleChanged(handle: $handle)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$HandleChangedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$HandleChangedCopyWith(
+    _HandleChanged value,
+    $Res Function(_HandleChanged) _then,
+  ) = __$HandleChangedCopyWithImpl;
+  @useResult
+  $Res call({ResizeHandle? handle});
+}
+
+/// @nodoc
+class __$HandleChangedCopyWithImpl<$Res>
+    implements _$HandleChangedCopyWith<$Res> {
+  __$HandleChangedCopyWithImpl(this._self, this._then);
+
+  final _HandleChanged _self;
+  final $Res Function(_HandleChanged) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? handle = freezed}) {
+    return _then(
+      _HandleChanged(
+        freezed == handle
+            ? _self.handle
+            : handle // ignore: cast_nullable_to_non_nullable
+                as ResizeHandle?,
+      ),
+    );
+  }
 }

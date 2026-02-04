@@ -19,6 +19,7 @@ mixin _$ActiveLayerState {
   /// The original object state before a move operation started.
   /// Used for creating MoveObjectCommand for undo/redo.
   SpaceObject? get originalObject;
+  ResizeHandle? get activeHandle;
 
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
@@ -42,7 +43,9 @@ mixin _$ActiveLayerState {
             (identical(other.dragStartPoint, dragStartPoint) ||
                 other.dragStartPoint == dragStartPoint) &&
             (identical(other.originalObject, originalObject) ||
-                other.originalObject == originalObject));
+                other.originalObject == originalObject) &&
+            (identical(other.activeHandle, activeHandle) ||
+                other.activeHandle == activeHandle));
   }
 
   @override
@@ -51,11 +54,12 @@ mixin _$ActiveLayerState {
     const DeepCollectionEquality().hash(activeObjects),
     dragStartPoint,
     originalObject,
+    activeHandle,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, activeHandle: $activeHandle)';
   }
 }
 
@@ -70,6 +74,7 @@ abstract mixin class $ActiveLayerStateCopyWith<$Res> {
     Map<int, SpaceObject> activeObjects,
     Offset? dragStartPoint,
     SpaceObject? originalObject,
+    ResizeHandle? activeHandle,
   });
 }
 
@@ -89,6 +94,7 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
     Object? activeObjects = null,
     Object? dragStartPoint = freezed,
     Object? originalObject = freezed,
+    Object? activeHandle = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -107,6 +113,11 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.originalObject
                 : originalObject // ignore: cast_nullable_to_non_nullable
                     as SpaceObject?,
+        activeHandle:
+            freezed == activeHandle
+                ? _self.activeHandle
+                : activeHandle // ignore: cast_nullable_to_non_nullable
+                    as ResizeHandle?,
       ),
     );
   }
@@ -209,6 +220,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
+      ResizeHandle? activeHandle,
     )?
     $default, {
     required TResult orElse(),
@@ -220,6 +232,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
+          _that.activeHandle,
         );
       case _:
         return orElse();
@@ -245,6 +258,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
+      ResizeHandle? activeHandle,
     )
     $default,
   ) {
@@ -255,6 +269,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
+          _that.activeHandle,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -279,6 +294,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
+      ResizeHandle? activeHandle,
     )?
     $default,
   ) {
@@ -289,6 +305,7 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
+          _that.activeHandle,
         );
       case _:
         return null;
@@ -303,6 +320,7 @@ class _ActiveLayerState implements ActiveLayerState {
     final Map<int, SpaceObject> activeObjects = const {},
     this.dragStartPoint,
     this.originalObject,
+    this.activeHandle,
   }) : _activeObjects = activeObjects;
 
   final Map<int, SpaceObject> _activeObjects;
@@ -321,6 +339,8 @@ class _ActiveLayerState implements ActiveLayerState {
   /// Used for creating MoveObjectCommand for undo/redo.
   @override
   final SpaceObject? originalObject;
+  @override
+  final ResizeHandle? activeHandle;
 
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
@@ -342,7 +362,9 @@ class _ActiveLayerState implements ActiveLayerState {
             (identical(other.dragStartPoint, dragStartPoint) ||
                 other.dragStartPoint == dragStartPoint) &&
             (identical(other.originalObject, originalObject) ||
-                other.originalObject == originalObject));
+                other.originalObject == originalObject) &&
+            (identical(other.activeHandle, activeHandle) ||
+                other.activeHandle == activeHandle));
   }
 
   @override
@@ -351,11 +373,12 @@ class _ActiveLayerState implements ActiveLayerState {
     const DeepCollectionEquality().hash(_activeObjects),
     dragStartPoint,
     originalObject,
+    activeHandle,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, activeHandle: $activeHandle)';
   }
 }
 
@@ -372,6 +395,7 @@ abstract mixin class _$ActiveLayerStateCopyWith<$Res>
     Map<int, SpaceObject> activeObjects,
     Offset? dragStartPoint,
     SpaceObject? originalObject,
+    ResizeHandle? activeHandle,
   });
 }
 
@@ -391,6 +415,7 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
     Object? activeObjects = null,
     Object? dragStartPoint = freezed,
     Object? originalObject = freezed,
+    Object? activeHandle = freezed,
   }) {
     return _then(
       _ActiveLayerState(
@@ -409,6 +434,11 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.originalObject
                 : originalObject // ignore: cast_nullable_to_non_nullable
                     as SpaceObject?,
+        activeHandle:
+            freezed == activeHandle
+                ? _self.activeHandle
+                : activeHandle // ignore: cast_nullable_to_non_nullable
+                    as ResizeHandle?,
       ),
     );
   }

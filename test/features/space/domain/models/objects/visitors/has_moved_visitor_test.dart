@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/has_moved_visitor.dart';
 import 'package:ideascape/features/space/domain/models/objects/extensions/space_object_extensions.dart';
 
 void main() {

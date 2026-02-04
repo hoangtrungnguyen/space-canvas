@@ -57,6 +57,9 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
             ),
           );
         },
+        handleChanged: (e) {
+          emit(state.copyWith(activeHandle: e.handle));
+        },
       );
     });
   }

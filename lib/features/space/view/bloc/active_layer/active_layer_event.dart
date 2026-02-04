@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 
 part 'active_layer_event.freezed.dart';
 
@@ -40,4 +41,7 @@ class ActiveLayerEvent with _$ActiveLayerEvent {
 
   /// Clears all active objects (e.g. when clicking empty space).
   const factory ActiveLayerEvent.clear() = _Clear;
+
+  const factory ActiveLayerEvent.handleChanged(ResizeHandle? handle) =
+      _HandleChanged;
 }
