@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/aliases.dart';
-import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:provider/provider.dart';
 
+/// Handles connector tool interactions using the Mediator and State patterns.
+///
+/// Connectors can be drawn from any point to any point. If the start or end
+/// point is on an object, it will be linked to that object.
 class ConnectorToolHandler extends ToolHandler {
-  // Maintaining state for dragging; in a real app this might be in BLoC or ephemeral state
-  static int? _startObjectId;
-  static Offset? _currentDragPosition;
-
   const ConnectorToolHandler();
 
   @override
@@ -31,13 +29,20 @@ class ConnectorToolHandler extends ToolHandler {
   ) {
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
+    // Find if we're starting on an object (optional)
+    int? startObjectId;
     final state = context.read<ShapeLayerBloc>().state;
     if (state is ShapeLayerStateSuccess) {
-      final id = _findObjectAt(worldPoint, state.data.objects);
-      if (id != null) {
-        _startObjectId = id;
-      }
+      startObjectId = _findObjectAt(worldPoint, state.data.objects);
     }
+
+    // Always start the drag, even without an object
+    context.read<ActiveLayerBloc>().add(
+      ActiveLayerEvent.connectorDragStarted(
+        startObjectId: startObjectId,
+        startPoint: worldPoint,
+      ),
+    );
   }
 
   @override
@@ -46,9 +51,12 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    if (_startObjectId != null) {
+    final activeState = context.read<ActiveLayerBloc>().state;
+    if (activeState.connectorStartPoint != null) {
       final worldPoint = _toWorldPoint(details.localPosition, controller);
-      _currentDragPosition = worldPoint;
+      context.read<ActiveLayerBloc>().add(
+        ActiveLayerEvent.connectorDragUpdated(worldPoint),
+      );
     }
   }
 
@@ -58,33 +66,33 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    if (_startObjectId != null && _currentDragPosition != null) {
-      final state = context.read<ShapeLayerBloc>().state;
+    final activeState = context.read<ActiveLayerBloc>().state;
+    final startPoint = activeState.connectorStartPoint;
+    final startObjectId = activeState.connectorStartObjectId;
+    final endPoint = activeState.connectorDragPosition;
+
+    if (startPoint != null && endPoint != null) {
+      final shapeState = context.read<ShapeLayerBloc>().state;
       final mediator = context.read<CanvasInteractionMediator>();
 
-      if (state is ShapeLayerStateSuccess) {
-        final endId = _findObjectAt(_currentDragPosition!, state.data.objects);
-        if (endId != null && endId != _startObjectId) {
-          final startObj = state.data.objects[_startObjectId];
-          final endObj = state.data.objects[endId];
-
-          if (startObj != null && endObj != null) {
-            final id = getIt<SpaceDataService>().nextUniqueId;
-            final connector = SpaceObjectFactory.createConnector(
-              id: id,
-              startId: _startObjectId!,
-              endId: endId,
-              startPoint: startObj.rect.center,
-              endPoint: endObj.rect.center,
-            );
-
-            mediator.commitImmediate(connector);
-          }
-        }
+      int? endObjectId;
+      if (shapeState is ShapeLayerStateSuccess) {
+        endObjectId = _findObjectAt(endPoint, shapeState.data.objects);
       }
+
+      // Create connector with optional object IDs
+      mediator.createConnector(
+        startPoint: startPoint,
+        endPoint: endPoint,
+        startObjectId: startObjectId,
+        endObjectId: endObjectId,
+      );
     }
-    _startObjectId = null;
-    _currentDragPosition = null;
+
+    // Always clear the drag state
+    context.read<ActiveLayerBloc>().add(
+      const ActiveLayerEvent.connectorDragEnded(),
+    );
   }
 
   int? _findObjectAt(Offset position, Map<int, SpaceObject> objects) {

@@ -15,5 +15,17 @@ abstract class ActiveLayerState with _$ActiveLayerState {
     /// Used for creating MoveObjectCommand for undo/redo.
     SpaceObject? originalObject,
     ResizeHandle? activeHandle,
+
+    /// The ID of the object where a connector drag started (optional).
+    int? connectorStartObjectId,
+
+    /// The starting point of the connector drag.
+    Offset? connectorStartPoint,
+
+    /// The current drag position for connector preview.
+    Offset? connectorDragPosition,
+
+    /// The ID of the object being hovered while connector tool is active.
+    int? connectorHoverObjectId,
   }) = _ActiveLayerState;
 }

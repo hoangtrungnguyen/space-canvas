@@ -10,6 +10,10 @@ import 'package:ideascape/features/space/domain/models/object_painter.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler_factory.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/widgets/inline_text_editor.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
+import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
 
 class ToolbarLayer extends StatelessWidget {
   const ToolbarLayer({super.key, required this.transformationController});
@@ -62,36 +66,62 @@ class ToolbarLayer extends StatelessWidget {
               // Gesture detector for interactions (e.g. drawing, placing shapes)
               // It only intercepts gestures when the current tool is NOT the pan tool.
               if (state.tool != SpaceTool.pan)
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTapUp: (details) {
-                    final handler = ToolHandlerFactory.getHandler(state.tool);
-                    handler.onTapUp(details, context, transformationController);
-                  },
-                  onPanStart: (details) {
-                    final handler = ToolHandlerFactory.getHandler(state.tool);
-                    handler.onPanStart(
-                      details,
-                      context,
-                      transformationController,
-                    );
-                  },
-                  onPanUpdate: (details) {
-                    final handler = ToolHandlerFactory.getHandler(state.tool);
-                    handler.onPanUpdate(
-                      details,
-                      context,
-                      transformationController,
-                    );
-                  },
-                  onPanEnd: (details) {
-                    final handler = ToolHandlerFactory.getHandler(state.tool);
-                    handler.onPanEnd(
-                      details,
-                      context,
-                      transformationController,
-                    );
-                  },
+                MouseRegion(
+                  onHover:
+                      state.tool == SpaceTool.connector
+                          ? (event) {
+                            _handleConnectorHover(
+                              event.localPosition,
+                              context,
+                              transformationController,
+                            );
+                          }
+                          : null,
+                  onExit:
+                      state.tool == SpaceTool.connector
+                          ? (_) {
+                            context.read<ActiveLayerBloc>().add(
+                              const ActiveLayerEvent.connectorHoverChanged(
+                                null,
+                              ),
+                            );
+                          }
+                          : null,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTapUp: (details) {
+                      final handler = ToolHandlerFactory.getHandler(state.tool);
+                      handler.onTapUp(
+                        details,
+                        context,
+                        transformationController,
+                      );
+                    },
+                    onPanStart: (details) {
+                      final handler = ToolHandlerFactory.getHandler(state.tool);
+                      handler.onPanStart(
+                        details,
+                        context,
+                        transformationController,
+                      );
+                    },
+                    onPanUpdate: (details) {
+                      final handler = ToolHandlerFactory.getHandler(state.tool);
+                      handler.onPanUpdate(
+                        details,
+                        context,
+                        transformationController,
+                      );
+                    },
+                    onPanEnd: (details) {
+                      final handler = ToolHandlerFactory.getHandler(state.tool);
+                      handler.onPanEnd(
+                        details,
+                        context,
+                        transformationController,
+                      );
+                    },
+                  ),
                 ),
 
               // Left-side main toolbar
@@ -122,5 +152,36 @@ class ToolbarLayer extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _handleConnectorHover(
+    Offset localPosition,
+    BuildContext context,
+    TransformationController controller,
+  ) {
+    final worldPoint = MatrixUtils.transformPoint(
+      Matrix4.inverted(controller.value),
+      localPosition,
+    );
+
+    final shapeState = context.read<ShapeLayerBloc>().state;
+    if (shapeState is ShapeLayerStateSuccess) {
+      int? hoveredId;
+      // Find object under cursor (sorted by z-index, top-most first)
+      final sorted =
+          shapeState.data.objects.values.toList()
+            ..sort((a, b) => b.zIndex.compareTo(a.zIndex));
+
+      for (final obj in sorted) {
+        if (obj is ConnectorObject) continue;
+        if (obj.rect.contains(worldPoint)) {
+          hoveredId = obj.id;
+          break;
+        }
+      }
+      context.read<ActiveLayerBloc>().add(
+        ActiveLayerEvent.connectorHoverChanged(hoveredId),
+      );
+    }
   }
 }

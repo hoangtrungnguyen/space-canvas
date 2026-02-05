@@ -52,6 +52,12 @@ class ToolbarWidget extends StatelessWidget {
                   Icons.cleaning_services_outlined,
                   state,
                 ),
+                _buildToolButton(
+                  context,
+                  SpaceTool.connector,
+                  Icons.arrow_right_alt,
+                  state,
+                ),
                 const Divider(height: 16, indent: 8, endIndent: 8),
                 _buildToolButton(
                   context,

@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'connector_object.dart';
+
+export 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+
 part 'space_object.freezed.dart';
 
 enum ShapeType {
@@ -116,28 +120,6 @@ abstract class ImageObject extends SpaceObject with _$ImageObject {
 
   @override
   T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitImage(this);
-}
-
-@freezed
-abstract class ConnectorObject extends SpaceObject with _$ConnectorObject {
-  factory ConnectorObject({
-    required int startObjectId,
-    required int endObjectId,
-    required Offset startPoint,
-    required Offset endPoint,
-    required double strokeWidth,
-    required int color,
-    required int id,
-    @Default(0) int zIndex,
-  }) = _ConnectorObject;
-
-  ConnectorObject._();
-
-  @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitConnector(this);
-
-  @override
-  Rect get rect => Rect.fromPoints(startPoint, endPoint).inflate(strokeWidth);
 }
 
 @freezed

@@ -23,6 +23,12 @@ abstract class CanvasInteractionMediator {
   void updateDrawing(ListOfPointObject object, Offset worldPoint);
   void deleteObject(SpaceObject object);
   void deleteObjects(List<SpaceObject> objects);
+  void createConnector({
+    required Offset startPoint,
+    required Offset endPoint,
+    int? startObjectId,
+    int? endObjectId,
+  });
 }
 
 class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
@@ -213,6 +219,26 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
     } else {
       history.execute(BatchDeleteCommand(objects));
     }
+  }
+
+  @override
+  void createConnector({
+    required Offset startPoint,
+    required Offset endPoint,
+    int? startObjectId,
+    int? endObjectId,
+  }) {
+    final id = DateTime.now().microsecondsSinceEpoch; // Simple unique ID
+    final connector = ConnectorObject(
+      id: id,
+      startObjectId: startObjectId,
+      endObjectId: endObjectId,
+      startPoint: startPoint,
+      endPoint: endPoint,
+      strokeWidth: 2.0,
+      color: Colors.black.value,
+    );
+    history.execute(AddShapeCommand(connector));
   }
 
   /// Moves an object by the given delta.

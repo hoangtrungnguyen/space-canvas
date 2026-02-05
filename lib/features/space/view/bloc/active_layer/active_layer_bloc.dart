@@ -60,6 +60,30 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
         handleChanged: (e) {
           emit(state.copyWith(activeHandle: e.handle));
         },
+        connectorDragStarted: (e) {
+          emit(
+            state.copyWith(
+              connectorStartObjectId: e.startObjectId,
+              connectorStartPoint: e.startPoint,
+              connectorDragPosition: null,
+            ),
+          );
+        },
+        connectorDragUpdated: (e) {
+          emit(state.copyWith(connectorDragPosition: e.position));
+        },
+        connectorDragEnded: (_) {
+          emit(
+            state.copyWith(
+              connectorStartObjectId: null,
+              connectorStartPoint: null,
+              connectorDragPosition: null,
+            ),
+          );
+        },
+        connectorHoverChanged: (e) {
+          emit(state.copyWith(connectorHoverObjectId: e.objectId));
+        },
       );
     });
   }

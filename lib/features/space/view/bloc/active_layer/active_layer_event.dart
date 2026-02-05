@@ -44,4 +44,21 @@ class ActiveLayerEvent with _$ActiveLayerEvent {
 
   const factory ActiveLayerEvent.handleChanged(ResizeHandle? handle) =
       _HandleChanged;
+
+  /// Triggered when a connector drag starts.
+  const factory ActiveLayerEvent.connectorDragStarted({
+    int? startObjectId,
+    required Offset startPoint,
+  }) = _ConnectorDragStarted;
+
+  /// Triggered when the connector drag position updates.
+  const factory ActiveLayerEvent.connectorDragUpdated(Offset position) =
+      _ConnectorDragUpdated;
+
+  /// Triggered when a connector drag ends.
+  const factory ActiveLayerEvent.connectorDragEnded() = _ConnectorDragEnded;
+
+  /// Triggered when hovering over an object with connector tool.
+  const factory ActiveLayerEvent.connectorHoverChanged(int? objectId) =
+      _ConnectorHoverChanged;
 }

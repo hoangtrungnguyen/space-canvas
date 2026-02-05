@@ -61,6 +61,10 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(_OriginalObjectSet value)? originalObjectSet,
     TResult Function(_Clear value)? clear,
     TResult Function(_HandleChanged value)? handleChanged,
+    TResult Function(_ConnectorDragStarted value)? connectorDragStarted,
+    TResult Function(_ConnectorDragUpdated value)? connectorDragUpdated,
+    TResult Function(_ConnectorDragEnded value)? connectorDragEnded,
+    TResult Function(_ConnectorHoverChanged value)? connectorHoverChanged,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -83,6 +87,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that);
+      case _ConnectorDragStarted() when connectorDragStarted != null:
+        return connectorDragStarted(_that);
+      case _ConnectorDragUpdated() when connectorDragUpdated != null:
+        return connectorDragUpdated(_that);
+      case _ConnectorDragEnded() when connectorDragEnded != null:
+        return connectorDragEnded(_that);
+      case _ConnectorHoverChanged() when connectorHoverChanged != null:
+        return connectorHoverChanged(_that);
       case _:
         return orElse();
     }
@@ -112,6 +124,11 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(_OriginalObjectSet value) originalObjectSet,
     required TResult Function(_Clear value) clear,
     required TResult Function(_HandleChanged value) handleChanged,
+    required TResult Function(_ConnectorDragStarted value) connectorDragStarted,
+    required TResult Function(_ConnectorDragUpdated value) connectorDragUpdated,
+    required TResult Function(_ConnectorDragEnded value) connectorDragEnded,
+    required TResult Function(_ConnectorHoverChanged value)
+    connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -133,6 +150,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged():
         return handleChanged(_that);
+      case _ConnectorDragStarted():
+        return connectorDragStarted(_that);
+      case _ConnectorDragUpdated():
+        return connectorDragUpdated(_that);
+      case _ConnectorDragEnded():
+        return connectorDragEnded(_that);
+      case _ConnectorHoverChanged():
+        return connectorHoverChanged(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -161,6 +186,10 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(_OriginalObjectSet value)? originalObjectSet,
     TResult? Function(_Clear value)? clear,
     TResult? Function(_HandleChanged value)? handleChanged,
+    TResult? Function(_ConnectorDragStarted value)? connectorDragStarted,
+    TResult? Function(_ConnectorDragUpdated value)? connectorDragUpdated,
+    TResult? Function(_ConnectorDragEnded value)? connectorDragEnded,
+    TResult? Function(_ConnectorHoverChanged value)? connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -182,6 +211,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that);
+      case _ConnectorDragStarted() when connectorDragStarted != null:
+        return connectorDragStarted(_that);
+      case _ConnectorDragUpdated() when connectorDragUpdated != null:
+        return connectorDragUpdated(_that);
+      case _ConnectorDragEnded() when connectorDragEnded != null:
+        return connectorDragEnded(_that);
+      case _ConnectorHoverChanged() when connectorHoverChanged != null:
+        return connectorHoverChanged(_that);
       case _:
         return null;
     }
@@ -210,6 +247,11 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(SpaceObject? object)? originalObjectSet,
     TResult Function()? clear,
     TResult Function(ResizeHandle? handle)? handleChanged,
+    TResult Function(int? startObjectId, Offset startPoint)?
+    connectorDragStarted,
+    TResult Function(Offset position)? connectorDragUpdated,
+    TResult Function()? connectorDragEnded,
+    TResult Function(int? objectId)? connectorHoverChanged,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -232,6 +274,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that.handle);
+      case _ConnectorDragStarted() when connectorDragStarted != null:
+        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+      case _ConnectorDragUpdated() when connectorDragUpdated != null:
+        return connectorDragUpdated(_that.position);
+      case _ConnectorDragEnded() when connectorDragEnded != null:
+        return connectorDragEnded();
+      case _ConnectorHoverChanged() when connectorHoverChanged != null:
+        return connectorHoverChanged(_that.objectId);
       case _:
         return orElse();
     }
@@ -262,6 +312,11 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(SpaceObject? object) originalObjectSet,
     required TResult Function() clear,
     required TResult Function(ResizeHandle? handle) handleChanged,
+    required TResult Function(int? startObjectId, Offset startPoint)
+    connectorDragStarted,
+    required TResult Function(Offset position) connectorDragUpdated,
+    required TResult Function() connectorDragEnded,
+    required TResult Function(int? objectId) connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -283,6 +338,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged():
         return handleChanged(_that.handle);
+      case _ConnectorDragStarted():
+        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+      case _ConnectorDragUpdated():
+        return connectorDragUpdated(_that.position);
+      case _ConnectorDragEnded():
+        return connectorDragEnded();
+      case _ConnectorHoverChanged():
+        return connectorHoverChanged(_that.objectId);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -311,6 +374,11 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(SpaceObject? object)? originalObjectSet,
     TResult? Function()? clear,
     TResult? Function(ResizeHandle? handle)? handleChanged,
+    TResult? Function(int? startObjectId, Offset startPoint)?
+    connectorDragStarted,
+    TResult? Function(Offset position)? connectorDragUpdated,
+    TResult? Function()? connectorDragEnded,
+    TResult? Function(int? objectId)? connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
@@ -332,6 +400,14 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that.handle);
+      case _ConnectorDragStarted() when connectorDragStarted != null:
+        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+      case _ConnectorDragUpdated() when connectorDragUpdated != null:
+        return connectorDragUpdated(_that.position);
+      case _ConnectorDragEnded() when connectorDragEnded != null:
+        return connectorDragEnded();
+      case _ConnectorHoverChanged() when connectorHoverChanged != null:
+        return connectorHoverChanged(_that.objectId);
       case _:
         return null;
     }
@@ -863,6 +939,260 @@ class __$HandleChangedCopyWithImpl<$Res>
             ? _self.handle
             : handle // ignore: cast_nullable_to_non_nullable
                 as ResizeHandle?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _ConnectorDragStarted implements ActiveLayerEvent {
+  const _ConnectorDragStarted({this.startObjectId, required this.startPoint});
+
+  final int? startObjectId;
+  final Offset startPoint;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ConnectorDragStartedCopyWith<_ConnectorDragStarted> get copyWith =>
+      __$ConnectorDragStartedCopyWithImpl<_ConnectorDragStarted>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ConnectorDragStarted &&
+            (identical(other.startObjectId, startObjectId) ||
+                other.startObjectId == startObjectId) &&
+            (identical(other.startPoint, startPoint) ||
+                other.startPoint == startPoint));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, startObjectId, startPoint);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.connectorDragStarted(startObjectId: $startObjectId, startPoint: $startPoint)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ConnectorDragStartedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$ConnectorDragStartedCopyWith(
+    _ConnectorDragStarted value,
+    $Res Function(_ConnectorDragStarted) _then,
+  ) = __$ConnectorDragStartedCopyWithImpl;
+  @useResult
+  $Res call({int? startObjectId, Offset startPoint});
+}
+
+/// @nodoc
+class __$ConnectorDragStartedCopyWithImpl<$Res>
+    implements _$ConnectorDragStartedCopyWith<$Res> {
+  __$ConnectorDragStartedCopyWithImpl(this._self, this._then);
+
+  final _ConnectorDragStarted _self;
+  final $Res Function(_ConnectorDragStarted) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? startObjectId = freezed, Object? startPoint = null}) {
+    return _then(
+      _ConnectorDragStarted(
+        startObjectId:
+            freezed == startObjectId
+                ? _self.startObjectId
+                : startObjectId // ignore: cast_nullable_to_non_nullable
+                    as int?,
+        startPoint:
+            null == startPoint
+                ? _self.startPoint
+                : startPoint // ignore: cast_nullable_to_non_nullable
+                    as Offset,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _ConnectorDragUpdated implements ActiveLayerEvent {
+  const _ConnectorDragUpdated(this.position);
+
+  final Offset position;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ConnectorDragUpdatedCopyWith<_ConnectorDragUpdated> get copyWith =>
+      __$ConnectorDragUpdatedCopyWithImpl<_ConnectorDragUpdated>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ConnectorDragUpdated &&
+            (identical(other.position, position) ||
+                other.position == position));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, position);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.connectorDragUpdated(position: $position)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ConnectorDragUpdatedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$ConnectorDragUpdatedCopyWith(
+    _ConnectorDragUpdated value,
+    $Res Function(_ConnectorDragUpdated) _then,
+  ) = __$ConnectorDragUpdatedCopyWithImpl;
+  @useResult
+  $Res call({Offset position});
+}
+
+/// @nodoc
+class __$ConnectorDragUpdatedCopyWithImpl<$Res>
+    implements _$ConnectorDragUpdatedCopyWith<$Res> {
+  __$ConnectorDragUpdatedCopyWithImpl(this._self, this._then);
+
+  final _ConnectorDragUpdated _self;
+  final $Res Function(_ConnectorDragUpdated) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? position = null}) {
+    return _then(
+      _ConnectorDragUpdated(
+        null == position
+            ? _self.position
+            : position // ignore: cast_nullable_to_non_nullable
+                as Offset,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _ConnectorDragEnded implements ActiveLayerEvent {
+  const _ConnectorDragEnded();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _ConnectorDragEnded);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.connectorDragEnded()';
+  }
+}
+
+/// @nodoc
+class _$ConnectorDragEndedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  _$ConnectorDragEndedCopyWith(
+    _ConnectorDragEnded _,
+    $Res Function(_ConnectorDragEnded) __,
+  );
+}
+
+/// @nodoc
+class __$ConnectorDragEndedCopyWithImpl<$Res>
+    implements _$ConnectorDragEndedCopyWith<$Res> {
+  __$ConnectorDragEndedCopyWithImpl(this._self, this._then);
+
+  final _ConnectorDragEnded _self;
+  final $Res Function(_ConnectorDragEnded) _then;
+}
+
+/// @nodoc
+
+class _ConnectorHoverChanged implements ActiveLayerEvent {
+  const _ConnectorHoverChanged(this.objectId);
+
+  final int? objectId;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ConnectorHoverChangedCopyWith<_ConnectorHoverChanged> get copyWith =>
+      __$ConnectorHoverChangedCopyWithImpl<_ConnectorHoverChanged>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ConnectorHoverChanged &&
+            (identical(other.objectId, objectId) ||
+                other.objectId == objectId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, objectId);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.connectorHoverChanged(objectId: $objectId)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ConnectorHoverChangedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$ConnectorHoverChangedCopyWith(
+    _ConnectorHoverChanged value,
+    $Res Function(_ConnectorHoverChanged) _then,
+  ) = __$ConnectorHoverChangedCopyWithImpl;
+  @useResult
+  $Res call({int? objectId});
+}
+
+/// @nodoc
+class __$ConnectorHoverChangedCopyWithImpl<$Res>
+    implements _$ConnectorHoverChangedCopyWith<$Res> {
+  __$ConnectorHoverChangedCopyWithImpl(this._self, this._then);
+
+  final _ConnectorHoverChanged _self;
+  final $Res Function(_ConnectorHoverChanged) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? objectId = freezed}) {
+    return _then(
+      _ConnectorHoverChanged(
+        freezed == objectId
+            ? _self.objectId
+            : objectId // ignore: cast_nullable_to_non_nullable
+                as int?,
       ),
     );
   }

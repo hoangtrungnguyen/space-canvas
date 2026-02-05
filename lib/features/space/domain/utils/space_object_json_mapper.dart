@@ -1,0 +1,124 @@
+import 'dart:ui';
+
+import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+
+class SpaceObjectJsonMapper {
+  static SpaceObject fromJson(Map<String, dynamic> json) {
+    final type = json['type'] as String;
+
+    switch (type) {
+      case 'shape':
+        return _shapeFromJson(json);
+      case 'text':
+        return _textFromJson(json);
+      case 'connector':
+        return _connectorFromJson(json);
+      case 'image':
+        return _imageFromJson(json);
+      case 'group':
+        return _groupFromJson(json);
+      case 'listOfPoint':
+        return _listOfPointFromJson(json);
+      // case 'path':
+      //   return _pathFromJson(json);
+      default:
+        throw UnimplementedError(
+          'Deserialization for type "$type" is not implemented.',
+        );
+    }
+  }
+
+  static ShapeObject _shapeFromJson(Map<String, dynamic> json) {
+    return ShapeObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      type: ShapeType.values.byName(json['shapeType'] as String),
+      rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
+      paint: _paintFromJson(json['paint'] as Map<String, dynamic>),
+      text: json['text'] as String? ?? '',
+    );
+  }
+
+  static TextObject _textFromJson(Map<String, dynamic> json) {
+    return TextObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      text: json['textContent'] as String,
+      position: _offsetFromJson(json['position'] as Map<String, dynamic>),
+      fontSize: (json['fontSize'] as num).toDouble(),
+      color: json['color'] as int,
+      fontFamily: json['fontFamily'] as String?,
+    );
+  }
+
+  static ConnectorObject _connectorFromJson(Map<String, dynamic> json) {
+    return ConnectorObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      startObjectId: json['startObjectId'] as int,
+      endObjectId: json['endObjectId'] as int,
+      startPoint: _offsetFromJson(json['startPoint'] as Map<String, dynamic>),
+      endPoint: _offsetFromJson(json['endPoint'] as Map<String, dynamic>),
+      strokeWidth: (json['strokeWidth'] as num).toDouble(),
+      color: json['color'] as int,
+    );
+  }
+
+  static ImageObject _imageFromJson(Map<String, dynamic> json) {
+    return ImageObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      imageUrl: json['imageUrl'] as String,
+      rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
+    );
+  }
+
+  static GroupObject _groupFromJson(Map<String, dynamic> json) {
+    return GroupObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      childrenIds: (json['childrenIds'] as List).cast<int>(),
+      rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
+    );
+  }
+
+  static ListOfPointObject _listOfPointFromJson(Map<String, dynamic> json) {
+    return ListOfPointObject(
+      id: json['id'] as int,
+      zIndex: json['zIndex'] as int? ?? 0,
+      points:
+          (json['points'] as List)
+              .map((e) => _offsetFromJson(e as Map<String, dynamic>))
+              .toList(),
+      strokeWidth: (json['strokeWidth'] as num).toDouble(),
+      color: json['color'] as int,
+    );
+  }
+
+  // --- Helpers ---
+
+  static Rect _rectFromJson(Map<String, dynamic> json) {
+    return Rect.fromLTWH(
+      (json['left'] as num).toDouble(),
+      (json['top'] as num).toDouble(),
+      (json['width'] as num).toDouble(),
+      (json['height'] as num).toDouble(),
+    );
+  }
+
+  static Offset _offsetFromJson(Map<String, dynamic> json) {
+    return Offset(
+      (json['dx'] as num).toDouble(),
+      (json['dy'] as num).toDouble(),
+    );
+  }
+
+  static Paint _paintFromJson(Map<String, dynamic> json) {
+    return Paint()
+      ..color = Color(json['color'] as int)
+      ..strokeWidth = (json['strokeWidth'] as num).toDouble()
+      ..style = PaintingStyle.values.byName(json['style'] as String)
+      ..strokeCap = StrokeCap.values.byName(json['strokeCap'] as String)
+      ..strokeJoin = StrokeJoin.values.byName(json['strokeJoin'] as String);
+  }
+}
