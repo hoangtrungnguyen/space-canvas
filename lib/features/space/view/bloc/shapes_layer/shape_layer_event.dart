@@ -19,4 +19,10 @@ class ShapeLayerEvent with _$ShapeLayerEvent {
   const factory ShapeLayerEvent.objectSelected(int? objectId) = _ObjectSelected;
 
   const factory ShapeLayerEvent.selectAtPoint(Offset point) = _SelectAtPoint;
+
+  const factory ShapeLayerEvent.updateObjects(List<SpaceObject> objects) =
+      _UpdateObjects;
+
+  const factory ShapeLayerEvent.hiddenObjects(Set<int> objectIds) =
+      _HiddenObjects;
 }

@@ -1,1 +1,11 @@
-enum SpaceTool { pen, shape, text, eraser, pan, connector, image, select }
+enum SpaceTool {
+  pen,
+  shape,
+  text,
+  eraser,
+  pan,
+  connector,
+  image,
+  select,
+  selectConnector,
+}

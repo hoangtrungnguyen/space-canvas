@@ -22,12 +22,7 @@ class ToolbarWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildToolButton(
-                  context,
-                  SpaceTool.select,
-                  Icons.ads_click,
-                  state,
-                ),
+                SelectionToolButton(state: state),
                 _buildToolButton(
                   context,
                   SpaceTool.pen,
@@ -127,7 +122,9 @@ class ToolbarWidget extends StatelessWidget {
     IconData icon,
     ToolbarState state,
   ) {
-    final isSelected = state.tool == tool;
+    final isSelected =
+        state.tool == tool ||
+        (tool == SpaceTool.select && state.tool == SpaceTool.selectConnector);
     return IconButton(
       icon: Icon(
         icon,
@@ -138,6 +135,42 @@ class ToolbarWidget extends StatelessWidget {
           context.read<ToolbarBloc>().add(const ToolbarEvent.toDefault());
         } else {
           context.read<ToolbarBloc>().add(ToolbarEvent.selected(tool));
+        }
+      },
+      tooltip: tool.name.toUpperCase(),
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(
+          isSelected
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.15)
+              : Colors.transparent,
+        ),
+      ),
+    );
+  }
+}
+
+class SelectionToolButton extends StatelessWidget {
+  final ToolbarState state;
+
+  const SelectionToolButton({super.key, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    const tool = SpaceTool.select;
+    final isSelected =
+        state.tool == tool || state.tool == SpaceTool.selectConnector;
+
+    return IconButton(
+      icon: Icon(
+        Icons.ads_click,
+        color: isSelected ? Theme.of(context).primaryColor : Colors.grey[700],
+      ),
+      onPressed: () {
+        if (isSelected) {
+          context.read<ToolbarBloc>().add(const ToolbarEvent.toDefault());
+        } else {
+          // Default to generic select, handler might refine it later
+          context.read<ToolbarBloc>().add(const ToolbarEvent.selected(tool));
         }
       },
       tooltip: tool.name.toUpperCase(),

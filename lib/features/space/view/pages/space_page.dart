@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ideascape/features/space/view/widgets/active_layer_observer.dart';
 import 'package:provider/provider.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/bloc/page_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
+import 'package:ideascape/features/space/domain/managers/interaction_state_manager.dart';
+import 'package:ideascape/features/space/domain/managers/selection_manager.dart';
 
 class IdeaSpace extends StatelessWidget {
   static const String routePath = '/idea-space/:id';
@@ -50,10 +53,10 @@ class IdeaSpace extends StatelessWidget {
                                 ..add(const ShapeLayerEvent.initialize()),
                     ),
                     BlocProvider(create: (_) => ActiveLayerBloc()),
-                    BlocProvider(create: (context) => ToolbarBloc()),
                   ],
                   child: MultiProvider(
                     providers: [
+                      BlocProvider(create: (context) => ToolbarBloc()),
                       ChangeNotifierProxyProvider<
                         ShapeLayerBloc,
                         HistoryManager
@@ -69,18 +72,70 @@ class IdeaSpace extends StatelessWidget {
                         ShapeLayerBloc,
                         ActiveLayerBloc,
                         HistoryManager,
-                        CanvasInteractionMediator
+                        InteractionStateManager
                       >(
                         update:
                             (context, shapeBloc, activeBloc, history, _) =>
-                                CanvasInteractionMediatorImpl(
-                                  shapeBloc: shapeBloc,
+                                InteractionStateManager(
                                   activeBloc: activeBloc,
+                                  shapeBloc: shapeBloc,
                                   history: history,
                                 ),
                       ),
+                      ProxyProvider4<
+                        ShapeLayerBloc,
+                        ActiveLayerBloc,
+                        InteractionStateManager,
+                        ToolbarBloc,
+                        SelectionManager
+                      >(
+                        update:
+                            (
+                              context,
+                              shapeBloc,
+                              activeBloc,
+                              interactionManager,
+                              toolbarBloc,
+                              _,
+                            ) => SelectionManager(
+                              activeBloc: activeBloc,
+                              shapeBloc: shapeBloc,
+                              interactionManager: interactionManager,
+                              toolbarBloc: toolbarBloc,
+                            ),
+                      ),
                     ],
-                    child: const SpaceListener(child: SpaceView()),
+                    child: ProxyProvider6<
+                      ShapeLayerBloc,
+                      ActiveLayerBloc,
+                      HistoryManager,
+                      InteractionStateManager,
+                      SelectionManager,
+                      ToolbarBloc,
+                      CanvasInteractionMediator
+                    >(
+                      update:
+                          (
+                            context,
+                            shapeBloc,
+                            activeBloc,
+                            history,
+                            stateManager,
+                            selectionManager,
+                            toolbarBloc,
+                            _,
+                          ) => CanvasInteractionMediatorImpl(
+                            shapeBloc: shapeBloc,
+                            activeBloc: activeBloc,
+                            history: history,
+                            stateManager: stateManager,
+                            selectionManager: selectionManager,
+                            toolbarBloc: toolbarBloc,
+                          ),
+                      child: const ActiveLayerObserver(
+                        child: SpaceListener(child: SpaceView()),
+                      ),
+                    ),
                   ),
                 ),
           );

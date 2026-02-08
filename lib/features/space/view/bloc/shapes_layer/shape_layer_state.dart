@@ -23,5 +23,6 @@ abstract class ShapeLayerData with _$ShapeLayerData {
     @Default({}) Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,
+    @Default({}) Set<int> hiddenObjectIds,
   }) = _ShapeLayerData;
 }

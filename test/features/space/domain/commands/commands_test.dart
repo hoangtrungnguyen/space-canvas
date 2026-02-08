@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ideascape/features/space/domain/commands/space_command.dart';
 import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
 import 'package:ideascape/features/space/domain/commands/move_object_command.dart';

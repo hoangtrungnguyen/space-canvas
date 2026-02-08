@@ -164,6 +164,15 @@ class ToolbarLayer extends StatelessWidget {
       localPosition,
     );
 
+    final activeState = context.read<ActiveLayerBloc>().state;
+    // If we are in the middle of creating a connector (Tap started),
+    // update the drag position to follow the mouse
+    if (activeState.connectorStartPoint != null) {
+      context.read<ActiveLayerBloc>().add(
+        ActiveLayerEvent.connectorDragUpdated(worldPoint),
+      );
+    }
+
     final shapeState = context.read<ShapeLayerBloc>().state;
     if (shapeState is ShapeLayerStateSuccess) {
       int? hoveredId;

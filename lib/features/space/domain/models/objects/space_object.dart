@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import 'connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
 
 export 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
 

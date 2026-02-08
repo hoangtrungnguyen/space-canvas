@@ -133,7 +133,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
             activeObjects: {testShape.id: testShape},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
             originalObject: testShape,
           ),
@@ -165,7 +165,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
             activeObjects: {testShape.id: testShape},
-            activeHandle: null,
+            resizeHandle: null,
             dragStartPoint: const Offset(200, 200),
             originalObject: testShape,
           ),
@@ -192,7 +192,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           const ActiveLayerState(
             activeObjects: {},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: Offset(200, 200),
             originalObject: null,
           ),
@@ -222,7 +222,7 @@ void main() {
           when(() => activeBloc.state).thenReturn(
             ActiveLayerState(
               activeObjects: {testShape.id: testShape},
-              activeHandle: ResizeHandle.bottomRight,
+              resizeHandle: ResizeHandle.bottomRight,
               dragStartPoint: const Offset(200, 200),
               originalObject: null,
             ),
@@ -246,7 +246,7 @@ void main() {
           when(() => activeBloc.state).thenReturn(
             ActiveLayerState(
               activeObjects: {testShape.id: testShape},
-              activeHandle: ResizeHandle.bottomRight,
+              resizeHandle: ResizeHandle.bottomRight,
               dragStartPoint: const Offset(200, 200),
               originalObject: otherShape,
             ),
@@ -274,7 +274,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
             activeObjects: {testShape.id: testShape},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: null,
             originalObject: testShape,
           ),
@@ -305,7 +305,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
             activeObjects: {testShape.id: testShape},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
             originalObject: testShape,
           ),
@@ -340,7 +340,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
             activeObjects: {testShape.id: testShape},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
             originalObject: testShape,
           ),
@@ -371,7 +371,7 @@ void main() {
         when(() => activeBloc.state).thenReturn(
           const ActiveLayerState(
             activeObjects: {},
-            activeHandle: ResizeHandle.bottomRight,
+            resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: Offset(200, 200),
             originalObject: null,
           ),

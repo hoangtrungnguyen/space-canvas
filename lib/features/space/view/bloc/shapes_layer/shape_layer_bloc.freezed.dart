@@ -59,6 +59,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(_ShapeSelected value)? shapeSelected,
     TResult Function(_ObjectSelected value)? objectSelected,
     TResult Function(_SelectAtPoint value)? selectAtPoint,
+    TResult Function(_UpdateObjects value)? updateObjects,
+    TResult Function(_HiddenObjects value)? hiddenObjects,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -77,6 +79,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that);
+      case _UpdateObjects() when updateObjects != null:
+        return updateObjects(_that);
+      case _HiddenObjects() when hiddenObjects != null:
+        return hiddenObjects(_that);
       case _:
         return orElse();
     }
@@ -104,6 +110,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(_ShapeSelected value) shapeSelected,
     required TResult Function(_ObjectSelected value) objectSelected,
     required TResult Function(_SelectAtPoint value) selectAtPoint,
+    required TResult Function(_UpdateObjects value) updateObjects,
+    required TResult Function(_HiddenObjects value) hiddenObjects,
   }) {
     final _that = this;
     switch (_that) {
@@ -121,6 +129,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that);
       case _SelectAtPoint():
         return selectAtPoint(_that);
+      case _UpdateObjects():
+        return updateObjects(_that);
+      case _HiddenObjects():
+        return hiddenObjects(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -147,6 +159,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(_ShapeSelected value)? shapeSelected,
     TResult? Function(_ObjectSelected value)? objectSelected,
     TResult? Function(_SelectAtPoint value)? selectAtPoint,
+    TResult? Function(_UpdateObjects value)? updateObjects,
+    TResult? Function(_HiddenObjects value)? hiddenObjects,
   }) {
     final _that = this;
     switch (_that) {
@@ -164,6 +178,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that);
+      case _UpdateObjects() when updateObjects != null:
+        return updateObjects(_that);
+      case _HiddenObjects() when hiddenObjects != null:
+        return hiddenObjects(_that);
       case _:
         return null;
     }
@@ -190,6 +208,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult Function(int objectId)? shapeSelected,
     TResult Function(int? objectId)? objectSelected,
     TResult Function(Offset point)? selectAtPoint,
+    TResult Function(List<SpaceObject> objects)? updateObjects,
+    TResult Function(Set<int> objectIds)? hiddenObjects,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -208,6 +228,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that.objectId);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that.point);
+      case _UpdateObjects() when updateObjects != null:
+        return updateObjects(_that.objects);
+      case _HiddenObjects() when hiddenObjects != null:
+        return hiddenObjects(_that.objectIds);
       case _:
         return orElse();
     }
@@ -235,6 +259,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     required TResult Function(int objectId) shapeSelected,
     required TResult Function(int? objectId) objectSelected,
     required TResult Function(Offset point) selectAtPoint,
+    required TResult Function(List<SpaceObject> objects) updateObjects,
+    required TResult Function(Set<int> objectIds) hiddenObjects,
   }) {
     final _that = this;
     switch (_that) {
@@ -252,6 +278,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that.objectId);
       case _SelectAtPoint():
         return selectAtPoint(_that.point);
+      case _UpdateObjects():
+        return updateObjects(_that.objects);
+      case _HiddenObjects():
+        return hiddenObjects(_that.objectIds);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -278,6 +308,8 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
     TResult? Function(int objectId)? shapeSelected,
     TResult? Function(int? objectId)? objectSelected,
     TResult? Function(Offset point)? selectAtPoint,
+    TResult? Function(List<SpaceObject> objects)? updateObjects,
+    TResult? Function(Set<int> objectIds)? hiddenObjects,
   }) {
     final _that = this;
     switch (_that) {
@@ -295,6 +327,10 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
         return objectSelected(_that.objectId);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that.point);
+      case _UpdateObjects() when updateObjects != null:
+        return updateObjects(_that.objects);
+      case _HiddenObjects() when hiddenObjects != null:
+        return hiddenObjects(_that.objectIds);
       case _:
         return null;
     }
@@ -731,6 +767,151 @@ class __$SelectAtPointCopyWithImpl<$Res>
             ? _self.point
             : point // ignore: cast_nullable_to_non_nullable
                 as Offset,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _UpdateObjects implements ShapeLayerEvent {
+  const _UpdateObjects(final List<SpaceObject> objects) : _objects = objects;
+
+  final List<SpaceObject> _objects;
+  List<SpaceObject> get objects {
+    if (_objects is EqualUnmodifiableListView) return _objects;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_objects);
+  }
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UpdateObjectsCopyWith<_UpdateObjects> get copyWith =>
+      __$UpdateObjectsCopyWithImpl<_UpdateObjects>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UpdateObjects &&
+            const DeepCollectionEquality().equals(other._objects, _objects));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_objects));
+
+  @override
+  String toString() {
+    return 'ShapeLayerEvent.updateObjects(objects: $objects)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UpdateObjectsCopyWith<$Res>
+    implements $ShapeLayerEventCopyWith<$Res> {
+  factory _$UpdateObjectsCopyWith(
+    _UpdateObjects value,
+    $Res Function(_UpdateObjects) _then,
+  ) = __$UpdateObjectsCopyWithImpl;
+  @useResult
+  $Res call({List<SpaceObject> objects});
+}
+
+/// @nodoc
+class __$UpdateObjectsCopyWithImpl<$Res>
+    implements _$UpdateObjectsCopyWith<$Res> {
+  __$UpdateObjectsCopyWithImpl(this._self, this._then);
+
+  final _UpdateObjects _self;
+  final $Res Function(_UpdateObjects) _then;
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? objects = null}) {
+    return _then(
+      _UpdateObjects(
+        null == objects
+            ? _self._objects
+            : objects // ignore: cast_nullable_to_non_nullable
+                as List<SpaceObject>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _HiddenObjects implements ShapeLayerEvent {
+  const _HiddenObjects(final Set<int> objectIds) : _objectIds = objectIds;
+
+  final Set<int> _objectIds;
+  Set<int> get objectIds {
+    if (_objectIds is EqualUnmodifiableSetView) return _objectIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_objectIds);
+  }
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$HiddenObjectsCopyWith<_HiddenObjects> get copyWith =>
+      __$HiddenObjectsCopyWithImpl<_HiddenObjects>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _HiddenObjects &&
+            const DeepCollectionEquality().equals(
+              other._objectIds,
+              _objectIds,
+            ));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_objectIds));
+
+  @override
+  String toString() {
+    return 'ShapeLayerEvent.hiddenObjects(objectIds: $objectIds)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$HiddenObjectsCopyWith<$Res>
+    implements $ShapeLayerEventCopyWith<$Res> {
+  factory _$HiddenObjectsCopyWith(
+    _HiddenObjects value,
+    $Res Function(_HiddenObjects) _then,
+  ) = __$HiddenObjectsCopyWithImpl;
+  @useResult
+  $Res call({Set<int> objectIds});
+}
+
+/// @nodoc
+class __$HiddenObjectsCopyWithImpl<$Res>
+    implements _$HiddenObjectsCopyWith<$Res> {
+  __$HiddenObjectsCopyWithImpl(this._self, this._then);
+
+  final _HiddenObjects _self;
+  final $Res Function(_HiddenObjects) _then;
+
+  /// Create a copy of ShapeLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? objectIds = null}) {
+    return _then(
+      _HiddenObjects(
+        null == objectIds
+            ? _self._objectIds
+            : objectIds // ignore: cast_nullable_to_non_nullable
+                as Set<int>,
       ),
     );
   }
@@ -1381,6 +1562,7 @@ mixin _$ShapeLayerData {
   Map<int, SpaceObject> get objects;
   int? get selectedTool;
   int? get selectedObjectId;
+  Set<int> get hiddenObjectIds;
 
   /// Create a copy of ShapeLayerData
   /// with the given fields replaced by the non-null parameter values.
@@ -1401,7 +1583,11 @@ mixin _$ShapeLayerData {
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
             (identical(other.selectedObjectId, selectedObjectId) ||
-                other.selectedObjectId == selectedObjectId));
+                other.selectedObjectId == selectedObjectId) &&
+            const DeepCollectionEquality().equals(
+              other.hiddenObjectIds,
+              hiddenObjectIds,
+            ));
   }
 
   @override
@@ -1410,11 +1596,12 @@ mixin _$ShapeLayerData {
     const DeepCollectionEquality().hash(objects),
     selectedTool,
     selectedObjectId,
+    const DeepCollectionEquality().hash(hiddenObjectIds),
   );
 
   @override
   String toString() {
-    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
+    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId, hiddenObjectIds: $hiddenObjectIds)';
   }
 }
 
@@ -1429,6 +1616,7 @@ abstract mixin class $ShapeLayerDataCopyWith<$Res> {
     Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,
+    Set<int> hiddenObjectIds,
   });
 }
 
@@ -1448,6 +1636,7 @@ class _$ShapeLayerDataCopyWithImpl<$Res>
     Object? objects = null,
     Object? selectedTool = freezed,
     Object? selectedObjectId = freezed,
+    Object? hiddenObjectIds = null,
   }) {
     return _then(
       _self.copyWith(
@@ -1466,6 +1655,11 @@ class _$ShapeLayerDataCopyWithImpl<$Res>
                 ? _self.selectedObjectId
                 : selectedObjectId // ignore: cast_nullable_to_non_nullable
                     as int?,
+        hiddenObjectIds:
+            null == hiddenObjectIds
+                ? _self.hiddenObjectIds
+                : hiddenObjectIds // ignore: cast_nullable_to_non_nullable
+                    as Set<int>,
       ),
     );
   }
@@ -1568,6 +1762,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
+      Set<int> hiddenObjectIds,
     )?
     $default, {
     required TResult orElse(),
@@ -1579,6 +1774,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
+          _that.hiddenObjectIds,
         );
       case _:
         return orElse();
@@ -1604,6 +1800,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
+      Set<int> hiddenObjectIds,
     )
     $default,
   ) {
@@ -1614,6 +1811,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
+          _that.hiddenObjectIds,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -1638,6 +1836,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
       Map<int, SpaceObject> objects,
       int? selectedTool,
       int? selectedObjectId,
+      Set<int> hiddenObjectIds,
     )?
     $default,
   ) {
@@ -1648,6 +1847,7 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
           _that.objects,
           _that.selectedTool,
           _that.selectedObjectId,
+          _that.hiddenObjectIds,
         );
       case _:
         return null;
@@ -1662,7 +1862,9 @@ class _ShapeLayerData implements ShapeLayerData {
     final Map<int, SpaceObject> objects = const {},
     this.selectedTool,
     this.selectedObjectId,
-  }) : _objects = objects;
+    final Set<int> hiddenObjectIds = const {},
+  }) : _objects = objects,
+       _hiddenObjectIds = hiddenObjectIds;
 
   final Map<int, SpaceObject> _objects;
   @override
@@ -1677,6 +1879,14 @@ class _ShapeLayerData implements ShapeLayerData {
   final int? selectedTool;
   @override
   final int? selectedObjectId;
+  final Set<int> _hiddenObjectIds;
+  @override
+  @JsonKey()
+  Set<int> get hiddenObjectIds {
+    if (_hiddenObjectIds is EqualUnmodifiableSetView) return _hiddenObjectIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_hiddenObjectIds);
+  }
 
   /// Create a copy of ShapeLayerData
   /// with the given fields replaced by the non-null parameter values.
@@ -1695,7 +1905,11 @@ class _ShapeLayerData implements ShapeLayerData {
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
             (identical(other.selectedObjectId, selectedObjectId) ||
-                other.selectedObjectId == selectedObjectId));
+                other.selectedObjectId == selectedObjectId) &&
+            const DeepCollectionEquality().equals(
+              other._hiddenObjectIds,
+              _hiddenObjectIds,
+            ));
   }
 
   @override
@@ -1704,11 +1918,12 @@ class _ShapeLayerData implements ShapeLayerData {
     const DeepCollectionEquality().hash(_objects),
     selectedTool,
     selectedObjectId,
+    const DeepCollectionEquality().hash(_hiddenObjectIds),
   );
 
   @override
   String toString() {
-    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId)';
+    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId, hiddenObjectIds: $hiddenObjectIds)';
   }
 }
 
@@ -1725,6 +1940,7 @@ abstract mixin class _$ShapeLayerDataCopyWith<$Res>
     Map<int, SpaceObject> objects,
     int? selectedTool,
     int? selectedObjectId,
+    Set<int> hiddenObjectIds,
   });
 }
 
@@ -1744,6 +1960,7 @@ class __$ShapeLayerDataCopyWithImpl<$Res>
     Object? objects = null,
     Object? selectedTool = freezed,
     Object? selectedObjectId = freezed,
+    Object? hiddenObjectIds = null,
   }) {
     return _then(
       _ShapeLayerData(
@@ -1762,6 +1979,11 @@ class __$ShapeLayerDataCopyWithImpl<$Res>
                 ? _self.selectedObjectId
                 : selectedObjectId // ignore: cast_nullable_to_non_nullable
                     as int?,
+        hiddenObjectIds:
+            null == hiddenObjectIds
+                ? _self._hiddenObjectIds
+                : hiddenObjectIds // ignore: cast_nullable_to_non_nullable
+                    as Set<int>,
       ),
     );
   }

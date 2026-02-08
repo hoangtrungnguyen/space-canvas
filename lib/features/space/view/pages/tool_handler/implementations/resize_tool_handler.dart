@@ -43,7 +43,7 @@ class ResizeToolHandler extends ToolHandler {
     final state = activeBloc.state;
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
-    if (state.activeHandle != null && state.activeObjects.isNotEmpty) {
+    if (state.resizeHandle != null && state.activeObjects.isNotEmpty) {
       final object = state.activeObjects.values.first;
       final startPoint = state.dragStartPoint;
 
@@ -53,7 +53,7 @@ class ResizeToolHandler extends ToolHandler {
 
         if (original != null && original.id == object.id) {
           final visitor = ResizeVisitor(
-            handle: state.activeHandle!,
+            handle: state.resizeHandle!,
             delta: delta,
           );
           final newObject = original.accept(visitor);

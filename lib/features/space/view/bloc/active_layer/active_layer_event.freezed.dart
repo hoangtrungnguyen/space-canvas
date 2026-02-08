@@ -61,6 +61,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(_OriginalObjectSet value)? originalObjectSet,
     TResult Function(_Clear value)? clear,
     TResult Function(_HandleChanged value)? handleChanged,
+    TResult Function(_ConnectorHandleSelected value)? connectorHandleSelected,
     TResult Function(_ConnectorDragStarted value)? connectorDragStarted,
     TResult Function(_ConnectorDragUpdated value)? connectorDragUpdated,
     TResult Function(_ConnectorDragEnded value)? connectorDragEnded,
@@ -87,6 +88,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that);
+      case _ConnectorHandleSelected() when connectorHandleSelected != null:
+        return connectorHandleSelected(_that);
       case _ConnectorDragStarted() when connectorDragStarted != null:
         return connectorDragStarted(_that);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
@@ -124,6 +127,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(_OriginalObjectSet value) originalObjectSet,
     required TResult Function(_Clear value) clear,
     required TResult Function(_HandleChanged value) handleChanged,
+    required TResult Function(_ConnectorHandleSelected value)
+    connectorHandleSelected,
     required TResult Function(_ConnectorDragStarted value) connectorDragStarted,
     required TResult Function(_ConnectorDragUpdated value) connectorDragUpdated,
     required TResult Function(_ConnectorDragEnded value) connectorDragEnded,
@@ -150,6 +155,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged():
         return handleChanged(_that);
+      case _ConnectorHandleSelected():
+        return connectorHandleSelected(_that);
       case _ConnectorDragStarted():
         return connectorDragStarted(_that);
       case _ConnectorDragUpdated():
@@ -186,6 +193,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(_OriginalObjectSet value)? originalObjectSet,
     TResult? Function(_Clear value)? clear,
     TResult? Function(_HandleChanged value)? handleChanged,
+    TResult? Function(_ConnectorHandleSelected value)? connectorHandleSelected,
     TResult? Function(_ConnectorDragStarted value)? connectorDragStarted,
     TResult? Function(_ConnectorDragUpdated value)? connectorDragUpdated,
     TResult? Function(_ConnectorDragEnded value)? connectorDragEnded,
@@ -211,6 +219,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that);
+      case _ConnectorHandleSelected() when connectorHandleSelected != null:
+        return connectorHandleSelected(_that);
       case _ConnectorDragStarted() when connectorDragStarted != null:
         return connectorDragStarted(_that);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
@@ -247,6 +257,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult Function(SpaceObject? object)? originalObjectSet,
     TResult Function()? clear,
     TResult Function(ResizeHandle? handle)? handleChanged,
+    TResult Function(ConnectorHandle? handle)? connectorHandleSelected,
     TResult Function(int? startObjectId, Offset startPoint)?
     connectorDragStarted,
     TResult Function(Offset position)? connectorDragUpdated,
@@ -274,6 +285,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that.handle);
+      case _ConnectorHandleSelected() when connectorHandleSelected != null:
+        return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted() when connectorDragStarted != null:
         return connectorDragStarted(_that.startObjectId, _that.startPoint);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
@@ -312,6 +325,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     required TResult Function(SpaceObject? object) originalObjectSet,
     required TResult Function() clear,
     required TResult Function(ResizeHandle? handle) handleChanged,
+    required TResult Function(ConnectorHandle? handle) connectorHandleSelected,
     required TResult Function(int? startObjectId, Offset startPoint)
     connectorDragStarted,
     required TResult Function(Offset position) connectorDragUpdated,
@@ -338,6 +352,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged():
         return handleChanged(_that.handle);
+      case _ConnectorHandleSelected():
+        return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted():
         return connectorDragStarted(_that.startObjectId, _that.startPoint);
       case _ConnectorDragUpdated():
@@ -374,6 +390,7 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     TResult? Function(SpaceObject? object)? originalObjectSet,
     TResult? Function()? clear,
     TResult? Function(ResizeHandle? handle)? handleChanged,
+    TResult? Function(ConnectorHandle? handle)? connectorHandleSelected,
     TResult? Function(int? startObjectId, Offset startPoint)?
     connectorDragStarted,
     TResult? Function(Offset position)? connectorDragUpdated,
@@ -400,6 +417,8 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
         return clear();
       case _HandleChanged() when handleChanged != null:
         return handleChanged(_that.handle);
+      case _ConnectorHandleSelected() when connectorHandleSelected != null:
+        return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted() when connectorDragStarted != null:
         return connectorDragStarted(_that.startObjectId, _that.startPoint);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
@@ -939,6 +958,74 @@ class __$HandleChangedCopyWithImpl<$Res>
             ? _self.handle
             : handle // ignore: cast_nullable_to_non_nullable
                 as ResizeHandle?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _ConnectorHandleSelected implements ActiveLayerEvent {
+  const _ConnectorHandleSelected(this.handle);
+
+  final ConnectorHandle? handle;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ConnectorHandleSelectedCopyWith<_ConnectorHandleSelected> get copyWith =>
+      __$ConnectorHandleSelectedCopyWithImpl<_ConnectorHandleSelected>(
+        this,
+        _$identity,
+      );
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ConnectorHandleSelected &&
+            (identical(other.handle, handle) || other.handle == handle));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, handle);
+
+  @override
+  String toString() {
+    return 'ActiveLayerEvent.connectorHandleSelected(handle: $handle)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ConnectorHandleSelectedCopyWith<$Res>
+    implements $ActiveLayerEventCopyWith<$Res> {
+  factory _$ConnectorHandleSelectedCopyWith(
+    _ConnectorHandleSelected value,
+    $Res Function(_ConnectorHandleSelected) _then,
+  ) = __$ConnectorHandleSelectedCopyWithImpl;
+  @useResult
+  $Res call({ConnectorHandle? handle});
+}
+
+/// @nodoc
+class __$ConnectorHandleSelectedCopyWithImpl<$Res>
+    implements _$ConnectorHandleSelectedCopyWith<$Res> {
+  __$ConnectorHandleSelectedCopyWithImpl(this._self, this._then);
+
+  final _ConnectorHandleSelected _self;
+  final $Res Function(_ConnectorHandleSelected) _then;
+
+  /// Create a copy of ActiveLayerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({Object? handle = freezed}) {
+    return _then(
+      _ConnectorHandleSelected(
+        freezed == handle
+            ? _self.handle
+            : handle // ignore: cast_nullable_to_non_nullable
+                as ConnectorHandle?,
       ),
     );
   }

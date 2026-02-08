@@ -5,7 +5,6 @@ import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:provider/provider.dart';
 
 /// A listener widget that responds to CanvasBloc state changes.
 ///
@@ -24,6 +23,7 @@ class SpaceListener extends StatelessWidget {
           listenWhen: (previous, current) => previous.tool != current.tool,
           listener: (context, state) {
             final mediator = context.read<CanvasInteractionMediator>();
+            //when change tool, commit all action
             mediator.commitAndDeactivate();
             context.read<ActiveLayerBloc>().add(const ActiveLayerEvent.clear());
           },

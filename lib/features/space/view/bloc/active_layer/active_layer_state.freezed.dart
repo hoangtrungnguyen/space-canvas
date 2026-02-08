@@ -19,7 +19,8 @@ mixin _$ActiveLayerState {
   /// The original object state before a move operation started.
   /// Used for creating MoveObjectCommand for undo/redo.
   SpaceObject? get originalObject;
-  ResizeHandle? get activeHandle;
+  ResizeHandle? get resizeHandle;
+  ConnectorHandle? get connectorHandle;
 
   /// The ID of the object where a connector drag started (optional).
   int? get connectorStartObjectId;
@@ -56,8 +57,10 @@ mixin _$ActiveLayerState {
                 other.dragStartPoint == dragStartPoint) &&
             (identical(other.originalObject, originalObject) ||
                 other.originalObject == originalObject) &&
-            (identical(other.activeHandle, activeHandle) ||
-                other.activeHandle == activeHandle) &&
+            (identical(other.resizeHandle, resizeHandle) ||
+                other.resizeHandle == resizeHandle) &&
+            (identical(other.connectorHandle, connectorHandle) ||
+                other.connectorHandle == connectorHandle) &&
             (identical(other.connectorStartObjectId, connectorStartObjectId) ||
                 other.connectorStartObjectId == connectorStartObjectId) &&
             (identical(other.connectorStartPoint, connectorStartPoint) ||
@@ -74,7 +77,8 @@ mixin _$ActiveLayerState {
     const DeepCollectionEquality().hash(activeObjects),
     dragStartPoint,
     originalObject,
-    activeHandle,
+    resizeHandle,
+    connectorHandle,
     connectorStartObjectId,
     connectorStartPoint,
     connectorDragPosition,
@@ -83,7 +87,7 @@ mixin _$ActiveLayerState {
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, activeHandle: $activeHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
   }
 }
 
@@ -98,7 +102,8 @@ abstract mixin class $ActiveLayerStateCopyWith<$Res> {
     Map<int, SpaceObject> activeObjects,
     Offset? dragStartPoint,
     SpaceObject? originalObject,
-    ResizeHandle? activeHandle,
+    ResizeHandle? resizeHandle,
+    ConnectorHandle? connectorHandle,
     int? connectorStartObjectId,
     Offset? connectorStartPoint,
     Offset? connectorDragPosition,
@@ -122,7 +127,8 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
     Object? activeObjects = null,
     Object? dragStartPoint = freezed,
     Object? originalObject = freezed,
-    Object? activeHandle = freezed,
+    Object? resizeHandle = freezed,
+    Object? connectorHandle = freezed,
     Object? connectorStartObjectId = freezed,
     Object? connectorStartPoint = freezed,
     Object? connectorDragPosition = freezed,
@@ -145,11 +151,16 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.originalObject
                 : originalObject // ignore: cast_nullable_to_non_nullable
                     as SpaceObject?,
-        activeHandle:
-            freezed == activeHandle
-                ? _self.activeHandle
-                : activeHandle // ignore: cast_nullable_to_non_nullable
+        resizeHandle:
+            freezed == resizeHandle
+                ? _self.resizeHandle
+                : resizeHandle // ignore: cast_nullable_to_non_nullable
                     as ResizeHandle?,
+        connectorHandle:
+            freezed == connectorHandle
+                ? _self.connectorHandle
+                : connectorHandle // ignore: cast_nullable_to_non_nullable
+                    as ConnectorHandle?,
         connectorStartObjectId:
             freezed == connectorStartObjectId
                 ? _self.connectorStartObjectId
@@ -272,7 +283,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
-      ResizeHandle? activeHandle,
+      ResizeHandle? resizeHandle,
+      ConnectorHandle? connectorHandle,
       int? connectorStartObjectId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
@@ -288,7 +300,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
-          _that.activeHandle,
+          _that.resizeHandle,
+          _that.connectorHandle,
           _that.connectorStartObjectId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
@@ -318,7 +331,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
-      ResizeHandle? activeHandle,
+      ResizeHandle? resizeHandle,
+      ConnectorHandle? connectorHandle,
       int? connectorStartObjectId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
@@ -333,7 +347,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
-          _that.activeHandle,
+          _that.resizeHandle,
+          _that.connectorHandle,
           _that.connectorStartObjectId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
@@ -362,7 +377,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
       Map<int, SpaceObject> activeObjects,
       Offset? dragStartPoint,
       SpaceObject? originalObject,
-      ResizeHandle? activeHandle,
+      ResizeHandle? resizeHandle,
+      ConnectorHandle? connectorHandle,
       int? connectorStartObjectId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
@@ -377,7 +393,8 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
           _that.activeObjects,
           _that.dragStartPoint,
           _that.originalObject,
-          _that.activeHandle,
+          _that.resizeHandle,
+          _that.connectorHandle,
           _that.connectorStartObjectId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
@@ -396,7 +413,8 @@ class _ActiveLayerState implements ActiveLayerState {
     final Map<int, SpaceObject> activeObjects = const {},
     this.dragStartPoint,
     this.originalObject,
-    this.activeHandle,
+    this.resizeHandle,
+    this.connectorHandle,
     this.connectorStartObjectId,
     this.connectorStartPoint,
     this.connectorDragPosition,
@@ -420,7 +438,9 @@ class _ActiveLayerState implements ActiveLayerState {
   @override
   final SpaceObject? originalObject;
   @override
-  final ResizeHandle? activeHandle;
+  final ResizeHandle? resizeHandle;
+  @override
+  final ConnectorHandle? connectorHandle;
 
   /// The ID of the object where a connector drag started (optional).
   @override
@@ -459,8 +479,10 @@ class _ActiveLayerState implements ActiveLayerState {
                 other.dragStartPoint == dragStartPoint) &&
             (identical(other.originalObject, originalObject) ||
                 other.originalObject == originalObject) &&
-            (identical(other.activeHandle, activeHandle) ||
-                other.activeHandle == activeHandle) &&
+            (identical(other.resizeHandle, resizeHandle) ||
+                other.resizeHandle == resizeHandle) &&
+            (identical(other.connectorHandle, connectorHandle) ||
+                other.connectorHandle == connectorHandle) &&
             (identical(other.connectorStartObjectId, connectorStartObjectId) ||
                 other.connectorStartObjectId == connectorStartObjectId) &&
             (identical(other.connectorStartPoint, connectorStartPoint) ||
@@ -477,7 +499,8 @@ class _ActiveLayerState implements ActiveLayerState {
     const DeepCollectionEquality().hash(_activeObjects),
     dragStartPoint,
     originalObject,
-    activeHandle,
+    resizeHandle,
+    connectorHandle,
     connectorStartObjectId,
     connectorStartPoint,
     connectorDragPosition,
@@ -486,7 +509,7 @@ class _ActiveLayerState implements ActiveLayerState {
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, activeHandle: $activeHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
+    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
   }
 }
 
@@ -503,7 +526,8 @@ abstract mixin class _$ActiveLayerStateCopyWith<$Res>
     Map<int, SpaceObject> activeObjects,
     Offset? dragStartPoint,
     SpaceObject? originalObject,
-    ResizeHandle? activeHandle,
+    ResizeHandle? resizeHandle,
+    ConnectorHandle? connectorHandle,
     int? connectorStartObjectId,
     Offset? connectorStartPoint,
     Offset? connectorDragPosition,
@@ -527,7 +551,8 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
     Object? activeObjects = null,
     Object? dragStartPoint = freezed,
     Object? originalObject = freezed,
-    Object? activeHandle = freezed,
+    Object? resizeHandle = freezed,
+    Object? connectorHandle = freezed,
     Object? connectorStartObjectId = freezed,
     Object? connectorStartPoint = freezed,
     Object? connectorDragPosition = freezed,
@@ -550,11 +575,16 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.originalObject
                 : originalObject // ignore: cast_nullable_to_non_nullable
                     as SpaceObject?,
-        activeHandle:
-            freezed == activeHandle
-                ? _self.activeHandle
-                : activeHandle // ignore: cast_nullable_to_non_nullable
+        resizeHandle:
+            freezed == resizeHandle
+                ? _self.resizeHandle
+                : resizeHandle // ignore: cast_nullable_to_non_nullable
                     as ResizeHandle?,
+        connectorHandle:
+            freezed == connectorHandle
+                ? _self.connectorHandle
+                : connectorHandle // ignore: cast_nullable_to_non_nullable
+                    as ConnectorHandle?,
         connectorStartObjectId:
             freezed == connectorStartObjectId
                 ? _self.connectorStartObjectId

@@ -39,7 +39,7 @@ void main() {
       expect(bloc.state.activeObjects, isEmpty);
       expect(bloc.state.dragStartPoint, isNull);
       expect(bloc.state.originalObject, isNull);
-      expect(bloc.state.activeHandle, isNull);
+      expect(bloc.state.resizeHandle, isNull);
     });
 
     group('started event', () {
@@ -309,7 +309,7 @@ void main() {
             () => ActiveLayerState(
               activeObjects: {testShape.id: testShape},
               dragStartPoint: const Offset(50, 50),
-              activeHandle: ResizeHandle.topLeft,
+              resizeHandle: ResizeHandle.topLeft,
             ),
         act: (bloc) => bloc.add(ActiveLayerEvent.originalObjectSet(testShape2)),
         expect:
@@ -317,7 +317,7 @@ void main() {
               ActiveLayerState(
                 activeObjects: {testShape.id: testShape},
                 dragStartPoint: const Offset(50, 50),
-                activeHandle: ResizeHandle.topLeft,
+                resizeHandle: ResizeHandle.topLeft,
                 originalObject: testShape2,
               ),
             ],
@@ -336,17 +336,17 @@ void main() {
               },
               dragStartPoint: const Offset(100, 100),
               originalObject: testShape,
-              activeHandle: ResizeHandle.bottomRight,
+              resizeHandle: ResizeHandle.bottomRight,
             ),
         act: (bloc) => bloc.add(const ActiveLayerEvent.clear()),
         expect:
             () => [
-              // Note: clear does NOT modify activeHandle based on implementation
+              // Note: clear does NOT modify resizeHandle based on implementation
               const ActiveLayerState(
                 activeObjects: {},
                 dragStartPoint: null,
                 originalObject: null,
-              ).copyWith(activeHandle: ResizeHandle.bottomRight),
+              ).copyWith(resizeHandle: ResizeHandle.bottomRight),
             ],
       );
 
@@ -367,37 +367,37 @@ void main() {
 
     group('handleChanged event', () {
       blocTest<ActiveLayerBloc, ActiveLayerState>(
-        'sets activeHandle',
+        'sets resizeHandle',
         build: () => ActiveLayerBloc(),
         act:
             (bloc) => bloc.add(
               const ActiveLayerEvent.handleChanged(ResizeHandle.topLeft),
             ),
         expect:
-            () => [const ActiveLayerState(activeHandle: ResizeHandle.topLeft)],
+            () => [const ActiveLayerState(resizeHandle: ResizeHandle.topLeft)],
       );
 
       blocTest<ActiveLayerBloc, ActiveLayerState>(
-        'clears activeHandle when set to null',
+        'clears resizeHandle when set to null',
         build: () => ActiveLayerBloc(),
         seed:
             () =>
-                const ActiveLayerState(activeHandle: ResizeHandle.bottomRight),
+                const ActiveLayerState(resizeHandle: ResizeHandle.bottomRight),
         act: (bloc) => bloc.add(const ActiveLayerEvent.handleChanged(null)),
-        expect: () => [const ActiveLayerState(activeHandle: null)],
+        expect: () => [const ActiveLayerState(resizeHandle: null)],
       );
 
       blocTest<ActiveLayerBloc, ActiveLayerState>(
-        'changes activeHandle from one to another',
+        'changes resizeHandle from one to another',
         build: () => ActiveLayerBloc(),
-        seed: () => const ActiveLayerState(activeHandle: ResizeHandle.topLeft),
+        seed: () => const ActiveLayerState(resizeHandle: ResizeHandle.topLeft),
         act:
             (bloc) => bloc.add(
               const ActiveLayerEvent.handleChanged(ResizeHandle.centerRight),
             ),
         expect:
             () => [
-              const ActiveLayerState(activeHandle: ResizeHandle.centerRight),
+              const ActiveLayerState(resizeHandle: ResizeHandle.centerRight),
             ],
       );
 
@@ -420,7 +420,7 @@ void main() {
                 activeObjects: {testShape.id: testShape},
                 dragStartPoint: const Offset(150, 150),
                 originalObject: testShape,
-                activeHandle: ResizeHandle.topCenter,
+                resizeHandle: ResizeHandle.topCenter,
               ),
             ],
       );

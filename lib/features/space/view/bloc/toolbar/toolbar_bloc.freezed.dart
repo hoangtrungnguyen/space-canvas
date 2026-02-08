@@ -55,6 +55,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult Function(_UpdateDrawingObject value)? updateDrawingObject,
     TResult Function(_StartedEditing value)? startedEditing,
     TResult Function(_EndedEditing value)? endedEditing,
+    TResult Function(_ToggledSelectionTool value)? toggledSelectionTool,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -71,6 +72,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that);
       case _EndedEditing() when endedEditing != null:
         return endedEditing(_that);
+      case _ToggledSelectionTool() when toggledSelectionTool != null:
+        return toggledSelectionTool(_that);
       case _:
         return orElse();
     }
@@ -97,6 +100,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     required TResult Function(_UpdateDrawingObject value) updateDrawingObject,
     required TResult Function(_StartedEditing value) startedEditing,
     required TResult Function(_EndedEditing value) endedEditing,
+    required TResult Function(_ToggledSelectionTool value) toggledSelectionTool,
   }) {
     final _that = this;
     switch (_that) {
@@ -112,6 +116,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that);
       case _EndedEditing():
         return endedEditing(_that);
+      case _ToggledSelectionTool():
+        return toggledSelectionTool(_that);
     }
   }
 
@@ -135,6 +141,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult? Function(_UpdateDrawingObject value)? updateDrawingObject,
     TResult? Function(_StartedEditing value)? startedEditing,
     TResult? Function(_EndedEditing value)? endedEditing,
+    TResult? Function(_ToggledSelectionTool value)? toggledSelectionTool,
   }) {
     final _that = this;
     switch (_that) {
@@ -150,6 +157,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that);
       case _EndedEditing() when endedEditing != null:
         return endedEditing(_that);
+      case _ToggledSelectionTool() when toggledSelectionTool != null:
+        return toggledSelectionTool(_that);
       case _:
         return null;
     }
@@ -175,6 +184,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult Function(SpaceObject? object)? updateDrawingObject,
     TResult Function(TextObject object)? startedEditing,
     TResult Function()? endedEditing,
+    TResult Function()? toggledSelectionTool,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -191,6 +201,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that.object);
       case _EndedEditing() when endedEditing != null:
         return endedEditing();
+      case _ToggledSelectionTool() when toggledSelectionTool != null:
+        return toggledSelectionTool();
       case _:
         return orElse();
     }
@@ -217,6 +229,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     required TResult Function(SpaceObject? object) updateDrawingObject,
     required TResult Function(TextObject object) startedEditing,
     required TResult Function() endedEditing,
+    required TResult Function() toggledSelectionTool,
   }) {
     final _that = this;
     switch (_that) {
@@ -232,6 +245,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that.object);
       case _EndedEditing():
         return endedEditing();
+      case _ToggledSelectionTool():
+        return toggledSelectionTool();
     }
   }
 
@@ -255,6 +270,7 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult? Function(SpaceObject? object)? updateDrawingObject,
     TResult? Function(TextObject object)? startedEditing,
     TResult? Function()? endedEditing,
+    TResult? Function()? toggledSelectionTool,
   }) {
     final _that = this;
     switch (_that) {
@@ -270,6 +286,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
         return startedEditing(_that.object);
       case _EndedEditing() when endedEditing != null:
         return endedEditing();
+      case _ToggledSelectionTool() when toggledSelectionTool != null:
+        return toggledSelectionTool();
       case _:
         return null;
     }
@@ -613,6 +631,44 @@ class __$EndedEditingCopyWithImpl<$Res>
 
   final _EndedEditing _self;
   final $Res Function(_EndedEditing) _then;
+}
+
+/// @nodoc
+
+class _ToggledSelectionTool implements ToolbarEvent {
+  const _ToggledSelectionTool();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _ToggledSelectionTool);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() {
+    return 'ToolbarEvent.toggledSelectionTool()';
+  }
+}
+
+/// @nodoc
+class _$ToggledSelectionToolCopyWith<$Res>
+    implements $ToolbarEventCopyWith<$Res> {
+  _$ToggledSelectionToolCopyWith(
+    _ToggledSelectionTool _,
+    $Res Function(_ToggledSelectionTool) __,
+  );
+}
+
+/// @nodoc
+class __$ToggledSelectionToolCopyWithImpl<$Res>
+    implements _$ToggledSelectionToolCopyWith<$Res> {
+  __$ToggledSelectionToolCopyWithImpl(this._self, this._then);
+
+  final _ToggledSelectionTool _self;
+  final $Res Function(_ToggledSelectionTool) _then;
 }
 
 /// @nodoc

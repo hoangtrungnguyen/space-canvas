@@ -1,0 +1,1 @@
+enum ConnectorHandle { start, end }

@@ -6,6 +6,7 @@ import 'package:ideascape/features/space/view/pages/tool_handler/implementations
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/pen_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/shape_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/select_tool_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/implementations/select_connector_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/text_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 
@@ -28,6 +29,8 @@ class ToolHandlerFactory {
         return const ImageToolHandler();
       case SpaceTool.select:
         return const SelectToolHandler();
+      case SpaceTool.selectConnector:
+        return const SelectConnectorToolHandler();
     }
   }
 }

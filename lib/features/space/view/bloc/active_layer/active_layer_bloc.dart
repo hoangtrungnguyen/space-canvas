@@ -58,7 +58,10 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
           );
         },
         handleChanged: (e) {
-          emit(state.copyWith(activeHandle: e.handle));
+          emit(state.copyWith(resizeHandle: e.handle));
+        },
+        connectorHandleSelected: (e) {
+          emit(state.copyWith(connectorHandle: e.handle));
         },
         connectorDragStarted: (e) {
           emit(

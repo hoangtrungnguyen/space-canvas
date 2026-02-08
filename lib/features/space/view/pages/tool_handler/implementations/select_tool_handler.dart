@@ -8,6 +8,10 @@ import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/resize_tool_handler.dart';
+import 'package:ideascape/features/space/domain/models/selection_filter.dart';
+import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/space_tools.dart';
 
 /// Handles selection and manipulation (move/resize) of objects.
 ///
@@ -27,7 +31,21 @@ class SelectToolHandler extends ToolHandler {
   ) {
     final mediator = context.read<CanvasInteractionMediator>();
     final worldPoint = _toWorldPoint(details.localPosition, controller);
-    mediator.selectAt(worldPoint, isDrag: false);
+
+    final hitObject = mediator.hitTest(worldPoint);
+    if (hitObject is ConnectorObject) {
+      context.read<ToolbarBloc>().add(
+        const ToolbarEvent.selected(SpaceTool.selectConnector),
+      );
+      mediator.selectConnectorAt(worldPoint, isDrag: false);
+      return;
+    }
+
+    mediator.selectAt(
+      worldPoint,
+      isDrag: false,
+      filter: SelectionFilter.excludeConnectors,
+    );
   }
 
   /// Initiates a drag or resize operation.
@@ -85,7 +103,22 @@ class SelectToolHandler extends ToolHandler {
     } else {
       // Normal selection logic
       final mediator = context.read<CanvasInteractionMediator>();
-      mediator.selectAt(worldPoint, isDrag: true);
+
+      final hitObject = mediator.hitTest(worldPoint);
+      if (hitObject is ConnectorObject) {
+        context.read<ToolbarBloc>().add(
+          const ToolbarEvent.selected(SpaceTool.selectConnector),
+        );
+        mediator.selectConnectorAt(worldPoint, isDrag: true);
+        activeBloc.add(const ActiveLayerEvent.handleChanged(null));
+        return;
+      }
+
+      mediator.selectAt(
+        worldPoint,
+        isDrag: true,
+        filter: SelectionFilter.excludeConnectors,
+      );
 
       // Also ensure handle is cleared if we started a move/select
       activeBloc.add(const ActiveLayerEvent.handleChanged(null));
@@ -106,7 +139,7 @@ class SelectToolHandler extends ToolHandler {
     final state = activeBloc.state;
 
     // Delegate to ResizeToolHandler if resizing
-    if (state.activeHandle != null) {
+    if (state.resizeHandle != null) {
       const resizeHandler = ResizeToolHandler();
       resizeHandler.onPanUpdate(details, context, controller);
       return;
@@ -138,7 +171,7 @@ class SelectToolHandler extends ToolHandler {
     // Delegate to ResizeToolHandler if we are in a resize operation (active handle exists).
     // The ResizeToolHandler manages its own finalization and state cleanup.
     // We strictly return here to avoid double-finalization or conflicts.
-    if (activeBloc.state.activeHandle != null) {
+    if (activeBloc.state.resizeHandle != null) {
       const ResizeToolHandler().onPanEnd(details, context, controller);
       return;
     }
@@ -168,22 +201,30 @@ class SelectToolHandler extends ToolHandler {
   /// Helper to determine if a point hits any of the resize handles.
   ResizeHandle? _getHitHandle(Offset elementPoint, Rect rect, double radius) {
     // Check all handles
-    if ((elementPoint - rect.topLeft).distance <= radius)
+    if ((elementPoint - rect.topLeft).distance <= radius) {
       return ResizeHandle.topLeft;
-    if ((elementPoint - rect.topRight).distance <= radius)
+    }
+    if ((elementPoint - rect.topRight).distance <= radius) {
       return ResizeHandle.topRight;
-    if ((elementPoint - rect.bottomLeft).distance <= radius)
+    }
+    if ((elementPoint - rect.bottomLeft).distance <= radius) {
       return ResizeHandle.bottomLeft;
-    if ((elementPoint - rect.bottomRight).distance <= radius)
+    }
+    if ((elementPoint - rect.bottomRight).distance <= radius) {
       return ResizeHandle.bottomRight;
-    if ((elementPoint - rect.topCenter).distance <= radius)
+    }
+    if ((elementPoint - rect.topCenter).distance <= radius) {
       return ResizeHandle.topCenter;
-    if ((elementPoint - rect.bottomCenter).distance <= radius)
+    }
+    if ((elementPoint - rect.bottomCenter).distance <= radius) {
       return ResizeHandle.bottomCenter;
-    if ((elementPoint - rect.centerLeft).distance <= radius)
+    }
+    if ((elementPoint - rect.centerLeft).distance <= radius) {
       return ResizeHandle.centerLeft;
-    if ((elementPoint - rect.centerRight).distance <= radius)
+    }
+    if ((elementPoint - rect.centerRight).distance <= radius) {
       return ResizeHandle.centerRight;
+    }
     return null;
   }
 }

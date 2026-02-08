@@ -12,12 +12,19 @@ import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/select_tool_handler.dart';
+import 'package:ideascape/features/space/domain/models/selection_filter.dart';
+
+import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/domain/models/space_tools.dart';
 
 class MockActiveLayerBloc extends MockBloc<ActiveLayerEvent, ActiveLayerState>
     implements ActiveLayerBloc {}
 
 class MockShapeLayerBloc extends MockBloc<ShapeLayerEvent, ShapeLayerState>
     implements ShapeLayerBloc {}
+
+class MockToolbarBloc extends MockBloc<ToolbarEvent, ToolbarState>
+    implements ToolbarBloc {}
 
 class MockCanvasInteractionMediator extends Mock
     implements CanvasInteractionMediator {}
@@ -30,19 +37,23 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeActiveLayerEvent());
     registerFallbackValue(FakeShapeLayerEvent());
+    registerFallbackValue(const ToolbarEvent.toDefault());
     registerFallbackValue(const Offset(0, 0));
   });
 
   group('SelectToolHandler', () {
     late MockActiveLayerBloc activeBloc;
     late MockShapeLayerBloc shapeBloc;
+    late MockToolbarBloc toolbarBloc;
     late MockCanvasInteractionMediator mediator;
     late TransformationController controller;
     late ShapeObject testShape;
+    late ConnectorObject testConnector;
 
     setUp(() {
       activeBloc = MockActiveLayerBloc();
       shapeBloc = MockShapeLayerBloc();
+      toolbarBloc = MockToolbarBloc();
       mediator = MockCanvasInteractionMediator();
       controller = TransformationController();
 
@@ -51,6 +62,14 @@ void main() {
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 100, 100),
         paint: Paint()..color = const Color(0xFF0000FF),
+      );
+
+      testConnector = ConnectorObject(
+        id: 2,
+        startPoint: const Offset(300, 300),
+        endPoint: const Offset(400, 400),
+        strokeWidth: 2,
+        color: 0xFF000000,
       );
     });
 
@@ -67,7 +86,7 @@ void main() {
       when(() => activeBloc.state).thenReturn(
         ActiveLayerState(
           activeObjects: objects ?? {testShape.id: testShape},
-          activeHandle: handle,
+          resizeHandle: handle,
           dragStartPoint: startPoint,
           originalObject: originalObject ?? testShape,
         ),
@@ -96,6 +115,7 @@ void main() {
               providers: [
                 BlocProvider<ActiveLayerBloc>.value(value: activeBloc),
                 BlocProvider<ShapeLayerBloc>.value(value: shapeBloc),
+                BlocProvider<ToolbarBloc>.value(value: toolbarBloc),
               ],
               child: Builder(
                 builder: (context) {
@@ -119,6 +139,8 @@ void main() {
         setupActiveState();
         setupShapeState();
 
+        when(() => mediator.hitTest(any())).thenReturn(null);
+
         await pumpHandlerWidget(
           tester,
           callback: (context) {
@@ -135,9 +157,51 @@ void main() {
         );
 
         verify(
-          () => mediator.selectAt(const Offset(100, 100), isDrag: false),
+          () => mediator.selectAt(
+            const Offset(100, 100),
+            isDrag: false,
+            filter: SelectionFilter.excludeConnectors,
+          ),
         ).called(1);
       });
+
+      testWidgets(
+        'should switch tool and call selectConnectorAt when hitting connector',
+        (tester) async {
+          setupActiveState();
+          setupShapeState();
+
+          when(() => mediator.hitTest(any())).thenReturn(testConnector);
+
+          await pumpHandlerWidget(
+            tester,
+            callback: (context) {
+              const SelectToolHandler().onTapUp(
+                TapUpDetails(
+                  globalPosition: const Offset(300, 300),
+                  localPosition: const Offset(300, 300),
+                  kind: PointerDeviceKind.touch,
+                ),
+                context,
+                controller,
+              );
+            },
+          );
+
+          verify(
+            () => toolbarBloc.add(
+              const ToolbarEvent.selected(SpaceTool.selectConnector),
+            ),
+          ).called(1);
+
+          verify(
+            () => mediator.selectConnectorAt(
+              const Offset(300, 300),
+              isDrag: false,
+            ),
+          ).called(1);
+        },
+      );
 
       testWidgets('should handle zoomed canvas', (tester) async {
         controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
@@ -160,7 +224,11 @@ void main() {
         );
 
         verify(
-          () => mediator.selectAt(const Offset(100, 100), isDrag: false),
+          () => mediator.selectAt(
+            const Offset(100, 100),
+            isDrag: false,
+            filter: SelectionFilter.excludeConnectors,
+          ),
         ).called(1);
       });
     });
@@ -176,6 +244,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(100, 100),
@@ -206,6 +275,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(200, 100),
@@ -235,6 +305,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(100, 200),
@@ -264,6 +335,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(200, 200),
@@ -293,6 +365,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(150, 96),
@@ -322,6 +395,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(150, 204),
@@ -351,6 +425,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(96, 150),
@@ -380,6 +455,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(204, 150),
@@ -411,6 +487,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(500, 500),
@@ -423,7 +500,11 @@ void main() {
         );
 
         verify(
-          () => mediator.selectAt(const Offset(500, 500), isDrag: true),
+          () => mediator.selectAt(
+            const Offset(500, 500),
+            isDrag: true,
+            filter: SelectionFilter.excludeConnectors,
+          ),
         ).called(1);
 
         final captured = verify(() => activeBloc.add(captureAny())).captured;
@@ -445,6 +526,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             const SelectToolHandler().onPanStart(
               DragStartDetails(
                 globalPosition: const Offset(200, 200),
@@ -474,6 +556,7 @@ void main() {
         await pumpHandlerWidget(
           tester,
           callback: (context) {
+            when(() => mediator.hitTest(any())).thenReturn(null);
             expect(
               () => const SelectToolHandler().onPanStart(
                 DragStartDetails(
@@ -489,9 +572,53 @@ void main() {
         );
 
         verify(
-          () => mediator.selectAt(const Offset(100, 100), isDrag: true),
+          () => mediator.selectAt(
+            const Offset(100, 100),
+            isDrag: true,
+            filter: SelectionFilter.excludeConnectors,
+          ),
         ).called(1);
       });
+
+      testWidgets(
+        'should switch tool and call selectConnectorAt when hitting connector during pan start',
+        (tester) async {
+          setupActiveState();
+          setupShapeState();
+
+          await pumpHandlerWidget(
+            tester,
+            callback: (context) {
+              when(() => mediator.hitTest(any())).thenReturn(testConnector);
+              const SelectToolHandler().onPanStart(
+                DragStartDetails(
+                  globalPosition: const Offset(300, 300),
+                  localPosition: const Offset(300, 300),
+                ),
+                context,
+                controller,
+              );
+            },
+          );
+
+          verify(
+            () => toolbarBloc.add(
+              const ToolbarEvent.selected(SpaceTool.selectConnector),
+            ),
+          ).called(1);
+
+          verify(
+            () => mediator.selectConnectorAt(
+              const Offset(300, 300),
+              isDrag: true,
+            ),
+          ).called(1);
+
+          verify(
+            () => activeBloc.add(const ActiveLayerEvent.handleChanged(null)),
+          ).called(1);
+        },
+      );
     });
 
     // =========================================================================

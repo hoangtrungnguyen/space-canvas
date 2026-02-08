@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/utils/connector_utils.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/domain/models/space_tools.dart';
 
 /// Handles connector tool interactions using the Mediator and State patterns.
 ///
@@ -19,7 +22,52 @@ class ConnectorToolHandler extends ToolHandler {
     TapUpDetails details,
     BuildContext context,
     TransformationController controller,
-  ) {}
+  ) {
+    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final activeState = context.read<ActiveLayerBloc>().state;
+    final shapeState = context.read<ShapeLayerBloc>().state;
+
+    // Case 1: End the connector (Tap-to-End)
+    if (activeState.connectorStartPoint != null) {
+      _finalizeConnector(
+        context,
+        startPoint: activeState.connectorStartPoint!,
+        startObjectId: activeState.connectorStartObjectId,
+        endPoint: worldPoint,
+        shapeState: shapeState,
+      );
+      return;
+    }
+
+    // Case 2: Start the connector (Tap-to-Start)
+    if (shapeState is ShapeLayerStateSuccess) {
+      final objectId = _findObjectAt(worldPoint, shapeState.data.objects);
+      if (objectId != null) {
+        final object = shapeState.data.objects[objectId];
+        if (object != null) {
+          // Check if we are close to an anchor
+          final anchor = ConnectorUtils.getEdgeFromPoint(
+            object.rect,
+            worldPoint,
+          );
+          final anchorPoint = ConnectorUtils.getPointOnEdge(
+            object.rect,
+            anchor,
+          );
+
+          // Simple distance check (e.g. 20.0 radius)
+          if ((worldPoint - anchorPoint).distance <= 20.0) {
+            context.read<ActiveLayerBloc>().add(
+              ActiveLayerEvent.connectorDragStarted(
+                startObjectId: objectId,
+                startPoint: anchorPoint,
+              ),
+            );
+          }
+        }
+      }
+    }
+  }
 
   @override
   void onPanStart(
@@ -27,6 +75,13 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
+    // If we already have a start point (from Tap), don't reset it.
+    // Just let the drag update continue from where the mouse is.
+    final activeState = context.read<ActiveLayerBloc>().state;
+    if (activeState.connectorStartPoint != null) {
+      return;
+    }
+
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
     // Find if we're starting on an object (optional)
@@ -73,21 +128,71 @@ class ConnectorToolHandler extends ToolHandler {
 
     if (startPoint != null && endPoint != null) {
       final shapeState = context.read<ShapeLayerBloc>().state;
-      final mediator = context.read<CanvasInteractionMediator>();
-
-      int? endObjectId;
-      if (shapeState is ShapeLayerStateSuccess) {
-        endObjectId = _findObjectAt(endPoint, shapeState.data.objects);
-      }
-
-      // Create connector with optional object IDs
-      mediator.createConnector(
+      _finalizeConnector(
+        context,
         startPoint: startPoint,
-        endPoint: endPoint,
         startObjectId: startObjectId,
-        endObjectId: endObjectId,
+        endPoint: endPoint,
+        shapeState: shapeState,
+      );
+    } else {
+      // Just clear if valid start/end not present
+      context.read<ActiveLayerBloc>().add(
+        const ActiveLayerEvent.connectorDragEnded(),
       );
     }
+  }
+
+  void _finalizeConnector(
+    BuildContext context, {
+    required Offset startPoint,
+    required Offset endPoint,
+    required int? startObjectId,
+    required ShapeLayerState shapeState,
+  }) {
+    final mediator = context.read<CanvasInteractionMediator>();
+
+    int? endObjectId;
+    if (shapeState is ShapeLayerStateSuccess) {
+      endObjectId = _findObjectAt(endPoint, shapeState.data.objects);
+    }
+
+    // Calculate locations
+    ConnectorEdge? startLocation;
+    ConnectorEdge? endLocation;
+
+    if (shapeState is ShapeLayerStateSuccess) {
+      if (startObjectId != null) {
+        final startObj = shapeState.data.objects[startObjectId];
+        if (startObj != null) {
+          startLocation = ConnectorUtils.getEdgeFromPoint(
+            startObj.rect,
+            startPoint,
+          );
+        }
+      }
+      if (endObjectId != null) {
+        final endObj = shapeState.data.objects[endObjectId];
+        if (endObj != null) {
+          endLocation = ConnectorUtils.getEdgeFromPoint(endObj.rect, endPoint);
+        }
+      }
+    }
+
+    // Create connector with optional object IDs & locations
+    mediator.createConnector(
+      startPoint: startPoint,
+      endPoint: endPoint,
+      startObjectId: startObjectId,
+      endObjectId: endObjectId,
+      startLocation: startLocation,
+      endLocation: endLocation,
+    );
+
+    // Switch tool to Select Connector
+    context.read<ToolbarBloc>().add(
+      ToolbarEvent.selected(SpaceTool.selectConnector),
+    );
 
     // Always clear the drag state
     context.read<ActiveLayerBloc>().add(

@@ -379,5 +379,46 @@ void main() {
         expect: () => [], // No state changes
       );
     });
+
+    // =========================================================================
+    // UpdateObjects Event
+    // =========================================================================
+    group('updateObjects event', () {
+      blocTest<ShapeLayerBloc, ShapeLayerState>(
+        'should update multiple objects in state',
+        build: () => ShapeLayerBloc('test-id'),
+        seed:
+            () => ShapeLayerState.success(
+              data: ShapeLayerData(
+                objects: {testShape1.id: testShape1, testShape2.id: testShape2},
+              ),
+            ),
+        act: (bloc) {
+          final updatedShape1 = testShape1.copyWith(
+            rect: const Rect.fromLTWH(150, 150, 50, 50),
+          );
+          final updatedShape2 = testShape2.copyWith(
+            rect: const Rect.fromLTWH(250, 250, 50, 50),
+          );
+          bloc.add(
+            ShapeLayerEvent.updateObjects([updatedShape1, updatedShape2]),
+          );
+        },
+        expect:
+            () => [
+              isA<ShapeLayerState>()
+                  .having(
+                    (s) => s.data.objects[testShape1.id]?.rect.left,
+                    'updated shape1 left',
+                    150.0,
+                  )
+                  .having(
+                    (s) => s.data.objects[testShape2.id]?.rect.left,
+                    'updated shape2 left',
+                    250.0,
+                  ),
+            ],
+      );
+    });
   });
 }

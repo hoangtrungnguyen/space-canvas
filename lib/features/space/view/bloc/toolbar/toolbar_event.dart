@@ -15,4 +15,5 @@ sealed class ToolbarEvent with _$ToolbarEvent {
   const factory ToolbarEvent.startedEditing(TextObject object) =
       _StartedEditing;
   const factory ToolbarEvent.endedEditing() = _EndedEditing;
+  const factory ToolbarEvent.toggledSelectionTool() = _ToggledSelectionTool;
 }

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
+import 'package:ideascape/features/space/domain/models/connector_handle.dart';
 
 part 'active_layer_event.freezed.dart';
 
@@ -44,6 +45,10 @@ class ActiveLayerEvent with _$ActiveLayerEvent {
 
   const factory ActiveLayerEvent.handleChanged(ResizeHandle? handle) =
       _HandleChanged;
+
+  const factory ActiveLayerEvent.connectorHandleSelected(
+    ConnectorHandle? handle,
+  ) = _ConnectorHandleSelected;
 
   /// Triggered when a connector drag starts.
   const factory ActiveLayerEvent.connectorDragStarted({

@@ -17,6 +17,7 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     on<_UpdateDrawingObject>(_onUpdateDrawingObject);
     on<_StartedEditing>(_onStartedEditing);
     on<_EndedEditing>(_onEndedEditing);
+    on<_ToggledSelectionTool>(_onToggledSelectionTool);
   }
 
   FutureOr<void> _onSelected(_Selected event, Emitter<ToolbarState> emit) {
@@ -53,5 +54,15 @@ class ToolbarBloc extends Bloc<ToolbarEvent, ToolbarState> {
     Emitter<ToolbarState> emit,
   ) {
     emit(state.copyWith(editingObject: null));
+  }
+
+  FutureOr<void> _onToggledSelectionTool(
+    _ToggledSelectionTool event,
+    Emitter<ToolbarState> emit,
+  ) {
+    // For now, we default to generic select as we don't have a point to hit-test against
+    // from a simple toggle event.
+    // The SelectionManager capability is available if we need to expand this.
+    emit(state.copyWith(tool: SpaceTool.select));
   }
 }
