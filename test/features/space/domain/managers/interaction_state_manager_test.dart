@@ -13,6 +13,7 @@ import 'package:ideascape/features/space/domain/commands/add_shape_command.dart'
 import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
 import 'package:ideascape/features/space/domain/commands/move_object_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
+import 'package:ideascape/features/space/domain/commands/add_connector_command.dart';
 
 class MockActiveLayerBloc extends MockBloc<ActiveLayerEvent, ActiveLayerState>
     implements ActiveLayerBloc {}
@@ -46,6 +47,17 @@ void main() {
       ),
     );
     registerFallbackValue(BatchDeleteCommand([]));
+    registerFallbackValue(
+      AddConnectorCommand(
+        ConnectorObject(
+          id: 0,
+          startPoint: Offset.zero,
+          endPoint: Offset.zero,
+          strokeWidth: 1,
+          color: 0,
+        ),
+      ),
+    );
   });
 
   group('InteractionStateManager', () {
@@ -231,13 +243,13 @@ void main() {
     });
 
     group('createConnector', () {
-      test('should execute AddShapeCommand', () {
+      test('should execute AddConnectorCommand', () {
         manager.createConnector(
           startPoint: Offset.zero,
           endPoint: const Offset(10, 10),
         );
         verify(
-          () => historyManager.execute(any(that: isA<AddShapeCommand>())),
+          () => historyManager.execute(any(that: isA<AddConnectorCommand>())),
         ).called(1);
       });
     });

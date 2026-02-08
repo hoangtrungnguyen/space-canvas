@@ -120,6 +120,8 @@ class SelectionManager {
 
       if (hitObject is ConnectorObject) {
         toolbarBloc.add(const ToolbarEvent.selected(SpaceTool.selectConnector));
+      } else {
+        toolbarBloc.add(const ToolbarEvent.selected(SpaceTool.select));
       }
     } else {
       // Nothing hit
@@ -134,10 +136,7 @@ class SelectionManager {
   }
 
   void selectConnectorAt(Offset worldPoint, {required bool isDrag}) {
-    final hitObject = hitTest(
-      worldPoint,
-      filter: SelectionFilter.all,
-    );
+    final hitObject = hitTest(worldPoint, filter: SelectionFilter.all);
 
     final activeState = activeBloc.state;
     final currentlyActive =

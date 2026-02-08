@@ -50,18 +50,40 @@ class InteractionStateManager {
     final state = activeBloc.state;
     if (state.activeObjects.isNotEmpty) {
       final obj = state.activeObjects.values.first;
+      final originalObj = state.originalObject;
 
       final existsInShapeLayer = shapeBloc.state.data.objects.containsKey(
         obj.id,
       );
 
-      if (existsInShapeLayer) {
+      // An object is "existing" if it's in the ShapeLayer OR if we have its original state tracked
+      final isExisting =
+          existsInShapeLayer ||
+          (originalObj != null && originalObj.id == obj.id);
+
+      if (isExisting) {
         // If the object exists, we should finalize any pending interactions (moves, reshapes)
-        // so that the changes are properly recorded in history and applied to the ShapeLayer.
         if (obj is ConnectorObject) {
           finalizeConnectorInteraction();
         } else {
           finalizeInteraction();
+        }
+
+        // If the object was removed from ShapeLayer (e.g. valid "Layer Hopping") but NOT modified,
+        // no Command would have been executed by finalize* methods.
+        // We must manually restore it to the ShapeLayer in this case.
+        if (!existsInShapeLayer && originalObj != null) {
+          bool changed = false;
+          if (obj is ConnectorObject) {
+            // Connector interactions generally create a new instance if changed
+            changed = (originalObj != obj);
+          } else {
+            changed = _hasObjectMoved(originalObj, obj);
+          }
+
+          if (!changed) {
+            shapeBloc.add(ShapeLayerEvent.addObject(obj));
+          }
         }
       } else {
         // It's a truly new object (or we lost tracking), so add it via Command
