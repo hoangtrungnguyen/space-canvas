@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
@@ -9,6 +10,8 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/domain/models/connector_handle.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/strategies/connector_strategies.dart';
 
 /// Handles selection of connectors ONLY.
 class SelectConnectorToolHandler extends ToolHandler {
@@ -38,9 +41,9 @@ class SelectConnectorToolHandler extends ToolHandler {
   ) {
     final worldPoint = _toWorldPoint(details.localPosition, controller);
     final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
-
     final mediator = context.read<CanvasInteractionMediator>();
+
+    // We select/configure the state here, which then dictates the Strategy used in Update/End
     mediator.selectConnectorAt(worldPoint, isDrag: true);
 
     // Check if we hit start or end point using hitTest directly to handle
@@ -70,8 +73,7 @@ class SelectConnectorToolHandler extends ToolHandler {
 
   /// Updates the connector position or shape during the drag.
   ///
-  /// If a handle (start/end) is selected, it updates that specific point.
-  /// Otherwise, it acts as a move operation for the entire connector.
+  /// Delegates to the appropriate [InteractionStrategy] based on the current state.
   @override
   void onPanUpdate(
     DragUpdateDetails details,
@@ -81,43 +83,33 @@ class SelectConnectorToolHandler extends ToolHandler {
     final activeBloc = context.read<ActiveLayerBloc>();
     final state = activeBloc.state;
 
-    final mediator = context.read<CanvasInteractionMediator>();
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-
-    // If we have a connector handle selected, we are reshaping
-    if (state.connectorHandle != null) {
-      if (state.dragStartPoint != null) {
-        final delta = worldPoint - state.dragStartPoint!;
-        // When reshaping, we want the point to follow the cursor exactly relative to start
-        // But dragActiveConnector adds delta to original point.
-        // It seems InteractionStateManager uses delta from dragStartPoint.
-        // So we just pass the delta.
-        mediator.dragActiveConnector(worldPoint, delta);
-      }
-    } else {
-      // Moving the whole connector
-      if (state.dragStartPoint != null) {
-        final delta = worldPoint - state.dragStartPoint!;
-        mediator.dragActiveConnector(worldPoint, delta);
-      }
-    }
+    final strategy = _getStrategyForState(state);
+    strategy.onUpdate(details, context, controller);
   }
 
   /// Finalizes the connector interaction.
   ///
-  /// It commits any reshaping changes to the history (via ReshapeConnectorCommand)
-  /// and resets the selected handle state.
+  /// Delegates to the appropriate [InteractionStrategy] based on the current state.
   @override
   void onPanEnd(
     DragEndDetails details,
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = context.read<CanvasInteractionMediator>();
-    mediator.finalizeConnectorInteraction();
-    context.read<ActiveLayerBloc>().add(
-      const ActiveLayerEvent.connectorHandleSelected(null),
-    );
+    final activeBloc = context.read<ActiveLayerBloc>();
+    final state = activeBloc.state;
+
+    final strategy = _getStrategyForState(state);
+    strategy.onEnd(details, context, controller);
+  }
+
+  InteractionStrategy _getStrategyForState(ActiveLayerState state) {
+    if (state.connectorHandle != null) {
+      return const ReshapeConnectorStrategy();
+    } else if (state.activeObjects.isNotEmpty) {
+      return const MoveConnectorStrategy();
+    }
+    return const IdleStrategy();
   }
 
   Offset _toWorldPoint(Offset local, TransformationController controller) {
