@@ -94,8 +94,6 @@ extension CanvasEventPatterns on CanvasEvent {
         return transformUpdated(_that);
       case _ObjectsUpdated():
         return objectsUpdated(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -189,8 +187,6 @@ extension CanvasEventPatterns on CanvasEvent {
         return transformUpdated(_that.offset, _that.scale);
       case _ObjectsUpdated():
         return objectsUpdated(_that.objects);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 

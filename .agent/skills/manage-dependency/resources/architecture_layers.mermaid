@@ -1,0 +1,7 @@
+graph TD
+    UI[Presentation Layer] --> Domain
+    Data --> Domain
+    UI -.-> Data
+    FeatureA --> Core
+    FeatureB --> Core
+    FeatureA --x FeatureB

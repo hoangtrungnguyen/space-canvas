@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:ideascape/features/space/domain/models/resize_handle.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/implementations/resize_tool_handler.dart';
-import 'package:ideascape/features/space/domain/models/selection_filter.dart';
-import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/resize_handle.dart';
+import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
+import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
+import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/strategies/select_strategies.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
+import 'package:provider/provider.dart';
 
 /// Handles selection and manipulation (move/resize) of objects.
 ///
 /// This handler serves as the primary entry point for object interaction.
-/// It delegates specific resize logic to [ResizeToolHandler] when a handle is hit.
+/// It delegates specific interaction logic to [InteractionStrategy] implementations
+/// based on the current state (e.g., [ResizeStrategy] or [MoveStrategy]).
 class SelectToolHandler extends ToolHandler {
   const SelectToolHandler();
 
@@ -30,7 +34,10 @@ class SelectToolHandler extends ToolHandler {
     TransformationController controller,
   ) {
     final mediator = context.read<CanvasInteractionMediator>();
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = CanvasUtils.toWorldPoint(
+      details.localPosition,
+      controller,
+    );
 
     final hitObject = mediator.hitTest(worldPoint);
     if (hitObject is ConnectorObject) {
@@ -60,7 +67,10 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = CanvasUtils.toWorldPoint(
+      details.localPosition,
+      controller,
+    );
     final activeBloc = context.read<ActiveLayerBloc>();
     final state = activeBloc.state;
 
@@ -84,12 +94,9 @@ class SelectToolHandler extends ToolHandler {
       // Start Resize
       activeBloc.add(ActiveLayerEvent.handleChanged(hitHandle));
 
-      // If we hit a handle, we should SKIP `selectAt` hit testing on bodies.
-
       final activeObject = state.activeObjects.values.first;
       // Temporarily remove from ShapeLayer so we don't see the "old" version
       // beneath the active one being resized.
-      // This does NOT add a DeleteObjectCommand, it just updates the view state.
       context.read<ShapeLayerBloc>().add(
         ShapeLayerEvent.removeObject(activeObject.id),
       );
@@ -127,8 +134,7 @@ class SelectToolHandler extends ToolHandler {
 
   /// Handles ongoing drag gestures.
   ///
-  /// Delegates to [ResizeToolHandler] if an [activeHandle] is present.
-  /// Otherwise, handles object movement via [CanvasInteractionMediator.dragActiveObject].
+  /// Delegates to the appropriate [InteractionStrategy] based on the current state.
   @override
   void onPanUpdate(
     DragUpdateDetails details,
@@ -138,28 +144,13 @@ class SelectToolHandler extends ToolHandler {
     final activeBloc = context.read<ActiveLayerBloc>();
     final state = activeBloc.state;
 
-    // Delegate to ResizeToolHandler if resizing
-    if (state.resizeHandle != null) {
-      const resizeHandler = ResizeToolHandler();
-      resizeHandler.onPanUpdate(details, context, controller);
-      return;
-    }
-
-    // MOVE LOGIC
-    final mediator = context.read<CanvasInteractionMediator>();
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-
-    if (state.dragStartPoint != null) {
-      final delta = worldPoint - state.dragStartPoint!;
-      mediator.dragActiveObject(worldPoint, delta);
-    }
+    final strategy = _getStrategyForState(state);
+    strategy.onUpdate(details, context, controller);
   }
 
   /// Handles the end of a drag or resize operation.
   ///
-  /// Delegates to [ResizeToolHandler] if resizing.
-  /// Otherwise, calls [CanvasInteractionMediator.finalizeInteraction] and ensures
-  /// proper visibility management in the [ShapeLayer].
+  /// Delegates to the appropriate [InteractionStrategy] based on the current state.
   @override
   void onPanEnd(
     DragEndDetails details,
@@ -167,35 +158,19 @@ class SelectToolHandler extends ToolHandler {
     TransformationController controller,
   ) {
     final activeBloc = context.read<ActiveLayerBloc>();
+    final state = activeBloc.state;
 
-    // Delegate to ResizeToolHandler if we are in a resize operation (active handle exists).
-    // The ResizeToolHandler manages its own finalization and state cleanup.
-    // We strictly return here to avoid double-finalization or conflicts.
-    if (activeBloc.state.resizeHandle != null) {
-      const ResizeToolHandler().onPanEnd(details, context, controller);
-      return;
-    }
-
-    final mediator = context.read<CanvasInteractionMediator>();
-    mediator.finalizeInteraction();
-
-    // After finalization, the object is committed to ShapeLayer (via History).
-    // But since it remains Active (selected), we must visually remove it from ShapeLayer
-    // to avoid "Ghosting" (seeing duplicates).
-    // This handles the "Selected but not dragging" state.
-    if (activeBloc.state.activeObjects.isNotEmpty) {
-      final activeConfig = activeBloc.state.activeObjects.values.first;
-      context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(activeConfig.id),
-      );
-    }
+    final strategy = _getStrategyForState(state);
+    strategy.onEnd(details, context, controller);
   }
 
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
-    );
+  InteractionStrategy _getStrategyForState(ActiveLayerState state) {
+    if (state.resizeHandle != null) {
+      return const ResizeStrategy();
+    } else if (state.activeObjects.isNotEmpty) {
+      return const MoveStrategy();
+    }
+    return const IdleStrategy();
   }
 
   /// Helper to determine if a point hits any of the resize handles.
@@ -228,5 +203,3 @@ class SelectToolHandler extends ToolHandler {
     return null;
   }
 }
-
-enum DraggingState { none, moving, resizing }
