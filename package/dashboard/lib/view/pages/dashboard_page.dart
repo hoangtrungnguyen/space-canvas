@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ideascape/aliases.dart';
-import 'package:ideascape/features/dashboard/view/bloc/dashboard_page_bloc.dart';
-import 'package:ideascape/features/dashboard/view/widgets/project_space_card.dart';
+import 'package:dashboard/view/bloc/dashboard_page_bloc.dart';
+import 'package:dashboard/view/widgets/project_space_card.dart';
 import 'package:ideascape/features/space/view/pages/space_page.dart';
 
 import '../widgets/sidebar.dart';

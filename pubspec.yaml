@@ -53,6 +53,11 @@ dependencies:
   drift: ^2.29.0
   drift_sqlite_async: ^0.2.6
 
+  dashboard:
+    path: package/dashboard
+  demo:
+    path: package/demo
+
   get_it: ^9.2.0
   talker: ^5.1.11
   talker_dio_logger: ^5.1.11

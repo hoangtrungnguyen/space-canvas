@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../space/domain/models/grid_painter.dart';
+import 'package:ideascape/features/space/domain/models/grid_painter.dart';
 
 class GridInteractionDemo extends StatefulWidget {
   const GridInteractionDemo({super.key});

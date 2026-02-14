@@ -1,6 +1,7 @@
+import 'package:dashboard/view/pages/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ideascape/features/dashboard/view/pages/dashboard_page.dart';
+import 'package:ideascape/features/space/view/pages/draw_path_space_demo_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,18 +33,14 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.lightbulb_circle,
-              size: 80,
-              color: Colors.blue,
-            ),
+            const Icon(Icons.lightbulb_circle, size: 80, color: Colors.blue),
             const SizedBox(height: 16),
             Text(
               "Ideascape",
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[800],
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[800],
+              ),
             ),
             const SizedBox(height: 32),
             const CircularProgressIndicator(),
