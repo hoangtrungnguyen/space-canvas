@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import '../objects/space_object.dart';
+import '../objects/node.dart';
 
 class QuadTree {
   static const int defaultCapacity = 4;
@@ -8,7 +8,7 @@ class QuadTree {
   final Rect boundary;
   final int capacity; // How many objects a node can hold before it splits
 
-  List<SpaceObject> objects = [];
+  List<Node> objects = [];
   bool isDivided = false;
 
   List<QuadTree> children = [];

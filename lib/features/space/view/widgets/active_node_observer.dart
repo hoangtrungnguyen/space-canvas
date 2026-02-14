@@ -1,54 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/utils/connector_utils.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
-class ActiveObjectObserver extends StatelessWidget {
+class ActiveNodeObserver extends StatelessWidget {
   final Widget child;
 
-  const ActiveObjectObserver({required this.child, super.key});
+  const ActiveNodeObserver({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ActiveLayerBloc, ActiveLayerState>(
       listener: (context, activeState) {
-        final activeObjects = activeState.activeObjects;
+        final activeNodes = activeState.activeNodes;
 
         // Optimized: unexpected non-movement updates might trigger this,
         // but checking emptiness is a good first step.
-        // Ideally we only want to run this if objects *moved*.
+        // Ideally we only want to run this if nodes *moved*.
         // The bloc event stream should mostly be movement during drag.
-        if (activeObjects.isEmpty) return;
+        if (activeNodes.isEmpty) return;
 
         final shapeBloc = context.read<ShapeLayerBloc>();
         final shapeState = shapeBloc.state;
-        final allObjects = shapeState.data.objects;
+        final allNodes = shapeState.data.nodes;
 
-        List<SpaceObject> updatedConnectors = [];
+        List<Node> updatedConnectors = [];
 
-        for (final activeObj in activeObjects.values) {
-          // Find connectors attached to this object
-          final attachedConnectors = allObjects.values
-              .whereType<ConnectorObject>()
+        for (final activeNode in activeNodes.values) {
+          // Find connectors attached to this node
+          final attachedConnectors = allNodes.values
+              .whereType<ConnectorNode>()
               .where((c) {
-            return c.startObjectId == activeObj.id ||
-                c.endObjectId == activeObj.id;
-          });
+                return c.startNodeId == activeNode.id ||
+                    c.endNodeId == activeNode.id;
+              });
 
           for (final connector in attachedConnectors) {
-            ConnectorObject updatedConnector = connector;
+            ConnectorNode updatedConnector = connector;
             bool changed = false;
 
-            if (connector.startObjectId == activeObj.id) {
+            if (connector.startNodeId == activeNode.id) {
               // Update start point
-              // Logic: Start point should be the center of the active object?
+              // Logic: Start point should be the center of the active node?
               // Or closest point?
               // Prerequisite: Maintain relative offset or snap to center/edge.
               // For MVP/simplicity: Move start point by the same delta?
-              // The active object in ActiveLayerState has the NEW position.
+              // The active node in ActiveLayerState has the NEW position.
               // We need to calculate where the connection point should be.
               //
               // Using existing simple logic: Center of rect for now, or maintain relative?
@@ -58,16 +58,16 @@ class ActiveObjectObserver extends StatelessWidget {
               // If we knew the anchor placement (relative), we'd re-calculate.
               // Let's assume clamping to center or a specific edge point.
               //
-              // Let's look at `ConnectorObject` - it has `startPoint`, `endPoint`.
+              // Let's look at `ConnectorNode` - it has `startPoint`, `endPoint`.
               // It also has `startLocation` (Edge).
               //
-              // Strategy: Re-calculate point on the object rect based on `startLocation`.
+              // Strategy: Re-calculate point on the node rect based on `startLocation`.
               // If `startLocation` is null, maybe just keep it relative?
               // Let's assume standard behavior: Snap to center of the edge defined by startLocation.
 
               if (connector.startLocation != null) {
                 final newStart = ConnectorUtils.getPointOnEdge(
-                  activeObj.rect,
+                  activeNode.rect,
                   connector.startLocation!,
                 );
                 if (newStart != updatedConnector.startPoint) {
@@ -79,10 +79,10 @@ class ActiveObjectObserver extends StatelessWidget {
               }
             }
 
-            if (connector.endObjectId == activeObj.id) {
+            if (connector.endNodeId == activeNode.id) {
               if (connector.endLocation != null) {
                 final newEnd = ConnectorUtils.getPointOnEdge(
-                  activeObj.rect,
+                  activeNode.rect,
                   connector.endLocation!,
                 );
                 if (newEnd != updatedConnector.endPoint) {
@@ -100,7 +100,7 @@ class ActiveObjectObserver extends StatelessWidget {
         }
 
         if (updatedConnectors.isNotEmpty) {
-          shapeBloc.add(ShapeLayerEvent.updateObjects(updatedConnectors));
+          shapeBloc.add(ShapeLayerEvent.updateNodes(updatedConnectors));
         }
       },
       child: child,

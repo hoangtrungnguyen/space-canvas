@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
+import 'package:ideascape/features/space/domain/factories/node_factory.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
@@ -28,7 +28,7 @@ class ShapeToolHandler extends ToolHandler {
     final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
 
     final id = getIt<SpaceDataService>().nextUniqueId;
-    final newShape = SpaceObjectFactory.createShape(
+    final newShape = NodeFactory.createShape(
       id: id,
       type: shapeType,
       center: worldPoint,
@@ -51,7 +51,7 @@ class ShapeToolHandler extends ToolHandler {
     final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
 
     final id = getIt<SpaceDataService>().nextUniqueId;
-    final newShape = SpaceObjectFactory.createShape(
+    final newShape = NodeFactory.createShape(
       id: id,
       type: shapeType,
       center: worldPoint,
@@ -78,10 +78,10 @@ class ShapeToolHandler extends ToolHandler {
     final mediator = context.read<CanvasInteractionMediator>();
     final startPoint = activeState.dragStartPoint;
 
-    if (startPoint != null && activeState.activeObjects.isNotEmpty) {
-      final currentObject = activeState.activeObjects.values.first;
+    if (startPoint != null && activeState.activeNodes.isNotEmpty) {
+      final currentObject = activeState.activeNodes.values.first;
 
-      if (currentObject is ShapeObject) {
+      if (currentObject is ShapeNode) {
         final currentPoint = CanvasUtils.toWorldPoint(
           details.localPosition,
           controller,

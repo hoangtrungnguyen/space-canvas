@@ -1,48 +1,48 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/models/objects/extensions/space_object_extensions.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
+import 'package:ideascape/features/space/domain/models/objects/extensions/node_extensions.dart';
 
 void main() {
   group('HasMovedVisitor', () {
     const delta = Offset(10, 20);
 
-    test('should detect movement in ShapeObject', () {
-      final original = ShapeObject(
+    test('should detect movement in ShapeNode', () {
+      final original = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
         id: 1,
       );
-      final moved = original.move(delta) as ShapeObject;
+      final moved = original.move(delta) as ShapeNode;
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in TextObject', () {
-      final original = TextObject(
+    test('should detect movement in TextNode', () {
+      final original = TextNode(
         text: 'Hello',
         position: const Offset(50, 50),
         fontSize: 16,
         color: 0xFF000000,
         id: 2,
       );
-      final moved = original.move(delta) as TextObject;
+      final moved = original.move(delta) as TextNode;
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in PathObject', () {
+    test('should detect movement in PathNode', () {
       final path = Path();
       path.moveTo(0, 0);
       path.lineTo(10, 10);
 
-      final original = PathObject(path: path, paint: Paint(), id: 3);
-      final moved = original.move(delta) as PathObject;
+      final original = PathNode(path: path, paint: Paint(), id: 3);
+      final moved = original.move(delta) as PathNode;
       // Re-create similar path for 'same' check, since Path equality might be identity based or platform specific.
       // However, copyWith with existing path should be equal reference.
       final same = original.copyWith();
@@ -51,14 +51,14 @@ void main() {
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in ListOfPointObject', () {
-      final original = ListOfPointObject(
+    test('should detect movement in ListOfPointNode', () {
+      final original = ListOfPointNode(
         points: const [Offset(0, 0), Offset(100, 100)],
         strokeWidth: 2,
         color: 0xFF000000,
         id: 4,
       );
-      final moved = original.move(delta) as ListOfPointObject;
+      final moved = original.move(delta) as ListOfPointNode;
       final same = original.copyWith(
         points: List.of(original.points),
       ); // New list, same content
@@ -67,43 +67,43 @@ void main() {
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in ConnectorObject', () {
-      final original = ConnectorObject(
-        startObjectId: 1,
-        endObjectId: 2,
+    test('should detect movement in ConnectorNode', () {
+      final original = ConnectorNode(
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
         strokeWidth: 2,
         color: 0xFF000000,
         id: 5,
       );
-      final moved = original.move(delta) as ConnectorObject;
+      final moved = original.move(delta) as ConnectorNode;
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in ImageObject', () {
-      final original = ImageObject(
+    test('should detect movement in ImageNode', () {
+      final original = ImageNode(
         imageUrl: 'assets/test.png',
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         id: 6,
       );
-      final moved = original.move(delta) as ImageObject;
+      final moved = original.move(delta) as ImageNode;
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
       expect(same.hasMovedFrom(original), isFalse);
     });
 
-    test('should detect movement in GroupObject', () {
-      final original = GroupObject(
+    test('should detect movement in GroupNode', () {
+      final original = GroupNode(
         childrenIds: [1, 2],
         rect: const Rect.fromLTWH(0, 0, 200, 200),
         id: 7,
       );
-      final moved = original.move(delta) as GroupObject;
+      final moved = original.move(delta) as GroupNode;
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
@@ -111,13 +111,13 @@ void main() {
     });
 
     test('should return false for different types', () {
-      final shape = ShapeObject(
+      final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
         id: 1,
       );
-      final text = TextObject(
+      final text = TextNode(
         text: 'Hello',
         position: const Offset(50, 50),
         fontSize: 16,

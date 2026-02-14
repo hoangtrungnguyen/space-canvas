@@ -9,7 +9,7 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/select_connector_tool_handler.dart';
 
@@ -38,7 +38,7 @@ void main() {
     late MockShapeLayerBloc shapeBloc;
     late MockCanvasInteractionMediator mediator;
     late TransformationController controller;
-    late ConnectorObject testConnector;
+    late ConnectorNode testConnector;
 
     setUp(() {
       activeBloc = MockActiveLayerBloc();
@@ -46,7 +46,7 @@ void main() {
       mediator = MockCanvasInteractionMediator();
       controller = TransformationController();
 
-      testConnector = ConnectorObject(
+      testConnector = ConnectorNode(
         id: 1,
         startPoint: const Offset(100, 100),
         endPoint: const Offset(200, 200),
@@ -60,17 +60,17 @@ void main() {
     });
 
     void setupActiveState({
-      Map<int, SpaceObject>? objects,
+      Map<int, Node>? objects,
       ResizeHandle? handle,
       Offset? startPoint,
-      SpaceObject? originalObject,
+      Node? originalNode,
     }) {
       when(() => activeBloc.state).thenReturn(
         ActiveLayerState(
-          activeObjects: objects ?? {testConnector.id: testConnector},
+          activeNodes: objects ?? {testConnector.id: testConnector},
           resizeHandle: handle,
           dragStartPoint: startPoint,
-          originalObject: originalObject ?? testConnector,
+          originalNode: originalNode ?? testConnector,
         ),
       );
     }
@@ -157,7 +157,7 @@ void main() {
       );
 
       // Assuming clicking on existing selected object doesn't trigger handle logic for connectors yet
-      // In implementation, we loop through activeObjects.
+      // In implementation, we loop through activeNodes.
       // But verify call logic depends on what happened.
 
       // If we clicked on something, it might select or drag.
@@ -165,7 +165,7 @@ void main() {
 
       // My implementation of `onPanStart` checks handles first.
       // `_getHitHandle` currently checks standard 8 handles.
-      // `ConnectorObject` bounds (rect) might be small or large depending on implementation.
+      // `ConnectorNode` bounds (rect) might be small or large depending on implementation.
       // But since we didn't implement specialized handles for connectors in `onPanStart`,
       // it might fall through to `selectAt` unless we hit a standard handle.
 

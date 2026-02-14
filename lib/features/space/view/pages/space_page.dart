@@ -48,9 +48,10 @@ class IdeaSpace extends StatelessWidget {
                     BlocProvider(create: (_) => CanvasBloc()),
                     BlocProvider(
                       create:
-                          (_) =>
-                              ShapeLayerBloc(id)
-                                ..add(const ShapeLayerEvent.initialize()),
+                          (_) => ShapeLayerBloc(
+                            id: id,
+                            spaceDataService: getIt<SpaceDataService>(),
+                          )..add(const ShapeLayerEvent.initialize()),
                     ),
                     BlocProvider(create: (_) => ActiveLayerBloc()),
                   ],

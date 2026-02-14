@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/managers/interaction_state_manager.dart';
 import 'package:ideascape/features/space/domain/managers/selection_manager.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
@@ -10,7 +10,7 @@ import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 
 abstract class CanvasInteractionMediator {
-  SpaceObject? hitTest(
+  Node? hitTest(
     Offset worldPoint, {
     SelectionFilter filter = SelectionFilter.all,
   });
@@ -22,24 +22,24 @@ abstract class CanvasInteractionMediator {
   });
 
   void selectConnectorAt(Offset worldPoint, {required bool isDrag});
-  void dragActiveObject(Offset worldPoint, Offset delta);
+  void dragActiveNode(Offset worldPoint, Offset delta);
   void dragActiveConnector(Offset worldPoint, Offset delta);
 
   void finalizeInteraction();
   void finalizeConnectorInteraction();
   void commitAndDeactivate();
-  void commitImmediate(SpaceObject object);
-  void startNewShape(SpaceObject object, Offset worldPoint);
-  void updateNewShape(SpaceObject object, Offset worldPoint);
-  void startDrawing(ListOfPointObject object, Offset worldPoint);
-  void updateDrawing(ListOfPointObject object, Offset worldPoint);
-  void deleteObject(SpaceObject object);
-  void deleteObjects(List<SpaceObject> objects);
+  void commitImmediate(Node node);
+  void startNewShape(Node node, Offset worldPoint);
+  void updateNewShape(Node node, Offset worldPoint);
+  void startDrawing(ListOfPointNode node, Offset worldPoint);
+  void updateDrawing(ListOfPointNode node, Offset worldPoint);
+  void deleteNode(Node node);
+  void deleteNodes(List<Node> nodes);
   void createConnector({
     required Offset startPoint,
     required Offset endPoint,
-    int? startObjectId,
-    int? endObjectId,
+    int? startNodeId,
+    int? endNodeId,
     ConnectorEdge? startLocation,
     ConnectorEdge? endLocation,
   });
@@ -80,7 +80,7 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
   }
 
   @override
-  SpaceObject? hitTest(
+  Node? hitTest(
     Offset worldPoint, {
     SelectionFilter filter = SelectionFilter.all,
   }) {
@@ -103,8 +103,8 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
 
   // ... rest of implementation stays same
   @override
-  void dragActiveObject(Offset worldPoint, Offset delta) {
-    _stateManager.dragActiveObject(worldPoint, delta);
+  void dragActiveNode(Offset worldPoint, Offset delta) {
+    _stateManager.dragActiveNode(worldPoint, delta);
   }
 
   @override
@@ -128,60 +128,60 @@ class CanvasInteractionMediatorImpl implements CanvasInteractionMediator {
   }
 
   @override
-  void commitImmediate(SpaceObject object) {
-    _stateManager.commitImmediate(object);
+  void commitImmediate(Node node) {
+    _stateManager.commitImmediate(node);
   }
 
   @override
-  void startNewShape(SpaceObject object, Offset worldPoint) {
+  void startNewShape(Node node, Offset worldPoint) {
     activeBloc.add(
-      ActiveLayerEvent.interactionStarted(object: object, point: worldPoint),
+      ActiveLayerEvent.interactionStarted(node: node, point: worldPoint),
     );
   }
 
   @override
-  void updateNewShape(SpaceObject object, Offset worldPoint) {
-    activeBloc.add(ActiveLayerEvent.shapeUpdated(object));
+  void updateNewShape(Node node, Offset worldPoint) {
+    activeBloc.add(ActiveLayerEvent.shapeUpdated(node));
   }
 
   @override
-  void startDrawing(ListOfPointObject object, Offset worldPoint) {
+  void startDrawing(ListOfPointNode node, Offset worldPoint) {
     activeBloc.add(
-      ActiveLayerEvent.interactionStarted(object: object, point: worldPoint),
+      ActiveLayerEvent.interactionStarted(node: node, point: worldPoint),
     );
   }
 
   @override
-  void updateDrawing(ListOfPointObject object, Offset worldPoint) {
+  void updateDrawing(ListOfPointNode node, Offset worldPoint) {
     activeBloc.add(
-      ActiveLayerEvent.interactionStarted(object: object, point: worldPoint),
+      ActiveLayerEvent.interactionStarted(node: node, point: worldPoint),
     );
   }
 
   @override
-  void deleteObject(SpaceObject object) {
-    _stateManager.deleteObject(object);
+  void deleteNode(Node node) {
+    _stateManager.deleteNode(node);
   }
 
   @override
-  void deleteObjects(List<SpaceObject> objects) {
-    _stateManager.deleteObjects(objects);
+  void deleteNodes(List<Node> nodes) {
+    _stateManager.deleteNodes(nodes);
   }
 
   @override
   void createConnector({
     required Offset startPoint,
     required Offset endPoint,
-    int? startObjectId,
-    int? endObjectId,
+    int? startNodeId,
+    int? endNodeId,
     ConnectorEdge? startLocation,
     ConnectorEdge? endLocation,
   }) {
     _stateManager.createConnector(
       startPoint: startPoint,
       endPoint: endPoint,
-      startObjectId: startObjectId,
-      endObjectId: endObjectId,
+      startNodeId: startNodeId,
+      endNodeId: endNodeId,
       startLocation: startLocation,
       endLocation: endLocation,
     );

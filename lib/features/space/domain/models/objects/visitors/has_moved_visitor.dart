@@ -1,60 +1,60 @@
 import 'package:flutter/foundation.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-/// A visitor that checks if an object has moved from its original position.
+/// A visitor that checks if a node has moved from its original position.
 ///
-/// This visitor compares the original object (the one being visited) with
-/// the current object to determine if a movement has occurred.
-class HasMovedVisitor implements SpaceObjectVisitor<bool> {
-  final SpaceObject current;
+/// This visitor compares the original node (the one being visited) with
+/// the current node to determine if a movement has occurred.
+class HasMovedVisitor implements NodeVisitor<bool> {
+  final Node current;
 
   const HasMovedVisitor(this.current);
 
   @override
-  bool visitShape(ShapeObject original) {
-    if (current is! ShapeObject) return false;
-    return (current as ShapeObject).rect != original.rect;
+  bool visitShape(ShapeNode original) {
+    if (current is! ShapeNode) return false;
+    return (current as ShapeNode).rect != original.rect;
   }
 
   @override
-  bool visitText(TextObject original) {
-    if (current is! TextObject) return false;
-    return (current as TextObject).position != original.position;
+  bool visitText(TextNode original) {
+    if (current is! TextNode) return false;
+    return (current as TextNode).position != original.position;
   }
 
   @override
-  bool visitPath(PathObject original) {
-    if (current is! PathObject) return false;
-    return (current as PathObject).path != original.path;
+  bool visitPath(PathNode original) {
+    if (current is! PathNode) return false;
+    return (current as PathNode).path != original.path;
   }
 
   @override
-  bool visitListOfPoint(ListOfPointObject original) {
-    if (current is! ListOfPointObject) return false;
-    final currentObj = current as ListOfPointObject;
+  bool visitListOfPoint(ListOfPointNode original) {
+    if (current is! ListOfPointNode) return false;
+    final currentNode = current as ListOfPointNode;
 
-    if (original.points.length != currentObj.points.length) return true;
+    if (original.points.length != currentNode.points.length) return true;
 
-    return !listEquals(original.points, currentObj.points);
+    return !listEquals(original.points, currentNode.points);
   }
 
   @override
-  bool visitConnector(ConnectorObject original) {
-    if (current is! ConnectorObject) return false;
-    final currentObj = current as ConnectorObject;
-    return original.startPoint != currentObj.startPoint ||
-        original.endPoint != currentObj.endPoint;
+  bool visitConnector(ConnectorNode original) {
+    if (current is! ConnectorNode) return false;
+    final currentNode = current as ConnectorNode;
+    return original.startPoint != currentNode.startPoint ||
+        original.endPoint != currentNode.endPoint;
   }
 
   @override
-  bool visitImage(ImageObject original) {
-    if (current is! ImageObject) return false;
-    return (current as ImageObject).rect != original.rect;
+  bool visitImage(ImageNode original) {
+    if (current is! ImageNode) return false;
+    return (current as ImageNode).rect != original.rect;
   }
 
   @override
-  bool visitGroup(GroupObject original) {
-    if (current is! GroupObject) return false;
-    return (current as GroupObject).rect != original.rect;
+  bool visitGroup(GroupNode original) {
+    if (current is! GroupNode) return false;
+    return (current as GroupNode).rect != original.rect;
   }
 }

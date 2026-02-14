@@ -9,7 +9,7 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/select_tool_handler.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
@@ -47,8 +47,8 @@ void main() {
     late MockToolbarBloc toolbarBloc;
     late MockCanvasInteractionMediator mediator;
     late TransformationController controller;
-    late ShapeObject testShape;
-    late ConnectorObject testConnector;
+    late ShapeNode testShape;
+    late ConnectorNode testConnector;
 
     setUp(() {
       activeBloc = MockActiveLayerBloc();
@@ -57,14 +57,14 @@ void main() {
       mediator = MockCanvasInteractionMediator();
       controller = TransformationController();
 
-      testShape = ShapeObject(
+      testShape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 100, 100),
         paint: Paint()..color = const Color(0xFF0000FF),
       );
 
-      testConnector = ConnectorObject(
+      testConnector = ConnectorNode(
         id: 2,
         startPoint: const Offset(300, 300),
         endPoint: const Offset(400, 400),
@@ -78,17 +78,17 @@ void main() {
     });
 
     void setupActiveState({
-      Map<int, SpaceObject>? objects,
+      Map<int, Node>? nodes,
       ResizeHandle? handle,
       Offset? startPoint,
-      SpaceObject? originalObject,
+      Node? originalNode,
     }) {
       when(() => activeBloc.state).thenReturn(
         ActiveLayerState(
-          activeObjects: objects ?? {testShape.id: testShape},
+          activeNodes: nodes ?? {testShape.id: testShape},
           resizeHandle: handle,
           dragStartPoint: startPoint,
-          originalObject: originalObject ?? testShape,
+          originalNode: originalNode ?? testShape,
         ),
       );
     }
@@ -549,8 +549,8 @@ void main() {
         );
       });
 
-      testWidgets('should not crash with empty activeObjects', (tester) async {
-        setupActiveState(objects: {});
+      testWidgets('should not crash with empty activeNodes', (tester) async {
+        setupActiveState(nodes: {});
         setupShapeState();
 
         await pumpHandlerWidget(
@@ -651,7 +651,7 @@ void main() {
           expect(captured.length, 1);
           expect(
             (captured.first as ActiveLayerEvent).mapOrNull(
-                  objectChanged: (_) => true,
+                  nodeChanged: (_) => true,
                 ) ??
                 false,
             isTrue,
@@ -679,7 +679,7 @@ void main() {
         );
 
         verify(
-          () => mediator.dragActiveObject(
+          () => mediator.dragActiveNode(
             const Offset(210, 210),
             const Offset(10, 10),
           ),
@@ -708,7 +708,7 @@ void main() {
           },
         );
 
-        verifyNever(() => mediator.dragActiveObject(any(), any()));
+        verifyNever(() => mediator.dragActiveNode(any(), any()));
       });
 
       testWidgets('should correctly transform with zoomed canvas', (
@@ -732,7 +732,7 @@ void main() {
         );
 
         verify(
-          () => mediator.dragActiveObject(
+          () => mediator.dragActiveNode(
             const Offset(110, 110),
             const Offset(10, 10),
           ),
@@ -745,7 +745,7 @@ void main() {
     // =========================================================================
     group('onPanEnd', () {
       testWidgets('should finalize interaction when no handle', (tester) async {
-        setupActiveState(handle: null, objects: {});
+        setupActiveState(handle: null, nodes: {});
         setupShapeState();
 
         await pumpHandlerWidget(
@@ -811,7 +811,7 @@ void main() {
         );
 
         verify(
-          () => shapeBloc.add(ShapeLayerEvent.removeObject(testShape.id)),
+          () => shapeBloc.add(ShapeLayerEvent.removeNode(testShape.id)),
         ).called(1);
       });
     });

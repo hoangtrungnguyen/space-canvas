@@ -8,7 +8,7 @@ import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
 
-/// Strategy for moving selected objects.
+/// Strategy for moving selected nodes.
 class MoveStrategy implements InteractionStrategy {
   const MoveStrategy();
 
@@ -28,7 +28,7 @@ class MoveStrategy implements InteractionStrategy {
 
     if (state.dragStartPoint != null) {
       final delta = worldPoint - state.dragStartPoint!;
-      mediator.dragActiveObject(worldPoint, delta);
+      mediator.dragActiveNode(worldPoint, delta);
     }
   }
 
@@ -45,16 +45,16 @@ class MoveStrategy implements InteractionStrategy {
 
     // Fix ghosting: Remove from ShapeLayer after finalize, as it remains active.
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final activeConfig = activeBloc.state.activeObjects.values.first;
+    if (state.activeNodes.isNotEmpty) {
+      final activeConfig = activeBloc.state.activeNodes.values.first;
       context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(activeConfig.id),
+        ShapeLayerEvent.removeNode(activeConfig.id),
       );
     }
   }
 }
 
-/// Strategy for resizing selected objects via handles.
+/// Strategy for resizing selected nodes via handles.
 class ResizeStrategy implements InteractionStrategy {
   const ResizeStrategy();
 
@@ -71,21 +71,21 @@ class ResizeStrategy implements InteractionStrategy {
       controller,
     );
 
-    if (state.resizeHandle != null && state.activeObjects.isNotEmpty) {
-      final object = state.activeObjects.values.first;
+    if (state.resizeHandle != null && state.activeNodes.isNotEmpty) {
+      final node = state.activeNodes.values.first;
       final startPoint = state.dragStartPoint;
 
       if (startPoint != null) {
         final delta = worldPoint - startPoint; // Total delta
-        final original = state.originalObject;
+        final original = state.originalNode;
 
-        if (original != null && original.id == object.id) {
+        if (original != null && original.id == node.id) {
           final visitor = ResizeVisitor(
             handle: state.resizeHandle!,
             delta: delta,
           );
-          final newObject = original.accept(visitor);
-          activeBloc.add(ActiveLayerEvent.objectChanged(newObject));
+          final newNode = original.accept(visitor);
+          activeBloc.add(ActiveLayerEvent.nodeChanged(newNode));
         }
       }
     }
@@ -105,18 +105,18 @@ class ResizeStrategy implements InteractionStrategy {
 
     // Fix ghosting: Remove from ShapeLayer after finalize, as it remains active.
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final activeObject = state.activeObjects.values.first;
+    if (state.activeNodes.isNotEmpty) {
+      final activeNode = state.activeNodes.values.first;
       context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(activeObject.id),
+        ShapeLayerEvent.removeNode(activeNode.id),
       );
     }
 
     // UPDATE POSITION FOR CONTINUOUS INTERACTION
-    if (activeBloc.state.activeObjects.isNotEmpty) {
+    if (activeBloc.state.activeNodes.isNotEmpty) {
       activeBloc.add(
-        ActiveLayerEvent.originalObjectSet(
-          activeBloc.state.activeObjects.values.first,
+        ActiveLayerEvent.originalNodeSet(
+          activeBloc.state.activeNodes.values.first,
         ),
       );
     }
@@ -126,7 +126,7 @@ class ResizeStrategy implements InteractionStrategy {
   }
 }
 
-/// Strategy when no object-specific interaction is active.
+/// Strategy when no node-specific interaction is active.
 class IdleStrategy implements InteractionStrategy {
   const IdleStrategy();
 

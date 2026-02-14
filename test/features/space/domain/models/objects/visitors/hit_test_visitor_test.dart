@@ -1,15 +1,15 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
 
 void main() {
   group('HitTestVisitor', () {
     // =========================================================================
-    // ShapeObject
+    // ShapeNode
     // =========================================================================
-    test('should hit ShapeObject inside rect', () {
-      final shape = ShapeObject(
+    test('should hit ShapeNode inside rect', () {
+      final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -19,8 +19,8 @@ void main() {
       expect(shape.accept(visitor), isTrue);
     });
 
-    test('should NOT hit ShapeObject outside rect', () {
-      final shape = ShapeObject(
+    test('should NOT hit ShapeNode outside rect', () {
+      final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -31,13 +31,13 @@ void main() {
     });
 
     // =========================================================================
-    // TextObject
+    // TextNode
     // =========================================================================
-    test('should hit TextObject inside rect', () {
-      // Note: TextObject rect is estimated by simplified calculation in current impl
+    test('should hit TextNode inside rect', () {
+      // Note: TextNode rect is estimated by simplified calculation in current impl
       // Rect.fromLTWH(pos.x, pos.y, text.length * fontSize * 0.6, fontSize)
 
-      final text = TextObject(
+      final text = TextNode(
         text: 'Hello',
         position: const Offset(10, 10),
         fontSize: 20,
@@ -53,10 +53,10 @@ void main() {
     });
 
     // =========================================================================
-    // ListOfPointObject (Drawing)
+    // ListOfPointNode (Drawing)
     // =========================================================================
-    test('should hit ListOfPointObject near line segment', () {
-      final points = ListOfPointObject(
+    test('should hit ListOfPointNode near line segment', () {
+      final points = ListOfPointNode(
         points: const [Offset(0, 0), Offset(100, 100)],
         strokeWidth: 10,
         color: 0,
@@ -77,9 +77,9 @@ void main() {
       expect(points.accept(visitor), isFalse);
     });
 
-    test('should handle ListOfPointObject optimizations and edge cases', () {
+    test('should handle ListOfPointNode optimizations and edge cases', () {
       // Empty points
-      final emptyPoints = ListOfPointObject(
+      final emptyPoints = ListOfPointNode(
         points: const [],
         strokeWidth: 10,
         color: 0,
@@ -88,7 +88,7 @@ void main() {
       expect(emptyPoints.accept(HitTestVisitor(Offset.zero)), isFalse);
 
       // Outside bounding box
-      final boxTest = ListOfPointObject(
+      final boxTest = ListOfPointNode(
         points: const [Offset(0, 0), Offset(100, 100)],
         strokeWidth: 10,
         color: 0,
@@ -99,9 +99,9 @@ void main() {
       expect(boxTest.accept(HitTestVisitor(const Offset(200, 200))), isFalse);
     });
 
-    test('should handle ListOfPointObject with zero-length segments', () {
+    test('should handle ListOfPointNode with zero-length segments', () {
       // Segment where start == end
-      final zeroLen = ListOfPointObject(
+      final zeroLen = ListOfPointNode(
         points: const [Offset(50, 50), Offset(50, 50)],
         strokeWidth: 10,
         color: 0,
@@ -116,12 +116,12 @@ void main() {
     });
 
     // =========================================================================
-    // ConnectorObject
+    // ConnectorNode
     // =========================================================================
-    test('should hit ConnectorObject', () {
-      final connector = ConnectorObject(
-        startObjectId: 1,
-        endObjectId: 2,
+    test('should hit ConnectorNode', () {
+      final connector = ConnectorNode(
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(0, 100),
         strokeWidth: 10,
@@ -143,10 +143,10 @@ void main() {
     });
 
     // =========================================================================
-    // ImageObject
+    // ImageNode
     // =========================================================================
-    test('should hit ImageObject inside rect', () {
-      final img = ImageObject(
+    test('should hit ImageNode inside rect', () {
+      final img = ImageNode(
         imageUrl: 'test.png',
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         id: 7,
@@ -157,10 +157,10 @@ void main() {
     });
 
     // =========================================================================
-    // PathObject
+    // PathNode
     // =========================================================================
-    test('should hit PathObject', () {
-      final pathObj = PathObject(
+    test('should hit PathNode', () {
+      final pathObj = PathNode(
         path: Path()..addRect(const Rect.fromLTWH(0, 0, 100, 100)),
         paint: Paint(),
         id: 8,
@@ -171,10 +171,10 @@ void main() {
     });
 
     // =========================================================================
-    // GroupObject
+    // GroupNode
     // =========================================================================
-    test('should hit GroupObject', () {
-      final group = GroupObject(
+    test('should hit GroupNode', () {
+      final group = GroupNode(
         childrenIds: [1, 2],
         rect: const Rect.fromLTWH(0, 0, 100, 100), // Bounding box of children
         id: 9,

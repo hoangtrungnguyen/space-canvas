@@ -14,15 +14,15 @@ class ActiveLayerObserver extends StatelessWidget {
     return BlocListener<ActiveLayerBloc, ActiveLayerState>(
       listenWhen: (previous, current) {
         // Only trigger update if the set of active object IDs changes
-        final prevIds = previous.activeObjects.keys.toSet();
-        final currIds = current.activeObjects.keys.toSet();
+        final prevIds = previous.activeNodes.keys.toSet();
+        final currIds = current.activeNodes.keys.toSet();
         return prevIds.length != currIds.length ||
             !prevIds.containsAll(currIds);
       },
       listener: (context, state) {
-        final activeIds = state.activeObjects.keys.toSet();
+        final activeIds = state.activeNodes.keys.toSet();
         context.read<ShapeLayerBloc>().add(
-          ShapeLayerEvent.hiddenObjects(activeIds),
+          ShapeLayerEvent.hiddenNodes(activeIds),
         );
       },
       child: child,

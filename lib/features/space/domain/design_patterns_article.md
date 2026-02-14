@@ -54,10 +54,10 @@ By treating each tool as a separate strategy, we keep the main UI code clean and
 ---
 
 ## 4. Factory Pattern: Centralized Instantiation
-**Key Implementation**: [SpaceObjectFactory](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/domain/factories/space_object_factory.dart) & [ToolHandlerFactory](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/view/pages/tool_handler/tool_handler_factory.dart)
+**Key Implementation**: [NodeFactory](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/domain/factories/node_factory.dart) & [ToolHandlerFactory](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/view/pages/tool_handler/tool_handler_factory.dart)
 
 To ensure consistency and simplify object creation, we use **Factories**.
-- `SpaceObjectFactory` ensures that all new shapes, connectors, and text objects are created with correct defaults and unique IDs.
+- `NodeFactory` ensures that all new shapes, connectors, and text objects are created with correct defaults and unique IDs.
 - `ToolHandlerFactory` provides the correct `ToolHandler` implementation based on the current `SpaceTool` enum, shielding the UI from the instantiation details of each strategy.
 
 ---
@@ -65,9 +65,9 @@ To ensure consistency and simplify object creation, we use **Factories**.
 ## 5. Memento Pattern: Conceptual State Capture
 **Theory in Action**: [connector_tool_handler.dart](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/view/pages/tool_handler/implementations/connector_tool_handler.dart)
 
-The **Memento Pattern** is concerned with capturing and restoring internal state. In the `ConnectorToolHandler`, this theory is applied when capturing the `startObjectId` and the current drag state. 
+The **Memento Pattern** is concerned with capturing and restoring internal state. In the `ConnectorToolHandler`, this theory is applied when capturing the `startNodeId` and the current drag state. 
 
-Although implemented as ephemeral state in the handler, the concept is the same: capturing the state of a "connection in progress" so it can be finalized as a permanent `ConnectorObject` once the interaction completes.
+Although implemented as ephemeral state in the handler, the concept is the same: capturing the state of a "connection in progress" so it can be finalized as a permanent `ConnectorNode` once the interaction completes.
 
 ---
 

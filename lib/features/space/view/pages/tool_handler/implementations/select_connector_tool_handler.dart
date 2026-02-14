@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 
 import 'package:ideascape/features/space/domain/models/connector_handle.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/connector_strategies.dart';
@@ -48,18 +48,18 @@ class SelectConnectorToolHandler extends ToolHandler {
 
     // Check if we hit start or end point using hitTest directly to handle
     // cases where the object is not yet active in the state (async update).
-    final hitObject = mediator.hitTest(
+    final hitNode = mediator.hitTest(
       worldPoint,
       filter: SelectionFilter.connectorsOnly,
     );
 
-    if (hitObject is ConnectorObject) {
+    if (hitNode is ConnectorNode) {
       const double hitThreshold = 10.0; // Adjust threshold as needed
-      if ((hitObject.startPoint - worldPoint).distance < hitThreshold) {
+      if ((hitNode.startPoint - worldPoint).distance < hitThreshold) {
         activeBloc.add(
           const ActiveLayerEvent.connectorHandleSelected(ConnectorHandle.start),
         );
-      } else if ((hitObject.endPoint - worldPoint).distance < hitThreshold) {
+      } else if ((hitNode.endPoint - worldPoint).distance < hitThreshold) {
         activeBloc.add(
           const ActiveLayerEvent.connectorHandleSelected(ConnectorHandle.end),
         );
@@ -106,7 +106,7 @@ class SelectConnectorToolHandler extends ToolHandler {
   InteractionStrategy _getStrategyForState(ActiveLayerState state) {
     if (state.connectorHandle != null) {
       return const ReshapeConnectorStrategy();
-    } else if (state.activeObjects.isNotEmpty) {
+    } else if (state.activeNodes.isNotEmpty) {
       return const MoveConnectorStrategy();
     }
     return const IdleStrategy();

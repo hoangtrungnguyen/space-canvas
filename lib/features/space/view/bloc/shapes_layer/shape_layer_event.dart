@@ -4,25 +4,23 @@ part of 'shape_layer_bloc.dart';
 class ShapeLayerEvent with _$ShapeLayerEvent {
   const factory ShapeLayerEvent.initialize() = _Initialized;
 
-  const factory ShapeLayerEvent.objectDragged({
-    required int objectId,
+  const factory ShapeLayerEvent.nodeDragged({
+    required int nodeId,
     required Offset delta,
-  }) = _ObjectDragged;
+  }) = _NodeDragged;
 
-  const factory ShapeLayerEvent.addObject(SpaceObject object) = _AddObject;
+  const factory ShapeLayerEvent.addNode(Node node) = _AddNode;
 
-  const factory ShapeLayerEvent.removeObject(int objectId) = _RemoveObject;
+  const factory ShapeLayerEvent.removeNode(int nodeId) = _RemoveNode;
 
-  const factory ShapeLayerEvent.shapeSelected({required int objectId}) =
+  const factory ShapeLayerEvent.shapeSelected({required int nodeId}) =
       _ShapeSelected;
 
-  const factory ShapeLayerEvent.objectSelected(int? objectId) = _ObjectSelected;
+  const factory ShapeLayerEvent.nodeSelected(int? nodeId) = _NodeSelected;
 
   const factory ShapeLayerEvent.selectAtPoint(Offset point) = _SelectAtPoint;
 
-  const factory ShapeLayerEvent.updateObjects(List<SpaceObject> objects) =
-      _UpdateObjects;
+  const factory ShapeLayerEvent.updateNodes(List<Node> nodes) = _UpdateNodes;
 
-  const factory ShapeLayerEvent.hiddenObjects(Set<int> objectIds) =
-      _HiddenObjects;
+  const factory ShapeLayerEvent.hiddenNodes(Set<int> nodeIds) = _HiddenNodes;
 }

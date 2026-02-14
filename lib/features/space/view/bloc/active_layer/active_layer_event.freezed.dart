@@ -53,12 +53,12 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
-    TResult Function(_ObjectActivated value)? objectActivated,
-    TResult Function(_ObjectChanged value)? objectChanged,
+    TResult Function(_NodeActivated value)? nodeActivated,
+    TResult Function(_NodeChanged value)? nodeChanged,
     TResult Function(_InteractionStarted value)? interactionStarted,
     TResult Function(_ShapeUpdated value)? shapeUpdated,
-    TResult Function(_ObjectDeactivated value)? objectDeactivated,
-    TResult Function(_OriginalObjectSet value)? originalObjectSet,
+    TResult Function(_NodeDeactivated value)? nodeDeactivated,
+    TResult Function(_OriginalNodeSet value)? originalNodeSet,
     TResult Function(_Clear value)? clear,
     TResult Function(_HandleChanged value)? handleChanged,
     TResult Function(_ConnectorHandleSelected value)? connectorHandleSelected,
@@ -72,18 +72,18 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     switch (_that) {
       case _Started() when started != null:
         return started(_that);
-      case _ObjectActivated() when objectActivated != null:
-        return objectActivated(_that);
-      case _ObjectChanged() when objectChanged != null:
-        return objectChanged(_that);
+      case _NodeActivated() when nodeActivated != null:
+        return nodeActivated(_that);
+      case _NodeChanged() when nodeChanged != null:
+        return nodeChanged(_that);
       case _InteractionStarted() when interactionStarted != null:
         return interactionStarted(_that);
       case _ShapeUpdated() when shapeUpdated != null:
         return shapeUpdated(_that);
-      case _ObjectDeactivated() when objectDeactivated != null:
-        return objectDeactivated(_that);
-      case _OriginalObjectSet() when originalObjectSet != null:
-        return originalObjectSet(_that);
+      case _NodeDeactivated() when nodeDeactivated != null:
+        return nodeDeactivated(_that);
+      case _OriginalNodeSet() when originalNodeSet != null:
+        return originalNodeSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
@@ -119,12 +119,12 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
-    required TResult Function(_ObjectActivated value) objectActivated,
-    required TResult Function(_ObjectChanged value) objectChanged,
+    required TResult Function(_NodeActivated value) nodeActivated,
+    required TResult Function(_NodeChanged value) nodeChanged,
     required TResult Function(_InteractionStarted value) interactionStarted,
     required TResult Function(_ShapeUpdated value) shapeUpdated,
-    required TResult Function(_ObjectDeactivated value) objectDeactivated,
-    required TResult Function(_OriginalObjectSet value) originalObjectSet,
+    required TResult Function(_NodeDeactivated value) nodeDeactivated,
+    required TResult Function(_OriginalNodeSet value) originalNodeSet,
     required TResult Function(_Clear value) clear,
     required TResult Function(_HandleChanged value) handleChanged,
     required TResult Function(_ConnectorHandleSelected value)
@@ -139,18 +139,18 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     switch (_that) {
       case _Started():
         return started(_that);
-      case _ObjectActivated():
-        return objectActivated(_that);
-      case _ObjectChanged():
-        return objectChanged(_that);
+      case _NodeActivated():
+        return nodeActivated(_that);
+      case _NodeChanged():
+        return nodeChanged(_that);
       case _InteractionStarted():
         return interactionStarted(_that);
       case _ShapeUpdated():
         return shapeUpdated(_that);
-      case _ObjectDeactivated():
-        return objectDeactivated(_that);
-      case _OriginalObjectSet():
-        return originalObjectSet(_that);
+      case _NodeDeactivated():
+        return nodeDeactivated(_that);
+      case _OriginalNodeSet():
+        return originalNodeSet(_that);
       case _Clear():
         return clear(_that);
       case _HandleChanged():
@@ -185,12 +185,12 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
-    TResult? Function(_ObjectActivated value)? objectActivated,
-    TResult? Function(_ObjectChanged value)? objectChanged,
+    TResult? Function(_NodeActivated value)? nodeActivated,
+    TResult? Function(_NodeChanged value)? nodeChanged,
     TResult? Function(_InteractionStarted value)? interactionStarted,
     TResult? Function(_ShapeUpdated value)? shapeUpdated,
-    TResult? Function(_ObjectDeactivated value)? objectDeactivated,
-    TResult? Function(_OriginalObjectSet value)? originalObjectSet,
+    TResult? Function(_NodeDeactivated value)? nodeDeactivated,
+    TResult? Function(_OriginalNodeSet value)? originalNodeSet,
     TResult? Function(_Clear value)? clear,
     TResult? Function(_HandleChanged value)? handleChanged,
     TResult? Function(_ConnectorHandleSelected value)? connectorHandleSelected,
@@ -203,18 +203,18 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
     switch (_that) {
       case _Started() when started != null:
         return started(_that);
-      case _ObjectActivated() when objectActivated != null:
-        return objectActivated(_that);
-      case _ObjectChanged() when objectChanged != null:
-        return objectChanged(_that);
+      case _NodeActivated() when nodeActivated != null:
+        return nodeActivated(_that);
+      case _NodeChanged() when nodeChanged != null:
+        return nodeChanged(_that);
       case _InteractionStarted() when interactionStarted != null:
         return interactionStarted(_that);
       case _ShapeUpdated() when shapeUpdated != null:
         return shapeUpdated(_that);
-      case _ObjectDeactivated() when objectDeactivated != null:
-        return objectDeactivated(_that);
-      case _OriginalObjectSet() when originalObjectSet != null:
-        return originalObjectSet(_that);
+      case _NodeDeactivated() when nodeDeactivated != null:
+        return nodeDeactivated(_that);
+      case _OriginalNodeSet() when originalNodeSet != null:
+        return originalNodeSet(_that);
       case _Clear() when clear != null:
         return clear(_that);
       case _HandleChanged() when handleChanged != null:
@@ -249,38 +249,37 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(SpaceObject object)? objectActivated,
-    TResult Function(SpaceObject object)? objectChanged,
-    TResult Function(SpaceObject object, Offset point)? interactionStarted,
-    TResult Function(SpaceObject object)? shapeUpdated,
-    TResult Function(int objectId)? objectDeactivated,
-    TResult Function(SpaceObject? object)? originalObjectSet,
+    TResult Function(Node node)? nodeActivated,
+    TResult Function(Node node)? nodeChanged,
+    TResult Function(Node node, Offset point)? interactionStarted,
+    TResult Function(Node node)? shapeUpdated,
+    TResult Function(int nodeId)? nodeDeactivated,
+    TResult Function(Node? node)? originalNodeSet,
     TResult Function()? clear,
     TResult Function(ResizeHandle? handle)? handleChanged,
     TResult Function(ConnectorHandle? handle)? connectorHandleSelected,
-    TResult Function(int? startObjectId, Offset startPoint)?
-    connectorDragStarted,
+    TResult Function(int? startNodeId, Offset startPoint)? connectorDragStarted,
     TResult Function(Offset position)? connectorDragUpdated,
     TResult Function()? connectorDragEnded,
-    TResult Function(int? objectId)? connectorHoverChanged,
+    TResult Function(int? nodeId)? connectorHoverChanged,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Started() when started != null:
         return started();
-      case _ObjectActivated() when objectActivated != null:
-        return objectActivated(_that.object);
-      case _ObjectChanged() when objectChanged != null:
-        return objectChanged(_that.object);
+      case _NodeActivated() when nodeActivated != null:
+        return nodeActivated(_that.node);
+      case _NodeChanged() when nodeChanged != null:
+        return nodeChanged(_that.node);
       case _InteractionStarted() when interactionStarted != null:
-        return interactionStarted(_that.object, _that.point);
+        return interactionStarted(_that.node, _that.point);
       case _ShapeUpdated() when shapeUpdated != null:
-        return shapeUpdated(_that.object);
-      case _ObjectDeactivated() when objectDeactivated != null:
-        return objectDeactivated(_that.objectId);
-      case _OriginalObjectSet() when originalObjectSet != null:
-        return originalObjectSet(_that.object);
+        return shapeUpdated(_that.node);
+      case _NodeDeactivated() when nodeDeactivated != null:
+        return nodeDeactivated(_that.nodeId);
+      case _OriginalNodeSet() when originalNodeSet != null:
+        return originalNodeSet(_that.node);
       case _Clear() when clear != null:
         return clear();
       case _HandleChanged() when handleChanged != null:
@@ -288,13 +287,13 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
       case _ConnectorHandleSelected() when connectorHandleSelected != null:
         return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted() when connectorDragStarted != null:
-        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+        return connectorDragStarted(_that.startNodeId, _that.startPoint);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
         return connectorDragUpdated(_that.position);
       case _ConnectorDragEnded() when connectorDragEnded != null:
         return connectorDragEnded();
       case _ConnectorHoverChanged() when connectorHoverChanged != null:
-        return connectorHoverChanged(_that.objectId);
+        return connectorHoverChanged(_that.nodeId);
       case _:
         return orElse();
     }
@@ -316,38 +315,37 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(SpaceObject object) objectActivated,
-    required TResult Function(SpaceObject object) objectChanged,
-    required TResult Function(SpaceObject object, Offset point)
-    interactionStarted,
-    required TResult Function(SpaceObject object) shapeUpdated,
-    required TResult Function(int objectId) objectDeactivated,
-    required TResult Function(SpaceObject? object) originalObjectSet,
+    required TResult Function(Node node) nodeActivated,
+    required TResult Function(Node node) nodeChanged,
+    required TResult Function(Node node, Offset point) interactionStarted,
+    required TResult Function(Node node) shapeUpdated,
+    required TResult Function(int nodeId) nodeDeactivated,
+    required TResult Function(Node? node) originalNodeSet,
     required TResult Function() clear,
     required TResult Function(ResizeHandle? handle) handleChanged,
     required TResult Function(ConnectorHandle? handle) connectorHandleSelected,
-    required TResult Function(int? startObjectId, Offset startPoint)
+    required TResult Function(int? startNodeId, Offset startPoint)
     connectorDragStarted,
     required TResult Function(Offset position) connectorDragUpdated,
     required TResult Function() connectorDragEnded,
-    required TResult Function(int? objectId) connectorHoverChanged,
+    required TResult Function(int? nodeId) connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
       case _Started():
         return started();
-      case _ObjectActivated():
-        return objectActivated(_that.object);
-      case _ObjectChanged():
-        return objectChanged(_that.object);
+      case _NodeActivated():
+        return nodeActivated(_that.node);
+      case _NodeChanged():
+        return nodeChanged(_that.node);
       case _InteractionStarted():
-        return interactionStarted(_that.object, _that.point);
+        return interactionStarted(_that.node, _that.point);
       case _ShapeUpdated():
-        return shapeUpdated(_that.object);
-      case _ObjectDeactivated():
-        return objectDeactivated(_that.objectId);
-      case _OriginalObjectSet():
-        return originalObjectSet(_that.object);
+        return shapeUpdated(_that.node);
+      case _NodeDeactivated():
+        return nodeDeactivated(_that.nodeId);
+      case _OriginalNodeSet():
+        return originalNodeSet(_that.node);
       case _Clear():
         return clear();
       case _HandleChanged():
@@ -355,13 +353,13 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
       case _ConnectorHandleSelected():
         return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted():
-        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+        return connectorDragStarted(_that.startNodeId, _that.startPoint);
       case _ConnectorDragUpdated():
         return connectorDragUpdated(_that.position);
       case _ConnectorDragEnded():
         return connectorDragEnded();
       case _ConnectorHoverChanged():
-        return connectorHoverChanged(_that.objectId);
+        return connectorHoverChanged(_that.nodeId);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -382,37 +380,37 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(SpaceObject object)? objectActivated,
-    TResult? Function(SpaceObject object)? objectChanged,
-    TResult? Function(SpaceObject object, Offset point)? interactionStarted,
-    TResult? Function(SpaceObject object)? shapeUpdated,
-    TResult? Function(int objectId)? objectDeactivated,
-    TResult? Function(SpaceObject? object)? originalObjectSet,
+    TResult? Function(Node node)? nodeActivated,
+    TResult? Function(Node node)? nodeChanged,
+    TResult? Function(Node node, Offset point)? interactionStarted,
+    TResult? Function(Node node)? shapeUpdated,
+    TResult? Function(int nodeId)? nodeDeactivated,
+    TResult? Function(Node? node)? originalNodeSet,
     TResult? Function()? clear,
     TResult? Function(ResizeHandle? handle)? handleChanged,
     TResult? Function(ConnectorHandle? handle)? connectorHandleSelected,
-    TResult? Function(int? startObjectId, Offset startPoint)?
+    TResult? Function(int? startNodeId, Offset startPoint)?
     connectorDragStarted,
     TResult? Function(Offset position)? connectorDragUpdated,
     TResult? Function()? connectorDragEnded,
-    TResult? Function(int? objectId)? connectorHoverChanged,
+    TResult? Function(int? nodeId)? connectorHoverChanged,
   }) {
     final _that = this;
     switch (_that) {
       case _Started() when started != null:
         return started();
-      case _ObjectActivated() when objectActivated != null:
-        return objectActivated(_that.object);
-      case _ObjectChanged() when objectChanged != null:
-        return objectChanged(_that.object);
+      case _NodeActivated() when nodeActivated != null:
+        return nodeActivated(_that.node);
+      case _NodeChanged() when nodeChanged != null:
+        return nodeChanged(_that.node);
       case _InteractionStarted() when interactionStarted != null:
-        return interactionStarted(_that.object, _that.point);
+        return interactionStarted(_that.node, _that.point);
       case _ShapeUpdated() when shapeUpdated != null:
-        return shapeUpdated(_that.object);
-      case _ObjectDeactivated() when objectDeactivated != null:
-        return objectDeactivated(_that.objectId);
-      case _OriginalObjectSet() when originalObjectSet != null:
-        return originalObjectSet(_that.object);
+        return shapeUpdated(_that.node);
+      case _NodeDeactivated() when nodeDeactivated != null:
+        return nodeDeactivated(_that.nodeId);
+      case _OriginalNodeSet() when originalNodeSet != null:
+        return originalNodeSet(_that.node);
       case _Clear() when clear != null:
         return clear();
       case _HandleChanged() when handleChanged != null:
@@ -420,13 +418,13 @@ extension ActiveLayerEventPatterns on ActiveLayerEvent {
       case _ConnectorHandleSelected() when connectorHandleSelected != null:
         return connectorHandleSelected(_that.handle);
       case _ConnectorDragStarted() when connectorDragStarted != null:
-        return connectorDragStarted(_that.startObjectId, _that.startPoint);
+        return connectorDragStarted(_that.startNodeId, _that.startPoint);
       case _ConnectorDragUpdated() when connectorDragUpdated != null:
         return connectorDragUpdated(_that.position);
       case _ConnectorDragEnded() when connectorDragEnded != null:
         return connectorDragEnded();
       case _ConnectorHoverChanged() when connectorHoverChanged != null:
-        return connectorHoverChanged(_that.objectId);
+        return connectorHoverChanged(_that.nodeId);
       case _:
         return null;
     }
@@ -468,64 +466,64 @@ class __$StartedCopyWithImpl<$Res> implements _$StartedCopyWith<$Res> {
 
 /// @nodoc
 
-class _ObjectActivated implements ActiveLayerEvent {
-  const _ObjectActivated(this.object);
+class _NodeActivated implements ActiveLayerEvent {
+  const _NodeActivated(this.node);
 
-  final SpaceObject object;
+  final Node node;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ObjectActivatedCopyWith<_ObjectActivated> get copyWith =>
-      __$ObjectActivatedCopyWithImpl<_ObjectActivated>(this, _$identity);
+  _$NodeActivatedCopyWith<_NodeActivated> get copyWith =>
+      __$NodeActivatedCopyWithImpl<_NodeActivated>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ObjectActivated &&
-            (identical(other.object, object) || other.object == object));
+            other is _NodeActivated &&
+            (identical(other.node, node) || other.node == node));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object);
+  int get hashCode => Object.hash(runtimeType, node);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.objectActivated(object: $object)';
+    return 'ActiveLayerEvent.nodeActivated(node: $node)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ObjectActivatedCopyWith<$Res>
+abstract mixin class _$NodeActivatedCopyWith<$Res>
     implements $ActiveLayerEventCopyWith<$Res> {
-  factory _$ObjectActivatedCopyWith(
-    _ObjectActivated value,
-    $Res Function(_ObjectActivated) _then,
-  ) = __$ObjectActivatedCopyWithImpl;
+  factory _$NodeActivatedCopyWith(
+    _NodeActivated value,
+    $Res Function(_NodeActivated) _then,
+  ) = __$NodeActivatedCopyWithImpl;
   @useResult
-  $Res call({SpaceObject object});
+  $Res call({Node node});
 }
 
 /// @nodoc
-class __$ObjectActivatedCopyWithImpl<$Res>
-    implements _$ObjectActivatedCopyWith<$Res> {
-  __$ObjectActivatedCopyWithImpl(this._self, this._then);
+class __$NodeActivatedCopyWithImpl<$Res>
+    implements _$NodeActivatedCopyWith<$Res> {
+  __$NodeActivatedCopyWithImpl(this._self, this._then);
 
-  final _ObjectActivated _self;
-  final $Res Function(_ObjectActivated) _then;
+  final _NodeActivated _self;
+  final $Res Function(_NodeActivated) _then;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = null}) {
+  $Res call({Object? node = null}) {
     return _then(
-      _ObjectActivated(
-        null == object
-            ? _self.object
-            : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject,
+      _NodeActivated(
+        null == node
+            ? _self.node
+            : node // ignore: cast_nullable_to_non_nullable
+                as Node,
       ),
     );
   }
@@ -533,64 +531,63 @@ class __$ObjectActivatedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _ObjectChanged implements ActiveLayerEvent {
-  const _ObjectChanged(this.object);
+class _NodeChanged implements ActiveLayerEvent {
+  const _NodeChanged(this.node);
 
-  final SpaceObject object;
+  final Node node;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ObjectChangedCopyWith<_ObjectChanged> get copyWith =>
-      __$ObjectChangedCopyWithImpl<_ObjectChanged>(this, _$identity);
+  _$NodeChangedCopyWith<_NodeChanged> get copyWith =>
+      __$NodeChangedCopyWithImpl<_NodeChanged>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ObjectChanged &&
-            (identical(other.object, object) || other.object == object));
+            other is _NodeChanged &&
+            (identical(other.node, node) || other.node == node));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object);
+  int get hashCode => Object.hash(runtimeType, node);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.objectChanged(object: $object)';
+    return 'ActiveLayerEvent.nodeChanged(node: $node)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ObjectChangedCopyWith<$Res>
+abstract mixin class _$NodeChangedCopyWith<$Res>
     implements $ActiveLayerEventCopyWith<$Res> {
-  factory _$ObjectChangedCopyWith(
-    _ObjectChanged value,
-    $Res Function(_ObjectChanged) _then,
-  ) = __$ObjectChangedCopyWithImpl;
+  factory _$NodeChangedCopyWith(
+    _NodeChanged value,
+    $Res Function(_NodeChanged) _then,
+  ) = __$NodeChangedCopyWithImpl;
   @useResult
-  $Res call({SpaceObject object});
+  $Res call({Node node});
 }
 
 /// @nodoc
-class __$ObjectChangedCopyWithImpl<$Res>
-    implements _$ObjectChangedCopyWith<$Res> {
-  __$ObjectChangedCopyWithImpl(this._self, this._then);
+class __$NodeChangedCopyWithImpl<$Res> implements _$NodeChangedCopyWith<$Res> {
+  __$NodeChangedCopyWithImpl(this._self, this._then);
 
-  final _ObjectChanged _self;
-  final $Res Function(_ObjectChanged) _then;
+  final _NodeChanged _self;
+  final $Res Function(_NodeChanged) _then;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = null}) {
+  $Res call({Object? node = null}) {
     return _then(
-      _ObjectChanged(
-        null == object
-            ? _self.object
-            : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject,
+      _NodeChanged(
+        null == node
+            ? _self.node
+            : node // ignore: cast_nullable_to_non_nullable
+                as Node,
       ),
     );
   }
@@ -599,9 +596,9 @@ class __$ObjectChangedCopyWithImpl<$Res>
 /// @nodoc
 
 class _InteractionStarted implements ActiveLayerEvent {
-  const _InteractionStarted({required this.object, required this.point});
+  const _InteractionStarted({required this.node, required this.point});
 
-  final SpaceObject object;
+  final Node node;
   final Offset point;
 
   /// Create a copy of ActiveLayerEvent
@@ -616,16 +613,16 @@ class _InteractionStarted implements ActiveLayerEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _InteractionStarted &&
-            (identical(other.object, object) || other.object == object) &&
+            (identical(other.node, node) || other.node == node) &&
             (identical(other.point, point) || other.point == point));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object, point);
+  int get hashCode => Object.hash(runtimeType, node, point);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.interactionStarted(object: $object, point: $point)';
+    return 'ActiveLayerEvent.interactionStarted(node: $node, point: $point)';
   }
 }
 
@@ -637,7 +634,7 @@ abstract mixin class _$InteractionStartedCopyWith<$Res>
     $Res Function(_InteractionStarted) _then,
   ) = __$InteractionStartedCopyWithImpl;
   @useResult
-  $Res call({SpaceObject object, Offset point});
+  $Res call({Node node, Offset point});
 }
 
 /// @nodoc
@@ -651,14 +648,14 @@ class __$InteractionStartedCopyWithImpl<$Res>
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = null, Object? point = null}) {
+  $Res call({Object? node = null, Object? point = null}) {
     return _then(
       _InteractionStarted(
-        object:
-            null == object
-                ? _self.object
-                : object // ignore: cast_nullable_to_non_nullable
-                    as SpaceObject,
+        node:
+            null == node
+                ? _self.node
+                : node // ignore: cast_nullable_to_non_nullable
+                    as Node,
         point:
             null == point
                 ? _self.point
@@ -672,9 +669,9 @@ class __$InteractionStartedCopyWithImpl<$Res>
 /// @nodoc
 
 class _ShapeUpdated implements ActiveLayerEvent {
-  const _ShapeUpdated(this.object);
+  const _ShapeUpdated(this.node);
 
-  final SpaceObject object;
+  final Node node;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -688,15 +685,15 @@ class _ShapeUpdated implements ActiveLayerEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ShapeUpdated &&
-            (identical(other.object, object) || other.object == object));
+            (identical(other.node, node) || other.node == node));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object);
+  int get hashCode => Object.hash(runtimeType, node);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.shapeUpdated(object: $object)';
+    return 'ActiveLayerEvent.shapeUpdated(node: $node)';
   }
 }
 
@@ -708,7 +705,7 @@ abstract mixin class _$ShapeUpdatedCopyWith<$Res>
     $Res Function(_ShapeUpdated) _then,
   ) = __$ShapeUpdatedCopyWithImpl;
   @useResult
-  $Res call({SpaceObject object});
+  $Res call({Node node});
 }
 
 /// @nodoc
@@ -722,13 +719,13 @@ class __$ShapeUpdatedCopyWithImpl<$Res>
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = null}) {
+  $Res call({Object? node = null}) {
     return _then(
       _ShapeUpdated(
-        null == object
-            ? _self.object
-            : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject,
+        null == node
+            ? _self.node
+            : node // ignore: cast_nullable_to_non_nullable
+                as Node,
       ),
     );
   }
@@ -736,64 +733,63 @@ class __$ShapeUpdatedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _ObjectDeactivated implements ActiveLayerEvent {
-  const _ObjectDeactivated(this.objectId);
+class _NodeDeactivated implements ActiveLayerEvent {
+  const _NodeDeactivated(this.nodeId);
 
-  final int objectId;
+  final int nodeId;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ObjectDeactivatedCopyWith<_ObjectDeactivated> get copyWith =>
-      __$ObjectDeactivatedCopyWithImpl<_ObjectDeactivated>(this, _$identity);
+  _$NodeDeactivatedCopyWith<_NodeDeactivated> get copyWith =>
+      __$NodeDeactivatedCopyWithImpl<_NodeDeactivated>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ObjectDeactivated &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId));
+            other is _NodeDeactivated &&
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId);
+  int get hashCode => Object.hash(runtimeType, nodeId);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.objectDeactivated(objectId: $objectId)';
+    return 'ActiveLayerEvent.nodeDeactivated(nodeId: $nodeId)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ObjectDeactivatedCopyWith<$Res>
+abstract mixin class _$NodeDeactivatedCopyWith<$Res>
     implements $ActiveLayerEventCopyWith<$Res> {
-  factory _$ObjectDeactivatedCopyWith(
-    _ObjectDeactivated value,
-    $Res Function(_ObjectDeactivated) _then,
-  ) = __$ObjectDeactivatedCopyWithImpl;
+  factory _$NodeDeactivatedCopyWith(
+    _NodeDeactivated value,
+    $Res Function(_NodeDeactivated) _then,
+  ) = __$NodeDeactivatedCopyWithImpl;
   @useResult
-  $Res call({int objectId});
+  $Res call({int nodeId});
 }
 
 /// @nodoc
-class __$ObjectDeactivatedCopyWithImpl<$Res>
-    implements _$ObjectDeactivatedCopyWith<$Res> {
-  __$ObjectDeactivatedCopyWithImpl(this._self, this._then);
+class __$NodeDeactivatedCopyWithImpl<$Res>
+    implements _$NodeDeactivatedCopyWith<$Res> {
+  __$NodeDeactivatedCopyWithImpl(this._self, this._then);
 
-  final _ObjectDeactivated _self;
-  final $Res Function(_ObjectDeactivated) _then;
+  final _NodeDeactivated _self;
+  final $Res Function(_NodeDeactivated) _then;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = null}) {
+  $Res call({Object? nodeId = null}) {
     return _then(
-      _ObjectDeactivated(
-        null == objectId
-            ? _self.objectId
-            : objectId // ignore: cast_nullable_to_non_nullable
+      _NodeDeactivated(
+        null == nodeId
+            ? _self.nodeId
+            : nodeId // ignore: cast_nullable_to_non_nullable
                 as int,
       ),
     );
@@ -802,64 +798,64 @@ class __$ObjectDeactivatedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _OriginalObjectSet implements ActiveLayerEvent {
-  const _OriginalObjectSet(this.object);
+class _OriginalNodeSet implements ActiveLayerEvent {
+  const _OriginalNodeSet(this.node);
 
-  final SpaceObject? object;
+  final Node? node;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$OriginalObjectSetCopyWith<_OriginalObjectSet> get copyWith =>
-      __$OriginalObjectSetCopyWithImpl<_OriginalObjectSet>(this, _$identity);
+  _$OriginalNodeSetCopyWith<_OriginalNodeSet> get copyWith =>
+      __$OriginalNodeSetCopyWithImpl<_OriginalNodeSet>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _OriginalObjectSet &&
-            (identical(other.object, object) || other.object == object));
+            other is _OriginalNodeSet &&
+            (identical(other.node, node) || other.node == node));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object);
+  int get hashCode => Object.hash(runtimeType, node);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.originalObjectSet(object: $object)';
+    return 'ActiveLayerEvent.originalNodeSet(node: $node)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$OriginalObjectSetCopyWith<$Res>
+abstract mixin class _$OriginalNodeSetCopyWith<$Res>
     implements $ActiveLayerEventCopyWith<$Res> {
-  factory _$OriginalObjectSetCopyWith(
-    _OriginalObjectSet value,
-    $Res Function(_OriginalObjectSet) _then,
-  ) = __$OriginalObjectSetCopyWithImpl;
+  factory _$OriginalNodeSetCopyWith(
+    _OriginalNodeSet value,
+    $Res Function(_OriginalNodeSet) _then,
+  ) = __$OriginalNodeSetCopyWithImpl;
   @useResult
-  $Res call({SpaceObject? object});
+  $Res call({Node? node});
 }
 
 /// @nodoc
-class __$OriginalObjectSetCopyWithImpl<$Res>
-    implements _$OriginalObjectSetCopyWith<$Res> {
-  __$OriginalObjectSetCopyWithImpl(this._self, this._then);
+class __$OriginalNodeSetCopyWithImpl<$Res>
+    implements _$OriginalNodeSetCopyWith<$Res> {
+  __$OriginalNodeSetCopyWithImpl(this._self, this._then);
 
-  final _OriginalObjectSet _self;
-  final $Res Function(_OriginalObjectSet) _then;
+  final _OriginalNodeSet _self;
+  final $Res Function(_OriginalNodeSet) _then;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = freezed}) {
+  $Res call({Object? node = freezed}) {
     return _then(
-      _OriginalObjectSet(
-        freezed == object
-            ? _self.object
-            : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject?,
+      _OriginalNodeSet(
+        freezed == node
+            ? _self.node
+            : node // ignore: cast_nullable_to_non_nullable
+                as Node?,
       ),
     );
   }
@@ -1034,9 +1030,9 @@ class __$ConnectorHandleSelectedCopyWithImpl<$Res>
 /// @nodoc
 
 class _ConnectorDragStarted implements ActiveLayerEvent {
-  const _ConnectorDragStarted({this.startObjectId, required this.startPoint});
+  const _ConnectorDragStarted({this.startNodeId, required this.startPoint});
 
-  final int? startObjectId;
+  final int? startNodeId;
   final Offset startPoint;
 
   /// Create a copy of ActiveLayerEvent
@@ -1054,18 +1050,18 @@ class _ConnectorDragStarted implements ActiveLayerEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ConnectorDragStarted &&
-            (identical(other.startObjectId, startObjectId) ||
-                other.startObjectId == startObjectId) &&
+            (identical(other.startNodeId, startNodeId) ||
+                other.startNodeId == startNodeId) &&
             (identical(other.startPoint, startPoint) ||
                 other.startPoint == startPoint));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, startObjectId, startPoint);
+  int get hashCode => Object.hash(runtimeType, startNodeId, startPoint);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.connectorDragStarted(startObjectId: $startObjectId, startPoint: $startPoint)';
+    return 'ActiveLayerEvent.connectorDragStarted(startNodeId: $startNodeId, startPoint: $startPoint)';
   }
 }
 
@@ -1077,7 +1073,7 @@ abstract mixin class _$ConnectorDragStartedCopyWith<$Res>
     $Res Function(_ConnectorDragStarted) _then,
   ) = __$ConnectorDragStartedCopyWithImpl;
   @useResult
-  $Res call({int? startObjectId, Offset startPoint});
+  $Res call({int? startNodeId, Offset startPoint});
 }
 
 /// @nodoc
@@ -1091,13 +1087,13 @@ class __$ConnectorDragStartedCopyWithImpl<$Res>
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? startObjectId = freezed, Object? startPoint = null}) {
+  $Res call({Object? startNodeId = freezed, Object? startPoint = null}) {
     return _then(
       _ConnectorDragStarted(
-        startObjectId:
-            freezed == startObjectId
-                ? _self.startObjectId
-                : startObjectId // ignore: cast_nullable_to_non_nullable
+        startNodeId:
+            freezed == startNodeId
+                ? _self.startNodeId
+                : startNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
         startPoint:
             null == startPoint
@@ -1219,9 +1215,9 @@ class __$ConnectorDragEndedCopyWithImpl<$Res>
 /// @nodoc
 
 class _ConnectorHoverChanged implements ActiveLayerEvent {
-  const _ConnectorHoverChanged(this.objectId);
+  const _ConnectorHoverChanged(this.nodeId);
 
-  final int? objectId;
+  final int? nodeId;
 
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -1238,16 +1234,15 @@ class _ConnectorHoverChanged implements ActiveLayerEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ConnectorHoverChanged &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId));
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId);
+  int get hashCode => Object.hash(runtimeType, nodeId);
 
   @override
   String toString() {
-    return 'ActiveLayerEvent.connectorHoverChanged(objectId: $objectId)';
+    return 'ActiveLayerEvent.connectorHoverChanged(nodeId: $nodeId)';
   }
 }
 
@@ -1259,7 +1254,7 @@ abstract mixin class _$ConnectorHoverChangedCopyWith<$Res>
     $Res Function(_ConnectorHoverChanged) _then,
   ) = __$ConnectorHoverChangedCopyWithImpl;
   @useResult
-  $Res call({int? objectId});
+  $Res call({int? nodeId});
 }
 
 /// @nodoc
@@ -1273,12 +1268,12 @@ class __$ConnectorHoverChangedCopyWithImpl<$Res>
   /// Create a copy of ActiveLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = freezed}) {
+  $Res call({Object? nodeId = freezed}) {
     return _then(
       _ConnectorHoverChanged(
-        freezed == objectId
-            ? _self.objectId
-            : objectId // ignore: cast_nullable_to_non_nullable
+        freezed == nodeId
+            ? _self.nodeId
+            : nodeId // ignore: cast_nullable_to_non_nullable
                 as int?,
       ),
     );

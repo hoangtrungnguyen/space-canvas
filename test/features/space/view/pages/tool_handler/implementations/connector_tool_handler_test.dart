@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
@@ -25,7 +25,7 @@ class MockToolbarBloc extends MockBloc<ToolbarEvent, ToolbarState>
 
 class MockMediator extends Mock implements CanvasInteractionMediator {}
 
-class GenericSpaceObject extends SpaceObject {
+class GenericNode extends Node {
   @override
   final int id;
   @override
@@ -33,15 +33,11 @@ class GenericSpaceObject extends SpaceObject {
   @override
   final Rect rect;
 
-  GenericSpaceObject({
-    required this.id,
-    required this.zIndex,
-    required this.rect,
-  });
+  GenericNode({required this.id, required this.zIndex, required this.rect});
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitListOfPoint(
-    ListOfPointObject(
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitListOfPoint(
+    ListOfPointNode(
       id: id,
       zIndex: zIndex,
       points: [],
@@ -90,14 +86,14 @@ void main() {
   testWidgets('onTapUp starts connector creation when tapping an anchor', (
     tester,
   ) async {
-    final object = GenericSpaceObject(
+    final object = GenericNode(
       id: 1,
       zIndex: 0,
       rect: const Rect.fromLTWH(100, 100, 100, 100),
     );
 
     when(() => shapeBloc.state).thenReturn(
-      ShapeLayerState.success(data: ShapeLayerData(objects: {1: object})),
+      ShapeLayerState.success(data: ShapeLayerData(nodes: {1: object})),
     );
 
     await tester.pumpWidget(createTestWidget(Container()));
@@ -117,7 +113,7 @@ void main() {
     verify(
       () => activeBloc.add(
         ActiveLayerEvent.connectorDragStarted(
-          startObjectId: 1,
+          startNodeId: 1,
           startPoint: const Offset(150, 100), // Top Center of rect
         ),
       ),
@@ -131,17 +127,17 @@ void main() {
     when(() => activeBloc.state).thenReturn(
       ActiveLayerState(
         connectorStartPoint: startPoint,
-        connectorStartObjectId: 1,
+        connectorStartNodeId: 1,
       ),
     );
 
-    final object = GenericSpaceObject(
+    final object = GenericNode(
       id: 2,
       zIndex: 0,
       rect: const Rect.fromLTWH(200, 200, 100, 100),
     );
     when(() => shapeBloc.state).thenReturn(
-      ShapeLayerState.success(data: ShapeLayerData(objects: {2: object})),
+      ShapeLayerState.success(data: ShapeLayerData(nodes: {2: object})),
     );
 
     await tester.pumpWidget(createTestWidget(Container()));
@@ -162,8 +158,8 @@ void main() {
       () => mediator.createConnector(
         startPoint: startPoint,
         endPoint: const Offset(250, 250),
-        startObjectId: 1,
-        endObjectId: 2,
+        startNodeId: 1,
+        endNodeId: 2,
         startLocation: any(named: 'startLocation'),
         endLocation: any(named: 'endLocation'),
       ),

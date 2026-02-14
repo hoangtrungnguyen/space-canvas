@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart'; // For Colors
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/paint_visitor.dart';
 
 class MockCanvas extends Mock implements Canvas {}
@@ -23,10 +23,10 @@ void main() {
     });
 
     // =========================================================================
-    // ShapeObject - Types
+    // ShapeNode - Types
     // =========================================================================
-    test('should draw ShapeObject (Rectangle)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Rectangle)', () {
+      final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -36,8 +36,8 @@ void main() {
       verify(() => canvas.drawRect(shape.rect, any())).called(1);
     });
 
-    test('should draw ShapeObject (Oval)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Oval)', () {
+      final shape = ShapeNode(
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -47,8 +47,8 @@ void main() {
       verify(() => canvas.drawOval(shape.rect, any())).called(1);
     });
 
-    test('should draw ShapeObject (Triangle)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Triangle)', () {
+      final shape = ShapeNode(
         type: ShapeType.triangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -58,8 +58,8 @@ void main() {
       verify(() => canvas.drawPath(any(), any())).called(1);
     });
 
-    test('should draw ShapeObject (Diamond)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Diamond)', () {
+      final shape = ShapeNode(
         type: ShapeType.diamond,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -69,8 +69,8 @@ void main() {
       verify(() => canvas.drawPath(any(), any())).called(1);
     });
 
-    test('should draw ShapeObject (Parallelogram)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Parallelogram)', () {
+      final shape = ShapeNode(
         type: ShapeType.parallelogram,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -81,8 +81,8 @@ void main() {
       verify(() => canvas.drawPath(any(), any())).called(1);
     });
 
-    test('should draw ShapeObject (Database)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Database)', () {
+      final shape = ShapeNode(
         type: ShapeType.database,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -96,8 +96,8 @@ void main() {
       ).called(2); // Top fill + stroke
     });
 
-    test('should draw ShapeObject (Server)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Server)', () {
+      final shape = ShapeNode(
         type: ShapeType.server,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -109,8 +109,8 @@ void main() {
       verify(() => canvas.drawLine(any(), any(), any())).called(2);
     });
 
-    test('should draw ShapeObject (Cloud)', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode (Cloud)', () {
+      final shape = ShapeNode(
         type: ShapeType.cloud,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -121,10 +121,10 @@ void main() {
     });
 
     // =========================================================================
-    // ShapeObject - Labels
+    // ShapeNode - Labels
     // =========================================================================
-    test('should draw ShapeObject Label', () {
-      final shape = ShapeObject(
+    test('should draw ShapeNode Label', () {
+      final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
@@ -139,17 +139,17 @@ void main() {
     // =========================================================================
     // Other Objects
     // =========================================================================
-    test('should draw PathObject', () {
+    test('should draw PathNode', () {
       final path = Path();
       path.moveTo(0, 0);
       path.lineTo(10, 10);
-      final pathObj = PathObject(path: path, paint: Paint(), id: 2);
+      final pathObj = PathNode(path: path, paint: Paint(), id: 2);
       pathObj.accept(visitor);
       verify(() => canvas.drawPath(path, any())).called(1);
     });
 
-    test('should draw TextObject', () {
-      final text = TextObject(
+    test('should draw TextNode', () {
+      final text = TextNode(
         text: 'Hello',
         position: const Offset(10, 10),
         fontSize: 20,
@@ -159,10 +159,10 @@ void main() {
       expect(() => text.accept(visitor), returnsNormally);
     });
 
-    test('should draw ConnectorObject', () {
-      final connector = ConnectorObject(
-        startObjectId: 1,
-        endObjectId: 2,
+    test('should draw ConnectorNode', () {
+      final connector = ConnectorNode(
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
         strokeWidth: 2,
@@ -175,8 +175,8 @@ void main() {
       verify(() => canvas.drawPath(any(), any())).called(1);
     });
 
-    test('should draw ListOfPointObject (valid)', () {
-      final points = ListOfPointObject(
+    test('should draw ListOfPointNode (valid)', () {
+      final points = ListOfPointNode(
         points: const [Offset(0, 0), Offset(100, 100)],
         strokeWidth: 2,
         color: 0xFF000000,
@@ -186,8 +186,8 @@ void main() {
       verify(() => canvas.drawPath(any(), any())).called(1);
     });
 
-    test('should NOT draw ListOfPointObject with too few points', () {
-      final points = ListOfPointObject(
+    test('should NOT draw ListOfPointNode with too few points', () {
+      final points = ListOfPointNode(
         points: const [Offset(0, 0)], // Only 1 point
         strokeWidth: 2,
         color: 0xFF000000,
@@ -197,8 +197,8 @@ void main() {
       verifyNever(() => canvas.drawPath(any(), any()));
     });
 
-    test('should draw ImageObject (Placeholder)', () {
-      final img = ImageObject(
+    test('should draw ImageNode (Placeholder)', () {
+      final img = ImageNode(
         imageUrl: 'test.png',
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         id: 7,
@@ -208,8 +208,8 @@ void main() {
       verify(() => canvas.drawRect(any(), any())).called(1);
     });
 
-    test('should handle GroupObject (no-op)', () {
-      final group = GroupObject(childrenIds: [], rect: Rect.zero, id: 8);
+    test('should handle GroupNode (no-op)', () {
+      final group = GroupNode(childrenIds: [], rect: Rect.zero, id: 8);
       group.accept(visitor);
       // No canvas calls expected
       verifyZeroInteractions(canvas);

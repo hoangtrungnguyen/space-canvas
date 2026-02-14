@@ -9,7 +9,7 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/resize_tool_handler.dart';
 
@@ -37,7 +37,7 @@ void main() {
     late MockShapeLayerBloc shapeBloc;
     late MockCanvasInteractionMediator mediator;
     late TransformationController controller;
-    late ShapeObject testShape;
+    late ShapeNode testShape;
 
     setUp(() {
       activeBloc = MockActiveLayerBloc();
@@ -45,7 +45,7 @@ void main() {
       mediator = MockCanvasInteractionMediator();
       controller = TransformationController();
 
-      testShape = ShapeObject(
+      testShape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 100, 100),
@@ -132,10 +132,10 @@ void main() {
       ) async {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
+            activeNodes: {testShape.id: testShape},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
-            originalObject: testShape,
+            originalNode: testShape,
           ),
         );
 
@@ -164,10 +164,10 @@ void main() {
       testWidgets('should not resize when no active handle', (tester) async {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
+            activeNodes: {testShape.id: testShape},
             resizeHandle: null,
             dragStartPoint: const Offset(200, 200),
-            originalObject: testShape,
+            originalNode: testShape,
           ),
         );
 
@@ -191,10 +191,10 @@ void main() {
       testWidgets('should not resize when no active objects', (tester) async {
         when(() => activeBloc.state).thenReturn(
           const ActiveLayerState(
-            activeObjects: {},
+            activeNodes: {},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: Offset(200, 200),
-            originalObject: null,
+            originalNode: null,
           ),
         );
 
@@ -218,13 +218,13 @@ void main() {
       testWidgets(
         'should not resize if original object is missing or id mismatch',
         (tester) async {
-          // Case 1: originalObject is null
+          // Case 1: originalNode is null
           when(() => activeBloc.state).thenReturn(
             ActiveLayerState(
-              activeObjects: {testShape.id: testShape},
+              activeNodes: {testShape.id: testShape},
               resizeHandle: ResizeHandle.bottomRight,
               dragStartPoint: const Offset(200, 200),
-              originalObject: null,
+              originalNode: null,
             ),
           );
 
@@ -245,10 +245,10 @@ void main() {
           final otherShape = testShape.copyWith(id: 999);
           when(() => activeBloc.state).thenReturn(
             ActiveLayerState(
-              activeObjects: {testShape.id: testShape},
+              activeNodes: {testShape.id: testShape},
               resizeHandle: ResizeHandle.bottomRight,
               dragStartPoint: const Offset(200, 200),
-              originalObject: otherShape,
+              originalNode: otherShape,
             ),
           );
 
@@ -273,10 +273,10 @@ void main() {
       ) async {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
+            activeNodes: {testShape.id: testShape},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: null,
-            originalObject: testShape,
+            originalNode: testShape,
           ),
         );
 
@@ -304,15 +304,15 @@ void main() {
       ) async {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
+            activeNodes: {testShape.id: testShape},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
-            originalObject: testShape,
+            originalNode: testShape,
           ),
         );
-        when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: ShapeLayerData(objects: {})),
-        );
+        when(
+          () => shapeBloc.state,
+        ).thenReturn(ShapeLayerState.success(data: ShapeLayerData(nodes: {})));
 
         await pumpResizeHandlerWidget(
           tester,
@@ -327,27 +327,27 @@ void main() {
 
         verify(() => mediator.finalizeInteraction()).called(1);
         verify(
-          () => shapeBloc.add(ShapeLayerEvent.removeObject(testShape.id)),
+          () => shapeBloc.add(ShapeLayerEvent.removeNode(testShape.id)),
         ).called(1);
         verify(
           () => activeBloc.add(const ActiveLayerEvent.handleChanged(null)),
         ).called(1);
       });
 
-      testWidgets('should set originalObject for continuous interaction', (
+      testWidgets('should set originalNode for continuous interaction', (
         tester,
       ) async {
         when(() => activeBloc.state).thenReturn(
           ActiveLayerState(
-            activeObjects: {testShape.id: testShape},
+            activeNodes: {testShape.id: testShape},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: const Offset(200, 200),
-            originalObject: testShape,
+            originalNode: testShape,
           ),
         );
-        when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: ShapeLayerData(objects: {})),
-        );
+        when(
+          () => shapeBloc.state,
+        ).thenReturn(ShapeLayerState.success(data: ShapeLayerData(nodes: {})));
 
         await pumpResizeHandlerWidget(
           tester,
@@ -361,19 +361,19 @@ void main() {
         );
 
         verify(
-          () => activeBloc.add(ActiveLayerEvent.originalObjectSet(testShape)),
+          () => activeBloc.add(ActiveLayerEvent.originalNodeSet(testShape)),
         ).called(1);
       });
 
-      testWidgets('should finalize but skip updates if activeObjects is empty', (
+      testWidgets('should finalize but skip updates if activeNodes is empty', (
         tester,
       ) async {
         when(() => activeBloc.state).thenReturn(
           const ActiveLayerState(
-            activeObjects: {},
+            activeNodes: {},
             resizeHandle: ResizeHandle.bottomRight,
             dragStartPoint: Offset(200, 200),
-            originalObject: null,
+            originalNode: null,
           ),
         );
 
@@ -391,13 +391,11 @@ void main() {
         verify(() => mediator.finalizeInteraction()).called(1);
         // Ensure no events sent to shapeBloc or activeBloc (logic inside 'isNotEmpty' blocks)
         verifyNever(() => shapeBloc.add(any(that: isA<ShapeLayerEvent>())));
-        // originalObjectSet should NOT be called
+        // originalNodeSet should NOT be called
         final captured = verify(() => activeBloc.add(captureAny())).captured;
         final originalSetEvents = captured.where(
           (e) =>
-              (e as ActiveLayerEvent).mapOrNull(
-                originalObjectSet: (_) => true,
-              ) ??
+              (e as ActiveLayerEvent).mapOrNull(originalNodeSet: (_) => true) ??
               false,
         );
         expect(originalSetEvents, isEmpty);

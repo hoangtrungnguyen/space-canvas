@@ -5,11 +5,11 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
-import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_object_command.dart';
+import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 class MockShapeLayerBloc extends MockBloc<ShapeLayerEvent, ShapeLayerState>
@@ -47,12 +47,12 @@ void main() {
   group('HistoryManager', () {
     late MockShapeLayerBloc bloc;
     late HistoryManager historyManager;
-    late ShapeObject testShape;
+    late ShapeNode testShape;
 
     setUp(() {
       bloc = MockShapeLayerBloc();
       historyManager = HistoryManager(bloc);
-      testShape = ShapeObject(
+      testShape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -248,32 +248,32 @@ void main() {
     });
 
     group('_formatCommand and _getObjectInfo (via logging)', () {
-      test('handles AddShapeCommand', () async {
-        final command = AddShapeCommand(testShape);
+      test('handles AddNodeCommand', () async {
+        final command = AddNodeCommand(testShape);
         await historyManager.execute(command);
         expect(historyManager.canUndo, isTrue);
       });
 
-      test('handles DeleteObjectCommand', () async {
-        final command = DeleteObjectCommand(testShape);
+      test('handles DeleteNodeCommand', () async {
+        final command = DeleteNodeCommand(testShape);
         await historyManager.execute(command);
         expect(historyManager.canUndo, isTrue);
       });
 
-      test('handles MoveObjectCommand', () async {
+      test('handles MoveNodeCommand', () async {
         final movedShape = testShape.copyWith(
           rect: const Rect.fromLTWH(50, 50, 100, 100),
         );
-        final command = MoveObjectCommand(
-          originalObject: testShape,
-          movedObject: movedShape,
+        final command = MoveNodeCommand(
+          originalNode: testShape,
+          movedNode: movedShape,
         );
         await historyManager.execute(command);
         expect(historyManager.canUndo, isTrue);
       });
 
       test('handles BatchDeleteCommand', () async {
-        final shape2 = ShapeObject(
+        final shape2 = ShapeNode(
           id: 2,
           type: ShapeType.oval,
           rect: const Rect.fromLTWH(100, 100, 50, 50),

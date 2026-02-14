@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-/// A visitor that handles the painting of [SpaceObject]s onto a [Canvas].
-class PaintVisitor implements SpaceObjectVisitor<void> {
+/// A visitor that handles the painting of [Node]s onto a [Canvas].
+class PaintVisitor implements NodeVisitor<void> {
   final Canvas canvas;
 
   // We can reuse a text painter for performance if needed,
@@ -15,35 +15,35 @@ class PaintVisitor implements SpaceObjectVisitor<void> {
   PaintVisitor(this.canvas);
 
   @override
-  void visitPath(PathObject object) {
-    canvas.drawPath(object.path, object.paint);
+  void visitPath(PathNode node) {
+    canvas.drawPath(node.path, node.paint);
   }
 
   @override
-  void visitShape(ShapeObject object) {
-    _drawShape(object);
-    _drawShapeLabel(object);
+  void visitShape(ShapeNode node) {
+    _drawShape(node);
+    _drawShapeLabel(node);
   }
 
   @override
-  void visitText(TextObject object) {
+  void visitText(TextNode node) {
     final textSpan = TextSpan(
-      text: object.text,
+      text: node.text,
       style: TextStyle(
-        color: Color(object.color),
-        fontSize: object.fontSize,
-        fontFamily: object.fontFamily,
+        color: Color(node.color),
+        fontSize: node.fontSize,
+        fontFamily: node.fontFamily,
       ),
     );
     final tp = TextPainter(text: textSpan, textDirection: TextDirection.ltr);
     tp.layout();
-    tp.paint(canvas, object.position);
+    tp.paint(canvas, node.position);
   }
 
   @override
-  void visitImage(ImageObject object) {
+  void visitImage(ImageNode node) {
     canvas.drawRect(
-      object.rect,
+      node.rect,
       Paint()..color = Colors.grey.withValues(alpha: 0.3),
     );
     final tp = TextPainter(
@@ -54,69 +54,69 @@ class PaintVisitor implements SpaceObjectVisitor<void> {
       textDirection: TextDirection.ltr,
     );
     tp.layout();
-    tp.paint(canvas, object.rect.center - Offset(tp.width / 2, tp.height / 2));
+    tp.paint(canvas, node.rect.center - Offset(tp.width / 2, tp.height / 2));
   }
 
   @override
-  void visitConnector(ConnectorObject object) {
+  void visitConnector(ConnectorNode node) {
     final paint =
         Paint()
-          ..color = Color(object.color)
-          ..strokeWidth = object.strokeWidth
+          ..color = Color(node.color)
+          ..strokeWidth = node.strokeWidth
           ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(object.startPoint, object.endPoint, paint);
+    canvas.drawLine(node.startPoint, node.endPoint, paint);
 
-    final dx = object.endPoint.dx - object.startPoint.dx;
-    final dy = object.endPoint.dy - object.startPoint.dy;
+    final dx = node.endPoint.dx - node.startPoint.dx;
+    final dy = node.endPoint.dy - node.startPoint.dy;
     final angle = math.atan2(dy, dx);
     final arrowLength = 10.0;
     final arrowPath = Path();
-    arrowPath.moveTo(object.endPoint.dx, object.endPoint.dy);
+    arrowPath.moveTo(node.endPoint.dx, node.endPoint.dy);
     arrowPath.lineTo(
-      object.endPoint.dx - arrowLength * math.cos(angle - math.pi / 6),
-      object.endPoint.dy - arrowLength * math.sin(angle - math.pi / 6),
+      node.endPoint.dx - arrowLength * math.cos(angle - math.pi / 6),
+      node.endPoint.dy - arrowLength * math.sin(angle - math.pi / 6),
     );
     arrowPath.lineTo(
-      object.endPoint.dx - arrowLength * math.cos(angle + math.pi / 6),
-      object.endPoint.dy - arrowLength * math.sin(angle + math.pi / 6),
+      node.endPoint.dx - arrowLength * math.cos(angle + math.pi / 6),
+      node.endPoint.dy - arrowLength * math.sin(angle + math.pi / 6),
     );
     arrowPath.close();
     canvas.drawPath(
       arrowPath,
       Paint()
-        ..color = Color(object.color)
+        ..color = Color(node.color)
         ..style = PaintingStyle.fill,
     );
   }
 
   @override
-  void visitGroup(GroupObject object) {
+  void visitGroup(GroupNode node) {
     // No op for now
   }
 
   @override
-  void visitListOfPoint(ListOfPointObject object) {
-    if (object.points.length < 2) return;
+  void visitListOfPoint(ListOfPointNode node) {
+    if (node.points.length < 2) return;
 
     final paint =
         Paint()
-          ..color = Color(object.color)
-          ..strokeWidth = object.strokeWidth
+          ..color = Color(node.color)
+          ..strokeWidth = node.strokeWidth
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round;
 
     final path = Path();
-    path.moveTo(object.points.first.dx, object.points.first.dy);
-    for (int i = 1; i < object.points.length; i++) {
-      path.lineTo(object.points[i].dx, object.points[i].dy);
+    path.moveTo(node.points.first.dx, node.points.first.dy);
+    for (int i = 1; i < node.points.length; i++) {
+      path.lineTo(node.points[i].dx, node.points[i].dy);
     }
 
     canvas.drawPath(path, paint);
   }
 
-  void _drawShape(ShapeObject shape) {
+  void _drawShape(ShapeNode shape) {
     switch (shape.type) {
       case ShapeType.rectangle:
         canvas.drawRect(shape.rect, shape.paint);
@@ -242,18 +242,18 @@ class PaintVisitor implements SpaceObjectVisitor<void> {
     }
   }
 
-  void _drawShapeLabel(ShapeObject object) {
-    if (object.text.isEmpty) return;
+  void _drawShapeLabel(ShapeNode node) {
+    if (node.text.isEmpty) return;
 
     final textSpan = TextSpan(
-      text: object.text,
+      text: node.text,
       style: TextStyle(color: Colors.black, fontSize: 14),
     );
     _textPainter.text = textSpan;
-    _textPainter.layout(minWidth: 0, maxWidth: object.rect.width);
+    _textPainter.layout(minWidth: 0, maxWidth: node.rect.width);
     final offset = Offset(
-      object.rect.left + (object.rect.width - _textPainter.width) / 2,
-      object.rect.top + (object.rect.height - _textPainter.height) / 2,
+      node.rect.left + (node.rect.width - _textPainter.width) / 2,
+      node.rect.top + (node.rect.height - _textPainter.height) / 2,
     );
     _textPainter.paint(canvas, offset);
   }

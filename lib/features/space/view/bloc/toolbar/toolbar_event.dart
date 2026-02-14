@@ -10,9 +10,9 @@ sealed class ToolbarEvent with _$ToolbarEvent {
   const factory ToolbarEvent.selected(SpaceTool tool) = _Selected;
   const factory ToolbarEvent.shapeSelected(ShapeType type) = _ShapeSelected;
   const factory ToolbarEvent.toDefault() = _ToDefault;
-  const factory ToolbarEvent.updateDrawingObject(SpaceObject? object) =
+  const factory ToolbarEvent.updateDrawingObject(Node? object) =
       _UpdateDrawingObject;
-  const factory ToolbarEvent.startedEditing(TextObject object) =
+  const factory ToolbarEvent.startedEditing(TextNode object) =
       _StartedEditing;
   const factory ToolbarEvent.endedEditing() = _EndedEditing;
   const factory ToolbarEvent.toggledSelectionTool() = _ToggledSelectionTool;

@@ -1,52 +1,50 @@
 import 'dart:ui';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-/// A visitor that creates a moved copy of a [SpaceObject] by applying a delta offset.
+/// A visitor that creates a moved copy of a [Node] by applying a delta offset.
 ///
 /// This visitor implements the Visitor pattern to handle different object types
 /// polymorphically without type-checking conditionals.
-class MoveVisitor implements SpaceObjectVisitor<SpaceObject?> {
+class MoveVisitor implements NodeVisitor<Node?> {
   final Offset delta;
 
   const MoveVisitor(this.delta);
 
   @override
-  SpaceObject? visitShape(ShapeObject object) {
-    return object.copyWith(rect: object.rect.shift(delta));
+  Node? visitShape(ShapeNode node) {
+    return node.copyWith(rect: node.rect.shift(delta));
   }
 
   @override
-  SpaceObject? visitText(TextObject object) {
-    return object.copyWith(position: object.position + delta);
+  Node? visitText(TextNode node) {
+    return node.copyWith(position: node.position + delta);
   }
 
   @override
-  SpaceObject? visitPath(PathObject object) {
-    return object.copyWith(path: object.path.shift(delta));
+  Node? visitPath(PathNode node) {
+    return node.copyWith(path: node.path.shift(delta));
   }
 
   @override
-  SpaceObject? visitListOfPoint(ListOfPointObject object) {
-    return object.copyWith(
-      points: object.points.map((p) => p + delta).toList(),
+  Node? visitListOfPoint(ListOfPointNode node) {
+    return node.copyWith(points: node.points.map((p) => p + delta).toList());
+  }
+
+  @override
+  Node? visitConnector(ConnectorNode node) {
+    return node.copyWith(
+      startPoint: node.startPoint + delta,
+      endPoint: node.endPoint + delta,
     );
   }
 
   @override
-  SpaceObject? visitConnector(ConnectorObject object) {
-    return object.copyWith(
-      startPoint: object.startPoint + delta,
-      endPoint: object.endPoint + delta,
-    );
+  Node? visitImage(ImageNode node) {
+    return node.copyWith(rect: node.rect.shift(delta));
   }
 
   @override
-  SpaceObject? visitImage(ImageObject object) {
-    return object.copyWith(rect: object.rect.shift(delta));
-  }
-
-  @override
-  SpaceObject? visitGroup(GroupObject object) {
-    return object.copyWith(rect: object.rect.shift(delta));
+  Node? visitGroup(GroupNode node) {
+    return node.copyWith(rect: node.rect.shift(delta));
   }
 }

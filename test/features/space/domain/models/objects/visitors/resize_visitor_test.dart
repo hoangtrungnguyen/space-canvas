@@ -1,13 +1,13 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/resize_visitor.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 
 void main() {
   group('ResizeVisitor', () {
     final baseRect = const Rect.fromLTWH(100, 100, 100, 100);
-    final baseShape = ShapeObject(
+    final baseShape = ShapeNode(
       type: ShapeType.rectangle,
       rect: baseRect,
       paint: Paint(),
@@ -15,7 +15,7 @@ void main() {
     );
 
     // =========================================================================
-    // ShapeObject - Handle Logic
+    // ShapeNode - Handle Logic
     // =========================================================================
     test('should resize Shape via topLeft', () {
       // Drag TopLeft by (-10, -10) -> Should expand to (90, 90)
@@ -23,7 +23,7 @@ void main() {
         handle: ResizeHandle.topLeft,
         delta: const Offset(-10, -10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTWH(90, 90, 110, 110));
     });
 
@@ -33,7 +33,7 @@ void main() {
         handle: ResizeHandle.topCenter,
         delta: const Offset(0, -10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTWH(100, 90, 100, 110));
     });
 
@@ -43,7 +43,7 @@ void main() {
         handle: ResizeHandle.topRight,
         delta: const Offset(10, -10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       // Left: 100 (Unchanged), Top: 90, Right: 210, Bottom: 200
       expect(resized.rect, const Rect.fromLTRB(100, 90, 210, 200));
     });
@@ -53,7 +53,7 @@ void main() {
         handle: ResizeHandle.centerRight,
         delta: const Offset(10, 0),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTRB(100, 100, 210, 200));
     });
 
@@ -62,7 +62,7 @@ void main() {
         handle: ResizeHandle.bottomRight,
         delta: const Offset(10, 10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTWH(100, 100, 110, 110));
     });
 
@@ -72,7 +72,7 @@ void main() {
         handle: ResizeHandle.bottomCenter,
         delta: const Offset(0, 10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTWH(100, 100, 100, 110));
     });
 
@@ -82,7 +82,7 @@ void main() {
         handle: ResizeHandle.bottomLeft,
         delta: const Offset(-10, 10),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       // Left: 90, Top: 100, Right: 200, Bottom: 210
       expect(resized.rect, const Rect.fromLTRB(90, 100, 200, 210));
     });
@@ -93,12 +93,12 @@ void main() {
         handle: ResizeHandle.centerLeft,
         delta: const Offset(-10, 0),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect, const Rect.fromLTRB(90, 100, 200, 200));
     });
 
     // =========================================================================
-    // ShapeObject - Edge Cases
+    // ShapeNode - Edge Cases
     // =========================================================================
     test('should flip horizontal if dragging past edge', () {
       // Drag Right to Left past Left edge (delta = -200)
@@ -108,7 +108,7 @@ void main() {
         handle: ResizeHandle.centerRight,
         delta: const Offset(-200, 0),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect.left, 0);
       expect(resized.rect.width, 100);
       expect(resized.rect.right, 100);
@@ -120,7 +120,7 @@ void main() {
         handle: ResizeHandle.bottomCenter,
         delta: const Offset(0, -200),
       );
-      final resized = baseShape.accept(visitor) as ShapeObject;
+      final resized = baseShape.accept(visitor) as ShapeNode;
       expect(resized.rect.top, 0);
       expect(resized.rect.height, 100);
     });
@@ -130,9 +130,9 @@ void main() {
     // =========================================================================
 
     test(
-      'should return original object for TextObject (Corners - currently no-op)',
+      'should return original object for TextNode (Corners - currently no-op)',
       () {
-        final text = TextObject(
+        final text = TextNode(
           id: 2,
           text: 'Test',
           position: const Offset(0, 0),
@@ -148,8 +148,8 @@ void main() {
       },
     );
 
-    test('should return original object for TextObject (Sides - no-op)', () {
-      final text = TextObject(
+    test('should return original object for TextNode (Sides - no-op)', () {
+      final text = TextNode(
         id: 2,
         text: 'Test',
         position: const Offset(0, 0),
@@ -164,8 +164,8 @@ void main() {
       expect(result, text);
     });
 
-    test('should return original object for PathObject (no-op)', () {
-      final path = PathObject(id: 3, path: Path(), paint: Paint());
+    test('should return original object for PathNode (no-op)', () {
+      final path = PathNode(id: 3, path: Path(), paint: Paint());
       final visitor = ResizeVisitor(
         handle: ResizeHandle.bottomRight,
         delta: const Offset(10, 10),
@@ -174,8 +174,8 @@ void main() {
       expect(result, path);
     });
 
-    test('should return original object for ImageObject (no-op)', () {
-      final image = ImageObject(
+    test('should return original object for ImageNode (no-op)', () {
+      final image = ImageNode(
         id: 4,
         imageUrl: 'assets/test.png',
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -188,8 +188,8 @@ void main() {
       expect(result, image);
     });
 
-    test('should return original object for ListOfPointObject (no-op)', () {
-      final list = ListOfPointObject(
+    test('should return original object for ListOfPointNode (no-op)', () {
+      final list = ListOfPointNode(
         id: 5,
         points: [],
         strokeWidth: 1,
@@ -203,11 +203,11 @@ void main() {
       expect(result, list);
     });
 
-    test('should return original object for ConnectorObject (no-op)', () {
-      final connector = ConnectorObject(
+    test('should return original object for ConnectorNode (no-op)', () {
+      final connector = ConnectorNode(
         id: 6,
-        startObjectId: 1,
-        endObjectId: 2,
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: Offset.zero,
         endPoint: const Offset(10, 10),
         strokeWidth: 1,
@@ -221,8 +221,8 @@ void main() {
       expect(result, connector);
     });
 
-    test('should return original object for GroupObject (no-op)', () {
-      final group = GroupObject(
+    test('should return original object for GroupNode (no-op)', () {
+      final group = GroupNode(
         id: 7,
         childrenIds: [],
         rect: const Rect.fromLTWH(0, 0, 100, 100),

@@ -5,13 +5,13 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_eve
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'interaction_state_manager.dart';
 
-/// Manages object selection logic.
+/// Manages node selection logic.
 class SelectionManager {
   final ActiveLayerBloc activeBloc;
   final ShapeLayerBloc shapeBloc;
@@ -25,51 +25,51 @@ class SelectionManager {
     required this.interactionManager,
   });
 
-  SpaceObject? hitTest(
+  Node? hitTest(
     Offset worldPoint, {
     SelectionFilter filter = SelectionFilter.all,
   }) {
     final activeState = activeBloc.state;
     final visitor = HitTestVisitor(worldPoint);
 
-    // 1. Check if we hit an ALREADY active object
-    if (activeState.activeObjects.isNotEmpty) {
-      final activeObj = activeState.activeObjects.values.first;
+    // 1. Check if we hit an ALREADY active node
+    if (activeState.activeNodes.isNotEmpty) {
+      final activeNode = activeState.activeNodes.values.first;
 
       bool isAllowed = true;
       if (filter == SelectionFilter.connectorsOnly &&
-          activeObj is! ConnectorObject) {
+          activeNode is! ConnectorNode) {
         isAllowed = false;
       } else if (filter == SelectionFilter.excludeConnectors &&
-          activeObj is ConnectorObject) {
+          activeNode is ConnectorNode) {
         isAllowed = false;
       }
 
-      if (isAllowed && activeObj.accept(visitor)) {
-        return activeObj;
+      if (isAllowed && activeNode.accept(visitor)) {
+        return activeNode;
       }
     }
 
-    // 2. Check if we hit a NEW object in ShapeLayer
-    final objects = shapeBloc.state.data.objects.values.toList();
-    final hitObjects =
-        objects.where((obj) {
-          if (!obj.accept(visitor)) return false;
+    // 2. Check if we hit a NEW node in ShapeLayer
+    final nodes = shapeBloc.state.data.nodes.values.toList();
+    final hitNodes =
+        nodes.where((node) {
+          if (!node.accept(visitor)) return false;
 
           if (filter == SelectionFilter.connectorsOnly &&
-              obj is! ConnectorObject) {
+              node is! ConnectorNode) {
             return false;
           }
           if (filter == SelectionFilter.excludeConnectors &&
-              obj is ConnectorObject) {
+              node is ConnectorNode) {
             return false;
           }
           return true;
         }).toList();
 
-    if (hitObjects.isNotEmpty) {
-      hitObjects.sort((a, b) => b.zIndex.compareTo(a.zIndex));
-      return hitObjects.first;
+    if (hitNodes.isNotEmpty) {
+      hitNodes.sort((a, b) => b.zIndex.compareTo(a.zIndex));
+      return hitNodes.first;
     }
 
     return null;
@@ -80,22 +80,22 @@ class SelectionManager {
     required bool isDrag,
     SelectionFilter filter = SelectionFilter.all,
   }) {
-    final hitObject = hitTest(worldPoint, filter: filter);
+    final hitNode = hitTest(worldPoint, filter: filter);
 
     final activeState = activeBloc.state;
     final currentlyActive =
-        activeState.activeObjects.isNotEmpty
-            ? activeState.activeObjects.values.first
+        activeState.activeNodes.isNotEmpty
+            ? activeState.activeNodes.values.first
             : null;
 
-    if (hitObject != null) {
-      // If it's the currently active object
-      if (currentlyActive != null && currentlyActive.id == hitObject.id) {
+    if (hitNode != null) {
+      // If it's the currently active node
+      if (currentlyActive != null && currentlyActive.id == hitNode.id) {
         if (isDrag) {
-          activeBloc.add(ActiveLayerEvent.originalObjectSet(hitObject));
+          activeBloc.add(ActiveLayerEvent.originalNodeSet(hitNode));
           activeBloc.add(
             ActiveLayerEvent.interactionStarted(
-              object: hitObject,
+              node: hitNode,
               point: worldPoint,
             ),
           );
@@ -103,22 +103,19 @@ class SelectionManager {
         return;
       }
 
-      // If it's a new object (from ShapeLayer)
+      // If it's a new node (from ShapeLayer)
       // First, deselect current if any (though logic usually implies single selection mode here)
       if (currentlyActive != null) {
         interactionManager.commitAndDeactivate();
       }
 
-      activeBloc.add(ActiveLayerEvent.originalObjectSet(hitObject));
+      activeBloc.add(ActiveLayerEvent.originalNodeSet(hitNode));
 
       activeBloc.add(
-        ActiveLayerEvent.interactionStarted(
-          object: hitObject,
-          point: worldPoint,
-        ),
+        ActiveLayerEvent.interactionStarted(node: hitNode, point: worldPoint),
       );
 
-      if (hitObject is ConnectorObject) {
+      if (hitNode is ConnectorNode) {
         toolbarBloc.add(const ToolbarEvent.selected(SpaceTool.selectConnector));
       } else {
         toolbarBloc.add(const ToolbarEvent.selected(SpaceTool.select));
@@ -129,28 +126,28 @@ class SelectionManager {
         interactionManager.commitAndDeactivate();
       } else {
         // Just in case, ensure clean slate
-        activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
-        shapeBloc.add(const ShapeLayerEvent.objectSelected(null));
+        activeBloc.add(const ActiveLayerEvent.originalNodeSet(null));
+        shapeBloc.add(const ShapeLayerEvent.nodeSelected(null));
       }
     }
   }
 
   void selectConnectorAt(Offset worldPoint, {required bool isDrag}) {
-    final hitObject = hitTest(worldPoint, filter: SelectionFilter.all);
+    final hitNode = hitTest(worldPoint, filter: SelectionFilter.all);
 
     final activeState = activeBloc.state;
     final currentlyActive =
-        activeState.activeObjects.isNotEmpty
-            ? activeState.activeObjects.values.first
+        activeState.activeNodes.isNotEmpty
+            ? activeState.activeNodes.values.first
             : null;
 
-    if (hitObject != null) {
-      if (currentlyActive != null && currentlyActive.id == hitObject.id) {
+    if (hitNode != null) {
+      if (currentlyActive != null && currentlyActive.id == hitNode.id) {
         if (isDrag) {
-          activeBloc.add(ActiveLayerEvent.originalObjectSet(hitObject));
+          activeBloc.add(ActiveLayerEvent.originalNodeSet(hitNode));
           activeBloc.add(
             ActiveLayerEvent.interactionStarted(
-              object: hitObject,
+              node: hitNode,
               point: worldPoint,
             ),
           );
@@ -162,24 +159,21 @@ class SelectionManager {
         interactionManager.commitAndDeactivate();
       }
 
-      activeBloc.add(ActiveLayerEvent.originalObjectSet(hitObject));
+      activeBloc.add(ActiveLayerEvent.originalNodeSet(hitNode));
 
       activeBloc.add(
-        ActiveLayerEvent.interactionStarted(
-          object: hitObject,
-          point: worldPoint,
-        ),
+        ActiveLayerEvent.interactionStarted(node: hitNode, point: worldPoint),
       );
 
-      if (hitObject is! ConnectorObject) {
+      if (hitNode is! ConnectorNode) {
         toolbarBloc.add(const ToolbarEvent.selected(SpaceTool.select));
       }
     } else {
       if (currentlyActive != null) {
         interactionManager.commitAndDeactivate();
       } else {
-        activeBloc.add(const ActiveLayerEvent.originalObjectSet(null));
-        shapeBloc.add(const ShapeLayerEvent.objectSelected(null));
+        activeBloc.add(const ActiveLayerEvent.originalNodeSet(null));
+        shapeBloc.add(const ShapeLayerEvent.nodeSelected(null));
       }
     }
   }

@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'connector_object.dart';
+part of 'connector_node.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,9 +12,9 @@ part of 'connector_object.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$ConnectorObject {
-  int? get startObjectId;
-  int? get endObjectId;
+mixin _$ConnectorNode {
+  int? get startNodeId;
+  int? get endNodeId;
   Offset get startPoint;
   Offset get endPoint;
   double get strokeWidth;
@@ -22,19 +22,19 @@ mixin _$ConnectorObject {
   int get id;
   int get zIndex;
 
-  /// Which edge of the start object this connector originates from.
+  /// Which edge of the start node this connector originates from.
   ConnectorEdge? get startLocation;
 
-  /// Which edge of the end object this connector terminates at.
+  /// Which edge of the end node this connector terminates at.
   ConnectorEdge? get endLocation;
 
-  /// Create a copy of ConnectorObject
+  /// Create a copy of ConnectorNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ConnectorObjectCopyWith<ConnectorObject> get copyWith =>
-      _$ConnectorObjectCopyWithImpl<ConnectorObject>(
-        this as ConnectorObject,
+  $ConnectorNodeCopyWith<ConnectorNode> get copyWith =>
+      _$ConnectorNodeCopyWithImpl<ConnectorNode>(
+        this as ConnectorNode,
         _$identity,
       );
 
@@ -42,11 +42,11 @@ mixin _$ConnectorObject {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ConnectorObject &&
-            (identical(other.startObjectId, startObjectId) ||
-                other.startObjectId == startObjectId) &&
-            (identical(other.endObjectId, endObjectId) ||
-                other.endObjectId == endObjectId) &&
+            other is ConnectorNode &&
+            (identical(other.startNodeId, startNodeId) ||
+                other.startNodeId == startNodeId) &&
+            (identical(other.endNodeId, endNodeId) ||
+                other.endNodeId == endNodeId) &&
             (identical(other.startPoint, startPoint) ||
                 other.startPoint == startPoint) &&
             (identical(other.endPoint, endPoint) ||
@@ -65,8 +65,8 @@ mixin _$ConnectorObject {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    startObjectId,
-    endObjectId,
+    startNodeId,
+    endNodeId,
     startPoint,
     endPoint,
     strokeWidth,
@@ -79,20 +79,20 @@ mixin _$ConnectorObject {
 
   @override
   String toString() {
-    return 'ConnectorObject(startObjectId: $startObjectId, endObjectId: $endObjectId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
+    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ConnectorObjectCopyWith<$Res> {
-  factory $ConnectorObjectCopyWith(
-    ConnectorObject value,
-    $Res Function(ConnectorObject) _then,
-  ) = _$ConnectorObjectCopyWithImpl;
+abstract mixin class $ConnectorNodeCopyWith<$Res> {
+  factory $ConnectorNodeCopyWith(
+    ConnectorNode value,
+    $Res Function(ConnectorNode) _then,
+  ) = _$ConnectorNodeCopyWithImpl;
   @useResult
   $Res call({
-    int? startObjectId,
-    int? endObjectId,
+    int? startNodeId,
+    int? endNodeId,
     Offset startPoint,
     Offset endPoint,
     double strokeWidth,
@@ -105,20 +105,20 @@ abstract mixin class $ConnectorObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ConnectorObjectCopyWithImpl<$Res>
-    implements $ConnectorObjectCopyWith<$Res> {
-  _$ConnectorObjectCopyWithImpl(this._self, this._then);
+class _$ConnectorNodeCopyWithImpl<$Res>
+    implements $ConnectorNodeCopyWith<$Res> {
+  _$ConnectorNodeCopyWithImpl(this._self, this._then);
 
-  final ConnectorObject _self;
-  final $Res Function(ConnectorObject) _then;
+  final ConnectorNode _self;
+  final $Res Function(ConnectorNode) _then;
 
-  /// Create a copy of ConnectorObject
+  /// Create a copy of ConnectorNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? startObjectId = freezed,
-    Object? endObjectId = freezed,
+    Object? startNodeId = freezed,
+    Object? endNodeId = freezed,
     Object? startPoint = null,
     Object? endPoint = null,
     Object? strokeWidth = null,
@@ -130,15 +130,15 @@ class _$ConnectorObjectCopyWithImpl<$Res>
   }) {
     return _then(
       _self.copyWith(
-        startObjectId:
-            freezed == startObjectId
-                ? _self.startObjectId
-                : startObjectId // ignore: cast_nullable_to_non_nullable
+        startNodeId:
+            freezed == startNodeId
+                ? _self.startNodeId
+                : startNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
-        endObjectId:
-            freezed == endObjectId
-                ? _self.endObjectId
-                : endObjectId // ignore: cast_nullable_to_non_nullable
+        endNodeId:
+            freezed == endNodeId
+                ? _self.endNodeId
+                : endNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
         startPoint:
             null == startPoint
@@ -185,8 +185,8 @@ class _$ConnectorObjectCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [ConnectorObject].
-extension ConnectorObjectPatterns on ConnectorObject {
+/// Adds pattern-matching-related methods to [ConnectorNode].
+extension ConnectorNodePatterns on ConnectorNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -201,12 +201,12 @@ extension ConnectorObjectPatterns on ConnectorObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ConnectorObject value)? $default, {
+    TResult Function(_ConnectorNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject() when $default != null:
+      case _ConnectorNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -228,11 +228,11 @@ extension ConnectorObjectPatterns on ConnectorObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_ConnectorObject value) $default,
+    TResult Function(_ConnectorNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject():
+      case _ConnectorNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -253,11 +253,11 @@ extension ConnectorObjectPatterns on ConnectorObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ConnectorObject value)? $default,
+    TResult? Function(_ConnectorNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject() when $default != null:
+      case _ConnectorNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -279,8 +279,8 @@ extension ConnectorObjectPatterns on ConnectorObject {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-      int? startObjectId,
-      int? endObjectId,
+      int? startNodeId,
+      int? endNodeId,
       Offset startPoint,
       Offset endPoint,
       double strokeWidth,
@@ -295,10 +295,10 @@ extension ConnectorObjectPatterns on ConnectorObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject() when $default != null:
+      case _ConnectorNode() when $default != null:
         return $default(
-          _that.startObjectId,
-          _that.endObjectId,
+          _that.startNodeId,
+          _that.endNodeId,
           _that.startPoint,
           _that.endPoint,
           _that.strokeWidth,
@@ -329,8 +329,8 @@ extension ConnectorObjectPatterns on ConnectorObject {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-      int? startObjectId,
-      int? endObjectId,
+      int? startNodeId,
+      int? endNodeId,
       Offset startPoint,
       Offset endPoint,
       double strokeWidth,
@@ -344,10 +344,10 @@ extension ConnectorObjectPatterns on ConnectorObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject():
+      case _ConnectorNode():
         return $default(
-          _that.startObjectId,
-          _that.endObjectId,
+          _that.startNodeId,
+          _that.endNodeId,
           _that.startPoint,
           _that.endPoint,
           _that.strokeWidth,
@@ -377,8 +377,8 @@ extension ConnectorObjectPatterns on ConnectorObject {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-      int? startObjectId,
-      int? endObjectId,
+      int? startNodeId,
+      int? endNodeId,
       Offset startPoint,
       Offset endPoint,
       double strokeWidth,
@@ -392,10 +392,10 @@ extension ConnectorObjectPatterns on ConnectorObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ConnectorObject() when $default != null:
+      case _ConnectorNode() when $default != null:
         return $default(
-          _that.startObjectId,
-          _that.endObjectId,
+          _that.startNodeId,
+          _that.endNodeId,
           _that.startPoint,
           _that.endPoint,
           _that.strokeWidth,
@@ -413,10 +413,10 @@ extension ConnectorObjectPatterns on ConnectorObject {
 
 /// @nodoc
 
-class _ConnectorObject extends ConnectorObject {
-  _ConnectorObject({
-    this.startObjectId,
-    this.endObjectId,
+class _ConnectorNode extends ConnectorNode {
+  _ConnectorNode({
+    this.startNodeId,
+    this.endNodeId,
     required this.startPoint,
     required this.endPoint,
     required this.strokeWidth,
@@ -428,9 +428,9 @@ class _ConnectorObject extends ConnectorObject {
   }) : super._();
 
   @override
-  final int? startObjectId;
+  final int? startNodeId;
   @override
-  final int? endObjectId;
+  final int? endNodeId;
   @override
   final Offset startPoint;
   @override
@@ -445,31 +445,31 @@ class _ConnectorObject extends ConnectorObject {
   @JsonKey()
   final int zIndex;
 
-  /// Which edge of the start object this connector originates from.
+  /// Which edge of the start node this connector originates from.
   @override
   final ConnectorEdge? startLocation;
 
-  /// Which edge of the end object this connector terminates at.
+  /// Which edge of the end node this connector terminates at.
   @override
   final ConnectorEdge? endLocation;
 
-  /// Create a copy of ConnectorObject
+  /// Create a copy of ConnectorNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ConnectorObjectCopyWith<_ConnectorObject> get copyWith =>
-      __$ConnectorObjectCopyWithImpl<_ConnectorObject>(this, _$identity);
+  _$ConnectorNodeCopyWith<_ConnectorNode> get copyWith =>
+      __$ConnectorNodeCopyWithImpl<_ConnectorNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ConnectorObject &&
-            (identical(other.startObjectId, startObjectId) ||
-                other.startObjectId == startObjectId) &&
-            (identical(other.endObjectId, endObjectId) ||
-                other.endObjectId == endObjectId) &&
+            other is _ConnectorNode &&
+            (identical(other.startNodeId, startNodeId) ||
+                other.startNodeId == startNodeId) &&
+            (identical(other.endNodeId, endNodeId) ||
+                other.endNodeId == endNodeId) &&
             (identical(other.startPoint, startPoint) ||
                 other.startPoint == startPoint) &&
             (identical(other.endPoint, endPoint) ||
@@ -488,8 +488,8 @@ class _ConnectorObject extends ConnectorObject {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    startObjectId,
-    endObjectId,
+    startNodeId,
+    endNodeId,
     startPoint,
     endPoint,
     strokeWidth,
@@ -502,22 +502,22 @@ class _ConnectorObject extends ConnectorObject {
 
   @override
   String toString() {
-    return 'ConnectorObject(startObjectId: $startObjectId, endObjectId: $endObjectId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
+    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ConnectorObjectCopyWith<$Res>
-    implements $ConnectorObjectCopyWith<$Res> {
-  factory _$ConnectorObjectCopyWith(
-    _ConnectorObject value,
-    $Res Function(_ConnectorObject) _then,
-  ) = __$ConnectorObjectCopyWithImpl;
+abstract mixin class _$ConnectorNodeCopyWith<$Res>
+    implements $ConnectorNodeCopyWith<$Res> {
+  factory _$ConnectorNodeCopyWith(
+    _ConnectorNode value,
+    $Res Function(_ConnectorNode) _then,
+  ) = __$ConnectorNodeCopyWithImpl;
   @override
   @useResult
   $Res call({
-    int? startObjectId,
-    int? endObjectId,
+    int? startNodeId,
+    int? endNodeId,
     Offset startPoint,
     Offset endPoint,
     double strokeWidth,
@@ -530,20 +530,20 @@ abstract mixin class _$ConnectorObjectCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ConnectorObjectCopyWithImpl<$Res>
-    implements _$ConnectorObjectCopyWith<$Res> {
-  __$ConnectorObjectCopyWithImpl(this._self, this._then);
+class __$ConnectorNodeCopyWithImpl<$Res>
+    implements _$ConnectorNodeCopyWith<$Res> {
+  __$ConnectorNodeCopyWithImpl(this._self, this._then);
 
-  final _ConnectorObject _self;
-  final $Res Function(_ConnectorObject) _then;
+  final _ConnectorNode _self;
+  final $Res Function(_ConnectorNode) _then;
 
-  /// Create a copy of ConnectorObject
+  /// Create a copy of ConnectorNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? startObjectId = freezed,
-    Object? endObjectId = freezed,
+    Object? startNodeId = freezed,
+    Object? endNodeId = freezed,
     Object? startPoint = null,
     Object? endPoint = null,
     Object? strokeWidth = null,
@@ -554,16 +554,16 @@ class __$ConnectorObjectCopyWithImpl<$Res>
     Object? endLocation = freezed,
   }) {
     return _then(
-      _ConnectorObject(
-        startObjectId:
-            freezed == startObjectId
-                ? _self.startObjectId
-                : startObjectId // ignore: cast_nullable_to_non_nullable
+      _ConnectorNode(
+        startNodeId:
+            freezed == startNodeId
+                ? _self.startNodeId
+                : startNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
-        endObjectId:
-            freezed == endObjectId
-                ? _self.endObjectId
-                : endObjectId // ignore: cast_nullable_to_non_nullable
+        endNodeId:
+            freezed == endNodeId
+                ? _self.endNodeId
+                : endNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
         startPoint:
             null == startPoint

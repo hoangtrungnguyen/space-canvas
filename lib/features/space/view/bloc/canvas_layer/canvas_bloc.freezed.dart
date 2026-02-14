@@ -144,7 +144,7 @@ extension CanvasEventPatterns on CanvasEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(Offset offset, double scale)? transformUpdated,
-    TResult Function(Map<int, SpaceObject> objects)? objectsUpdated,
+    TResult Function(Map<int, Node> objects)? objectsUpdated,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -177,7 +177,7 @@ extension CanvasEventPatterns on CanvasEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(Offset offset, double scale) transformUpdated,
-    required TResult Function(Map<int, SpaceObject> objects) objectsUpdated,
+    required TResult Function(Map<int, Node> objects) objectsUpdated,
   }) {
     final _that = this;
     switch (_that) {
@@ -206,7 +206,7 @@ extension CanvasEventPatterns on CanvasEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(Offset offset, double scale)? transformUpdated,
-    TResult? Function(Map<int, SpaceObject> objects)? objectsUpdated,
+    TResult? Function(Map<int, Node> objects)? objectsUpdated,
   }) {
     final _that = this;
     switch (_that) {
@@ -331,11 +331,10 @@ class __$TransformUpdatedCopyWithImpl<$Res>
 /// @nodoc
 
 class _ObjectsUpdated implements CanvasEvent {
-  const _ObjectsUpdated(final Map<int, SpaceObject> objects)
-    : _objects = objects;
+  const _ObjectsUpdated(final Map<int, Node> objects) : _objects = objects;
 
-  final Map<int, SpaceObject> _objects;
-  Map<int, SpaceObject> get objects {
+  final Map<int, Node> _objects;
+  Map<int, Node> get objects {
     if (_objects is EqualUnmodifiableMapView) return _objects;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_objects);
@@ -374,7 +373,7 @@ abstract mixin class _$ObjectsUpdatedCopyWith<$Res>
     $Res Function(_ObjectsUpdated) _then,
   ) = __$ObjectsUpdatedCopyWithImpl;
   @useResult
-  $Res call({Map<int, SpaceObject> objects});
+  $Res call({Map<int, Node> objects});
 }
 
 /// @nodoc
@@ -394,7 +393,7 @@ class __$ObjectsUpdatedCopyWithImpl<$Res>
         null == objects
             ? _self._objects
             : objects // ignore: cast_nullable_to_non_nullable
-                as Map<int, SpaceObject>,
+                as Map<int, Node>,
       ),
     );
   }
@@ -402,7 +401,7 @@ class __$ObjectsUpdatedCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$CanvasState {
-  Map<int, SpaceObject> get objects;
+  Map<int, Node> get objects;
   Offset get offset;
   double get scale;
 
@@ -444,7 +443,7 @@ abstract mixin class $CanvasStateCopyWith<$Res> {
     $Res Function(CanvasState) _then,
   ) = _$CanvasStateCopyWithImpl;
   @useResult
-  $Res call({Map<int, SpaceObject> objects, Offset offset, double scale});
+  $Res call({Map<int, Node> objects, Offset offset, double scale});
 }
 
 /// @nodoc
@@ -469,7 +468,7 @@ class _$CanvasStateCopyWithImpl<$Res> implements $CanvasStateCopyWith<$Res> {
             null == objects
                 ? _self.objects
                 : objects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+                    as Map<int, Node>,
         offset:
             null == offset
                 ? _self.offset
@@ -578,11 +577,7 @@ extension CanvasStatePatterns on CanvasState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-      Map<int, SpaceObject> objects,
-      Offset offset,
-      double scale,
-    )?
+    TResult Function(Map<int, Node> objects, Offset offset, double scale)?
     $default, {
     required TResult orElse(),
   }) {
@@ -610,7 +605,7 @@ extension CanvasStatePatterns on CanvasState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(Map<int, SpaceObject> objects, Offset offset, double scale)
+    TResult Function(Map<int, Node> objects, Offset offset, double scale)
     $default,
   ) {
     final _that = this;
@@ -636,11 +631,7 @@ extension CanvasStatePatterns on CanvasState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-      Map<int, SpaceObject> objects,
-      Offset offset,
-      double scale,
-    )?
+    TResult? Function(Map<int, Node> objects, Offset offset, double scale)?
     $default,
   ) {
     final _that = this;
@@ -657,15 +648,15 @@ extension CanvasStatePatterns on CanvasState {
 
 class _CanvasState implements CanvasState {
   const _CanvasState({
-    final Map<int, SpaceObject> objects = const {},
+    final Map<int, Node> objects = const {},
     this.offset = Offset.zero,
     this.scale = 1.0,
   }) : _objects = objects;
 
-  final Map<int, SpaceObject> _objects;
+  final Map<int, Node> _objects;
   @override
   @JsonKey()
-  Map<int, SpaceObject> get objects {
+  Map<int, Node> get objects {
     if (_objects is EqualUnmodifiableMapView) return _objects;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_objects);
@@ -719,7 +710,7 @@ abstract mixin class _$CanvasStateCopyWith<$Res>
   ) = __$CanvasStateCopyWithImpl;
   @override
   @useResult
-  $Res call({Map<int, SpaceObject> objects, Offset offset, double scale});
+  $Res call({Map<int, Node> objects, Offset offset, double scale});
 }
 
 /// @nodoc
@@ -744,7 +735,7 @@ class __$CanvasStateCopyWithImpl<$Res> implements _$CanvasStateCopyWith<$Res> {
             null == objects
                 ? _self._objects
                 : objects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+                    as Map<int, Node>,
         offset:
             null == offset
                 ? _self.offset

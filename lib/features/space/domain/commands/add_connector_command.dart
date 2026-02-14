@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 class AddConnectorCommand extends SpaceCommand {
-  final ConnectorObject connector;
+  final ConnectorNode connector;
   final String _caller;
 
   AddConnectorCommand(this.connector) : _caller = _getCallerInfo();
@@ -38,7 +38,7 @@ class AddConnectorCommand extends SpaceCommand {
     debugPrint('│ Connector (id: ${connector.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.addObject(connector));
+    bloc.add(ShapeLayerEvent.addNode(connector));
   }
 
   @override
@@ -49,6 +49,6 @@ class AddConnectorCommand extends SpaceCommand {
     debugPrint('│ Connector (id: ${connector.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.removeObject(connector.id));
+    bloc.add(ShapeLayerEvent.removeNode(connector.id));
   }
 }

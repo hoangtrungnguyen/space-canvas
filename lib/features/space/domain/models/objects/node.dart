@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
-export 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+export 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
-part 'space_object.freezed.dart';
+part 'node.freezed.dart';
 
 enum ShapeType {
   rectangle,
@@ -18,67 +18,66 @@ enum ShapeType {
   cloud,
 }
 
-abstract class SpaceObject {
+abstract class Node {
   int get id;
   int get zIndex;
   Rect get rect;
+  T accept<T>(NodeVisitor<T> visitor);
 
-  T accept<T>(SpaceObjectVisitor<T> visitor);
-
-  bool intersects(SpaceObject other) {
+  bool intersects(Node other) {
     return rect.overlaps(other.rect);
   }
 }
 
-abstract class SpaceObjectVisitor<T> {
-  T visitPath(PathObject object);
-  T visitShape(ShapeObject object);
-  T visitText(TextObject object);
-  T visitImage(ImageObject object);
-  T visitConnector(ConnectorObject object);
-  T visitGroup(GroupObject object);
-  T visitListOfPoint(ListOfPointObject object);
+abstract class NodeVisitor<T> {
+  T visitPath(PathNode node);
+  T visitShape(ShapeNode node);
+  T visitText(TextNode node);
+  T visitImage(ImageNode node);
+  T visitConnector(ConnectorNode node);
+  T visitGroup(GroupNode node);
+  T visitListOfPoint(ListOfPointNode node);
 }
 
 // Represents a freehand drawing.
 @freezed
-abstract class PathObject extends SpaceObject with _$PathObject {
-  factory PathObject({
+abstract class PathNode extends Node with _$PathNode {
+  factory PathNode({
     required Path path,
     required Paint paint,
     required int id,
     @Default(0) int zIndex,
-  }) = _PathObject;
+  }) = _PathNode;
 
-  PathObject._() : super();
+  PathNode._() : super();
 
   @override
   Rect get rect => path.getBounds();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitPath(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitPath(this);
 }
 
 @freezed
-abstract class ShapeObject extends SpaceObject with _$ShapeObject {
-  factory ShapeObject({
+abstract class ShapeNode extends Node with _$ShapeNode {
+  factory ShapeNode({
     required ShapeType type,
     required Rect rect,
     required Paint paint,
     required int id,
     @Default('') String text,
     @Default(0) int zIndex,
-  }) = _ShapeObject;
+  }) = _ShapeNode;
 
-  ShapeObject._();
+  ShapeNode._();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitShape(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitShape(this);
 }
 
 @freezed
-abstract class TextObject extends SpaceObject with _$TextObject {
-  factory TextObject({
+abstract class TextNode extends Node with _$TextNode {
+  factory TextNode({
     required String text,
     required Offset position,
     required double fontSize,
@@ -86,12 +85,12 @@ abstract class TextObject extends SpaceObject with _$TextObject {
     required int id,
     @Default(0) int zIndex,
     String? fontFamily,
-  }) = _TextObject;
+  }) = _TextNode;
 
-  TextObject._();
+  TextNode._();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitText(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitText(this);
 
   @override
   Rect get rect {
@@ -107,49 +106,49 @@ abstract class TextObject extends SpaceObject with _$TextObject {
 }
 
 @freezed
-abstract class ImageObject extends SpaceObject with _$ImageObject {
-  factory ImageObject({
+abstract class ImageNode extends Node with _$ImageNode {
+  factory ImageNode({
     required String imageUrl, // or local path / bytes identifier
     required Rect rect,
     required int id,
     @Default(0) int zIndex,
-  }) = _ImageObject;
+  }) = _ImageNode;
 
-  ImageObject._();
+  ImageNode._();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitImage(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitImage(this);
 }
 
 @freezed
-abstract class GroupObject extends SpaceObject with _$GroupObject {
-  factory GroupObject({
+abstract class GroupNode extends Node with _$GroupNode {
+  factory GroupNode({
     required List<int> childrenIds,
     required Rect rect,
     required int id,
     @Default(0) int zIndex,
-  }) = _GroupObject;
+  }) = _GroupNode;
 
-  GroupObject._();
+  GroupNode._();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitGroup(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitGroup(this);
 }
 
 @freezed
-abstract class ListOfPointObject extends SpaceObject with _$ListOfPointObject {
-  factory ListOfPointObject({
+abstract class ListOfPointNode extends Node with _$ListOfPointNode {
+  factory ListOfPointNode({
     required List<Offset> points,
     required double strokeWidth,
     required int color,
     required int id,
     @Default(0) int zIndex,
-  }) = _ListOfPointObject;
+  }) = _ListOfPointNode;
 
-  ListOfPointObject._() : super();
+  ListOfPointNode._() : super();
 
   @override
-  T accept<T>(SpaceObjectVisitor<T> visitor) => visitor.visitListOfPoint(this);
+  T accept<T>(NodeVisitor<T> visitor) => visitor.visitListOfPoint(this);
 
   @override
   Rect get rect {

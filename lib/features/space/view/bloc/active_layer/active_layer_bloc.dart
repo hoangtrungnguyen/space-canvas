@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 
@@ -10,50 +10,48 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
     on<ActiveLayerEvent>((event, emit) {
       event.map(
         started: (_) {},
-        objectActivated: (e) {
-          final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
-          newObjects[e.object.id] = e.object;
-          emit(state.copyWith(activeObjects: newObjects));
+        nodeActivated: (e) {
+          final newNodes = Map<int, Node>.from(state.activeNodes);
+          newNodes[e.node.id] = e.node;
+          emit(state.copyWith(activeNodes: newNodes));
         },
-        objectChanged: (e) {
-          if (state.activeObjects.containsKey(e.object.id)) {
-            final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
-            newObjects[e.object.id] = e.object;
-            emit(state.copyWith(activeObjects: newObjects));
+        nodeChanged: (e) {
+          if (state.activeNodes.containsKey(e.node.id)) {
+            final newNodes = Map<int, Node>.from(state.activeNodes);
+            newNodes[e.node.id] = e.node;
+            emit(state.copyWith(activeNodes: newNodes));
           }
         },
         interactionStarted: (e) {
-          final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
-          newObjects[e.object.id] = e.object;
-          emit(
-            state.copyWith(activeObjects: newObjects, dragStartPoint: e.point),
-          );
+          final newNodes = Map<int, Node>.from(state.activeNodes);
+          newNodes[e.node.id] = e.node;
+          emit(state.copyWith(activeNodes: newNodes, dragStartPoint: e.point));
         },
         shapeUpdated: (e) {
-          final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
-          newObjects[e.object.id] = e.object;
-          emit(state.copyWith(activeObjects: newObjects));
+          final newNodes = Map<int, Node>.from(state.activeNodes);
+          newNodes[e.node.id] = e.node;
+          emit(state.copyWith(activeNodes: newNodes));
         },
-        objectDeactivated: (e) {
-          final newObjects = Map<int, SpaceObject>.from(state.activeObjects);
-          newObjects.remove(e.objectId);
+        nodeDeactivated: (e) {
+          final newNodes = Map<int, Node>.from(state.activeNodes);
+          newNodes.remove(e.nodeId);
           emit(
             state.copyWith(
-              activeObjects: newObjects,
+              activeNodes: newNodes,
               dragStartPoint: null,
-              originalObject: null,
+              originalNode: null,
             ),
           );
         },
-        originalObjectSet: (e) {
-          emit(state.copyWith(originalObject: e.object));
+        originalNodeSet: (e) {
+          emit(state.copyWith(originalNode: e.node));
         },
         clear: (_) {
           emit(
             state.copyWith(
-              activeObjects: {},
+              activeNodes: {},
               dragStartPoint: null,
-              originalObject: null,
+              originalNode: null,
             ),
           );
         },
@@ -66,7 +64,7 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
         connectorDragStarted: (e) {
           emit(
             state.copyWith(
-              connectorStartObjectId: e.startObjectId,
+              connectorStartNodeId: e.startNodeId,
               connectorStartPoint: e.startPoint,
               connectorDragPosition: null,
             ),
@@ -78,14 +76,14 @@ class ActiveLayerBloc extends Bloc<ActiveLayerEvent, ActiveLayerState> {
         connectorDragEnded: (_) {
           emit(
             state.copyWith(
-              connectorStartObjectId: null,
+              connectorStartNodeId: null,
               connectorStartPoint: null,
               connectorDragPosition: null,
             ),
           );
         },
         connectorHoverChanged: (e) {
-          emit(state.copyWith(connectorHoverObjectId: e.objectId));
+          emit(state.copyWith(connectorHoverNodeId: e.nodeId));
         },
       );
     });

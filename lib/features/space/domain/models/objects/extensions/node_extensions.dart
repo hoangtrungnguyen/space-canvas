@@ -1,16 +1,16 @@
 import 'dart:ui';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/move_visitor.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/has_moved_visitor.dart';
 
-/// Extension methods on [SpaceObject] that provide a clean API
+/// Extension methods on [Node] that provide a clean API
 /// while internally delegating to the Visitor pattern.
 ///
 /// This hybrid approach combines:
 /// - **Visitor Pattern**: For type-safe, polymorphic logic handling
 /// - **Extension Methods**: For a clean, discoverable API
-extension SpaceObjectTransformations on SpaceObject {
-  /// Creates a new [SpaceObject] moved by the given [delta].
+extension NodeTransformations on Node {
+  /// Creates a new [Node] moved by the given [delta].
   ///
   /// Returns `null` if the movement cannot be applied to this object type.
   ///
@@ -18,7 +18,7 @@ extension SpaceObjectTransformations on SpaceObject {
   /// ```dart
   /// final movedShape = shape.move(Offset(10, 20));
   /// ```
-  SpaceObject? move(Offset delta) {
+  Node? move(Offset delta) {
     return accept(MoveVisitor(delta));
   }
 
@@ -29,11 +29,11 @@ extension SpaceObjectTransformations on SpaceObject {
   ///
   /// Example:
   /// ```dart
-  /// if (currentObject.hasMovedFrom(originalObject)) {
+  /// if (currentObject.hasMovedFrom(originalNode)) {
   ///   // Record the move in history
   /// }
   /// ```
-  bool hasMovedFrom(SpaceObject original) {
+  bool hasMovedFrom(Node original) {
     return original.accept(HasMovedVisitor(this));
   }
 }

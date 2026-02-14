@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
 
-import 'objects/space_object.dart';
+import 'objects/node.dart';
 
 class SpacePainter extends CustomPainter {
-  final List<SpaceObject> objects;
+  final List<Node> objects;
 
   SpacePainter(this.objects);
 
@@ -19,27 +19,27 @@ class SpacePainter extends CustomPainter {
 
     // Sort objects by zIndex if needed, but for now assuming list order is draw order or handled by caller
     // The requirement mentions zIndex, so ideally we sort.
-    final sortedObjects = List<SpaceObject>.from(objects)
+    final sortedObjects = List<Node>.from(objects)
       ..sort((a, b) => a.zIndex.compareTo(b.zIndex));
 
     for (final object in sortedObjects) {
-      if (object is PathObject) {
+      if (object is PathNode) {
         canvas.drawPath(object.path, object.paint);
-      } else if (object is ShapeObject) {
+      } else if (object is ShapeNode) {
         _drawShape(canvas, object);
-      } else if (object is TextObject) {
+      } else if (object is TextNode) {
         _drawText(canvas, object);
-      } else if (object is ImageObject) {
+      } else if (object is ImageNode) {
         _drawImage(canvas, object);
-      } else if (object is ConnectorObject) {
+      } else if (object is ConnectorNode) {
         _drawConnector(canvas, object);
-      } else if (object is GroupObject) {
+      } else if (object is GroupNode) {
         _drawGroup(canvas, object);
       }
     }
   }
 
-  void _drawShape(Canvas canvas, ShapeObject shape) {
+  void _drawShape(Canvas canvas, ShapeNode shape) {
     switch (shape.type) {
       case ShapeType.rectangle:
         canvas.drawRect(shape.rect, shape.paint);
@@ -182,7 +182,7 @@ class SpacePainter extends CustomPainter {
     }
   }
 
-  void _drawText(Canvas canvas, TextObject textObject) {
+  void _drawText(Canvas canvas, TextNode textObject) {
     final textSpan = TextSpan(
       text: textObject.text,
       style: TextStyle(
@@ -199,7 +199,7 @@ class SpacePainter extends CustomPainter {
     textPainter.paint(canvas, textObject.position);
   }
 
-  void _drawImage(Canvas canvas, ImageObject imageObject) {
+  void _drawImage(Canvas canvas, ImageNode imageObject) {
     // Placeholder for now
     canvas.drawRect(
       imageObject.rect,
@@ -220,7 +220,7 @@ class SpacePainter extends CustomPainter {
     );
   }
 
-  void _drawConnector(Canvas canvas, ConnectorObject connector) {
+  void _drawConnector(Canvas canvas, ConnectorNode connector) {
     // Draw line
     final paint =
         Paint()
@@ -256,7 +256,7 @@ class SpacePainter extends CustomPainter {
     );
   }
 
-  void _drawGroup(Canvas canvas, GroupObject group) {
+  void _drawGroup(Canvas canvas, GroupNode group) {
     // Groups might render a selection box if selected, but usually they just exist to hold other objects.
     // If the logical objects are in the main list, we don't need to draw the group itself.
     // If the group contains the objects and they are NOT in the main list, we recurse.

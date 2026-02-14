@@ -53,36 +53,36 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initialized value)? initialize,
-    TResult Function(_ObjectDragged value)? objectDragged,
-    TResult Function(_AddObject value)? addObject,
-    TResult Function(_RemoveObject value)? removeObject,
+    TResult Function(_NodeDragged value)? nodeDragged,
+    TResult Function(_AddNode value)? addNode,
+    TResult Function(_RemoveNode value)? removeNode,
     TResult Function(_ShapeSelected value)? shapeSelected,
-    TResult Function(_ObjectSelected value)? objectSelected,
+    TResult Function(_NodeSelected value)? nodeSelected,
     TResult Function(_SelectAtPoint value)? selectAtPoint,
-    TResult Function(_UpdateObjects value)? updateObjects,
-    TResult Function(_HiddenObjects value)? hiddenObjects,
+    TResult Function(_UpdateNodes value)? updateNodes,
+    TResult Function(_HiddenNodes value)? hiddenNodes,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized() when initialize != null:
         return initialize(_that);
-      case _ObjectDragged() when objectDragged != null:
-        return objectDragged(_that);
-      case _AddObject() when addObject != null:
-        return addObject(_that);
-      case _RemoveObject() when removeObject != null:
-        return removeObject(_that);
+      case _NodeDragged() when nodeDragged != null:
+        return nodeDragged(_that);
+      case _AddNode() when addNode != null:
+        return addNode(_that);
+      case _RemoveNode() when removeNode != null:
+        return removeNode(_that);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that);
-      case _ObjectSelected() when objectSelected != null:
-        return objectSelected(_that);
+      case _NodeSelected() when nodeSelected != null:
+        return nodeSelected(_that);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that);
-      case _UpdateObjects() when updateObjects != null:
-        return updateObjects(_that);
-      case _HiddenObjects() when hiddenObjects != null:
-        return hiddenObjects(_that);
+      case _UpdateNodes() when updateNodes != null:
+        return updateNodes(_that);
+      case _HiddenNodes() when hiddenNodes != null:
+        return hiddenNodes(_that);
       case _:
         return orElse();
     }
@@ -104,35 +104,35 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initialized value) initialize,
-    required TResult Function(_ObjectDragged value) objectDragged,
-    required TResult Function(_AddObject value) addObject,
-    required TResult Function(_RemoveObject value) removeObject,
+    required TResult Function(_NodeDragged value) nodeDragged,
+    required TResult Function(_AddNode value) addNode,
+    required TResult Function(_RemoveNode value) removeNode,
     required TResult Function(_ShapeSelected value) shapeSelected,
-    required TResult Function(_ObjectSelected value) objectSelected,
+    required TResult Function(_NodeSelected value) nodeSelected,
     required TResult Function(_SelectAtPoint value) selectAtPoint,
-    required TResult Function(_UpdateObjects value) updateObjects,
-    required TResult Function(_HiddenObjects value) hiddenObjects,
+    required TResult Function(_UpdateNodes value) updateNodes,
+    required TResult Function(_HiddenNodes value) hiddenNodes,
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized():
         return initialize(_that);
-      case _ObjectDragged():
-        return objectDragged(_that);
-      case _AddObject():
-        return addObject(_that);
-      case _RemoveObject():
-        return removeObject(_that);
+      case _NodeDragged():
+        return nodeDragged(_that);
+      case _AddNode():
+        return addNode(_that);
+      case _RemoveNode():
+        return removeNode(_that);
       case _ShapeSelected():
         return shapeSelected(_that);
-      case _ObjectSelected():
-        return objectSelected(_that);
+      case _NodeSelected():
+        return nodeSelected(_that);
       case _SelectAtPoint():
         return selectAtPoint(_that);
-      case _UpdateObjects():
-        return updateObjects(_that);
-      case _HiddenObjects():
-        return hiddenObjects(_that);
+      case _UpdateNodes():
+        return updateNodes(_that);
+      case _HiddenNodes():
+        return hiddenNodes(_that);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -153,35 +153,35 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initialized value)? initialize,
-    TResult? Function(_ObjectDragged value)? objectDragged,
-    TResult? Function(_AddObject value)? addObject,
-    TResult? Function(_RemoveObject value)? removeObject,
+    TResult? Function(_NodeDragged value)? nodeDragged,
+    TResult? Function(_AddNode value)? addNode,
+    TResult? Function(_RemoveNode value)? removeNode,
     TResult? Function(_ShapeSelected value)? shapeSelected,
-    TResult? Function(_ObjectSelected value)? objectSelected,
+    TResult? Function(_NodeSelected value)? nodeSelected,
     TResult? Function(_SelectAtPoint value)? selectAtPoint,
-    TResult? Function(_UpdateObjects value)? updateObjects,
-    TResult? Function(_HiddenObjects value)? hiddenObjects,
+    TResult? Function(_UpdateNodes value)? updateNodes,
+    TResult? Function(_HiddenNodes value)? hiddenNodes,
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized() when initialize != null:
         return initialize(_that);
-      case _ObjectDragged() when objectDragged != null:
-        return objectDragged(_that);
-      case _AddObject() when addObject != null:
-        return addObject(_that);
-      case _RemoveObject() when removeObject != null:
-        return removeObject(_that);
+      case _NodeDragged() when nodeDragged != null:
+        return nodeDragged(_that);
+      case _AddNode() when addNode != null:
+        return addNode(_that);
+      case _RemoveNode() when removeNode != null:
+        return removeNode(_that);
       case _ShapeSelected() when shapeSelected != null:
         return shapeSelected(_that);
-      case _ObjectSelected() when objectSelected != null:
-        return objectSelected(_that);
+      case _NodeSelected() when nodeSelected != null:
+        return nodeSelected(_that);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that);
-      case _UpdateObjects() when updateObjects != null:
-        return updateObjects(_that);
-      case _HiddenObjects() when hiddenObjects != null:
-        return hiddenObjects(_that);
+      case _UpdateNodes() when updateNodes != null:
+        return updateNodes(_that);
+      case _HiddenNodes() when hiddenNodes != null:
+        return hiddenNodes(_that);
       case _:
         return null;
     }
@@ -202,36 +202,36 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initialize,
-    TResult Function(int objectId, Offset delta)? objectDragged,
-    TResult Function(SpaceObject object)? addObject,
-    TResult Function(int objectId)? removeObject,
-    TResult Function(int objectId)? shapeSelected,
-    TResult Function(int? objectId)? objectSelected,
+    TResult Function(int nodeId, Offset delta)? nodeDragged,
+    TResult Function(Node node)? addNode,
+    TResult Function(int nodeId)? removeNode,
+    TResult Function(int nodeId)? shapeSelected,
+    TResult Function(int? nodeId)? nodeSelected,
     TResult Function(Offset point)? selectAtPoint,
-    TResult Function(List<SpaceObject> objects)? updateObjects,
-    TResult Function(Set<int> objectIds)? hiddenObjects,
+    TResult Function(List<Node> nodes)? updateNodes,
+    TResult Function(Set<int> nodeIds)? hiddenNodes,
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized() when initialize != null:
         return initialize();
-      case _ObjectDragged() when objectDragged != null:
-        return objectDragged(_that.objectId, _that.delta);
-      case _AddObject() when addObject != null:
-        return addObject(_that.object);
-      case _RemoveObject() when removeObject != null:
-        return removeObject(_that.objectId);
+      case _NodeDragged() when nodeDragged != null:
+        return nodeDragged(_that.nodeId, _that.delta);
+      case _AddNode() when addNode != null:
+        return addNode(_that.node);
+      case _RemoveNode() when removeNode != null:
+        return removeNode(_that.nodeId);
       case _ShapeSelected() when shapeSelected != null:
-        return shapeSelected(_that.objectId);
-      case _ObjectSelected() when objectSelected != null:
-        return objectSelected(_that.objectId);
+        return shapeSelected(_that.nodeId);
+      case _NodeSelected() when nodeSelected != null:
+        return nodeSelected(_that.nodeId);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that.point);
-      case _UpdateObjects() when updateObjects != null:
-        return updateObjects(_that.objects);
-      case _HiddenObjects() when hiddenObjects != null:
-        return hiddenObjects(_that.objectIds);
+      case _UpdateNodes() when updateNodes != null:
+        return updateNodes(_that.nodes);
+      case _HiddenNodes() when hiddenNodes != null:
+        return hiddenNodes(_that.nodeIds);
       case _:
         return orElse();
     }
@@ -253,35 +253,35 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initialize,
-    required TResult Function(int objectId, Offset delta) objectDragged,
-    required TResult Function(SpaceObject object) addObject,
-    required TResult Function(int objectId) removeObject,
-    required TResult Function(int objectId) shapeSelected,
-    required TResult Function(int? objectId) objectSelected,
+    required TResult Function(int nodeId, Offset delta) nodeDragged,
+    required TResult Function(Node node) addNode,
+    required TResult Function(int nodeId) removeNode,
+    required TResult Function(int nodeId) shapeSelected,
+    required TResult Function(int? nodeId) nodeSelected,
     required TResult Function(Offset point) selectAtPoint,
-    required TResult Function(List<SpaceObject> objects) updateObjects,
-    required TResult Function(Set<int> objectIds) hiddenObjects,
+    required TResult Function(List<Node> nodes) updateNodes,
+    required TResult Function(Set<int> nodeIds) hiddenNodes,
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized():
         return initialize();
-      case _ObjectDragged():
-        return objectDragged(_that.objectId, _that.delta);
-      case _AddObject():
-        return addObject(_that.object);
-      case _RemoveObject():
-        return removeObject(_that.objectId);
+      case _NodeDragged():
+        return nodeDragged(_that.nodeId, _that.delta);
+      case _AddNode():
+        return addNode(_that.node);
+      case _RemoveNode():
+        return removeNode(_that.nodeId);
       case _ShapeSelected():
-        return shapeSelected(_that.objectId);
-      case _ObjectSelected():
-        return objectSelected(_that.objectId);
+        return shapeSelected(_that.nodeId);
+      case _NodeSelected():
+        return nodeSelected(_that.nodeId);
       case _SelectAtPoint():
         return selectAtPoint(_that.point);
-      case _UpdateObjects():
-        return updateObjects(_that.objects);
-      case _HiddenObjects():
-        return hiddenObjects(_that.objectIds);
+      case _UpdateNodes():
+        return updateNodes(_that.nodes);
+      case _HiddenNodes():
+        return hiddenNodes(_that.nodeIds);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -302,35 +302,35 @@ extension ShapeLayerEventPatterns on ShapeLayerEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initialize,
-    TResult? Function(int objectId, Offset delta)? objectDragged,
-    TResult? Function(SpaceObject object)? addObject,
-    TResult? Function(int objectId)? removeObject,
-    TResult? Function(int objectId)? shapeSelected,
-    TResult? Function(int? objectId)? objectSelected,
+    TResult? Function(int nodeId, Offset delta)? nodeDragged,
+    TResult? Function(Node node)? addNode,
+    TResult? Function(int nodeId)? removeNode,
+    TResult? Function(int nodeId)? shapeSelected,
+    TResult? Function(int? nodeId)? nodeSelected,
     TResult? Function(Offset point)? selectAtPoint,
-    TResult? Function(List<SpaceObject> objects)? updateObjects,
-    TResult? Function(Set<int> objectIds)? hiddenObjects,
+    TResult? Function(List<Node> nodes)? updateNodes,
+    TResult? Function(Set<int> nodeIds)? hiddenNodes,
   }) {
     final _that = this;
     switch (_that) {
       case _Initialized() when initialize != null:
         return initialize();
-      case _ObjectDragged() when objectDragged != null:
-        return objectDragged(_that.objectId, _that.delta);
-      case _AddObject() when addObject != null:
-        return addObject(_that.object);
-      case _RemoveObject() when removeObject != null:
-        return removeObject(_that.objectId);
+      case _NodeDragged() when nodeDragged != null:
+        return nodeDragged(_that.nodeId, _that.delta);
+      case _AddNode() when addNode != null:
+        return addNode(_that.node);
+      case _RemoveNode() when removeNode != null:
+        return removeNode(_that.nodeId);
       case _ShapeSelected() when shapeSelected != null:
-        return shapeSelected(_that.objectId);
-      case _ObjectSelected() when objectSelected != null:
-        return objectSelected(_that.objectId);
+        return shapeSelected(_that.nodeId);
+      case _NodeSelected() when nodeSelected != null:
+        return nodeSelected(_that.nodeId);
       case _SelectAtPoint() when selectAtPoint != null:
         return selectAtPoint(_that.point);
-      case _UpdateObjects() when updateObjects != null:
-        return updateObjects(_that.objects);
-      case _HiddenObjects() when hiddenObjects != null:
-        return hiddenObjects(_that.objectIds);
+      case _UpdateNodes() when updateNodes != null:
+        return updateNodes(_that.nodes);
+      case _HiddenNodes() when hiddenNodes != null:
+        return hiddenNodes(_that.nodeIds);
       case _:
         return null;
     }
@@ -372,67 +372,65 @@ class __$InitializedCopyWithImpl<$Res> implements _$InitializedCopyWith<$Res> {
 
 /// @nodoc
 
-class _ObjectDragged implements ShapeLayerEvent {
-  const _ObjectDragged({required this.objectId, required this.delta});
+class _NodeDragged implements ShapeLayerEvent {
+  const _NodeDragged({required this.nodeId, required this.delta});
 
-  final int objectId;
+  final int nodeId;
   final Offset delta;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ObjectDraggedCopyWith<_ObjectDragged> get copyWith =>
-      __$ObjectDraggedCopyWithImpl<_ObjectDragged>(this, _$identity);
+  _$NodeDraggedCopyWith<_NodeDragged> get copyWith =>
+      __$NodeDraggedCopyWithImpl<_NodeDragged>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ObjectDragged &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId) &&
+            other is _NodeDragged &&
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId) &&
             (identical(other.delta, delta) || other.delta == delta));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId, delta);
+  int get hashCode => Object.hash(runtimeType, nodeId, delta);
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.objectDragged(objectId: $objectId, delta: $delta)';
+    return 'ShapeLayerEvent.nodeDragged(nodeId: $nodeId, delta: $delta)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ObjectDraggedCopyWith<$Res>
+abstract mixin class _$NodeDraggedCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$ObjectDraggedCopyWith(
-    _ObjectDragged value,
-    $Res Function(_ObjectDragged) _then,
-  ) = __$ObjectDraggedCopyWithImpl;
+  factory _$NodeDraggedCopyWith(
+    _NodeDragged value,
+    $Res Function(_NodeDragged) _then,
+  ) = __$NodeDraggedCopyWithImpl;
   @useResult
-  $Res call({int objectId, Offset delta});
+  $Res call({int nodeId, Offset delta});
 }
 
 /// @nodoc
-class __$ObjectDraggedCopyWithImpl<$Res>
-    implements _$ObjectDraggedCopyWith<$Res> {
-  __$ObjectDraggedCopyWithImpl(this._self, this._then);
+class __$NodeDraggedCopyWithImpl<$Res> implements _$NodeDraggedCopyWith<$Res> {
+  __$NodeDraggedCopyWithImpl(this._self, this._then);
 
-  final _ObjectDragged _self;
-  final $Res Function(_ObjectDragged) _then;
+  final _NodeDragged _self;
+  final $Res Function(_NodeDragged) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = null, Object? delta = null}) {
+  $Res call({Object? nodeId = null, Object? delta = null}) {
     return _then(
-      _ObjectDragged(
-        objectId:
-            null == objectId
-                ? _self.objectId
-                : objectId // ignore: cast_nullable_to_non_nullable
+      _NodeDragged(
+        nodeId:
+            null == nodeId
+                ? _self.nodeId
+                : nodeId // ignore: cast_nullable_to_non_nullable
                     as int,
         delta:
             null == delta
@@ -446,63 +444,61 @@ class __$ObjectDraggedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _AddObject implements ShapeLayerEvent {
-  const _AddObject(this.object);
+class _AddNode implements ShapeLayerEvent {
+  const _AddNode(this.node);
 
-  final SpaceObject object;
+  final Node node;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$AddObjectCopyWith<_AddObject> get copyWith =>
-      __$AddObjectCopyWithImpl<_AddObject>(this, _$identity);
+  _$AddNodeCopyWith<_AddNode> get copyWith =>
+      __$AddNodeCopyWithImpl<_AddNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _AddObject &&
-            (identical(other.object, object) || other.object == object));
+            other is _AddNode &&
+            (identical(other.node, node) || other.node == node));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, object);
+  int get hashCode => Object.hash(runtimeType, node);
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.addObject(object: $object)';
+    return 'ShapeLayerEvent.addNode(node: $node)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$AddObjectCopyWith<$Res>
+abstract mixin class _$AddNodeCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$AddObjectCopyWith(
-    _AddObject value,
-    $Res Function(_AddObject) _then,
-  ) = __$AddObjectCopyWithImpl;
+  factory _$AddNodeCopyWith(_AddNode value, $Res Function(_AddNode) _then) =
+      __$AddNodeCopyWithImpl;
   @useResult
-  $Res call({SpaceObject object});
+  $Res call({Node node});
 }
 
 /// @nodoc
-class __$AddObjectCopyWithImpl<$Res> implements _$AddObjectCopyWith<$Res> {
-  __$AddObjectCopyWithImpl(this._self, this._then);
+class __$AddNodeCopyWithImpl<$Res> implements _$AddNodeCopyWith<$Res> {
+  __$AddNodeCopyWithImpl(this._self, this._then);
 
-  final _AddObject _self;
-  final $Res Function(_AddObject) _then;
+  final _AddNode _self;
+  final $Res Function(_AddNode) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? object = null}) {
+  $Res call({Object? node = null}) {
     return _then(
-      _AddObject(
-        null == object
-            ? _self.object
-            : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject,
+      _AddNode(
+        null == node
+            ? _self.node
+            : node // ignore: cast_nullable_to_non_nullable
+                as Node,
       ),
     );
   }
@@ -510,64 +506,62 @@ class __$AddObjectCopyWithImpl<$Res> implements _$AddObjectCopyWith<$Res> {
 
 /// @nodoc
 
-class _RemoveObject implements ShapeLayerEvent {
-  const _RemoveObject(this.objectId);
+class _RemoveNode implements ShapeLayerEvent {
+  const _RemoveNode(this.nodeId);
 
-  final int objectId;
+  final int nodeId;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$RemoveObjectCopyWith<_RemoveObject> get copyWith =>
-      __$RemoveObjectCopyWithImpl<_RemoveObject>(this, _$identity);
+  _$RemoveNodeCopyWith<_RemoveNode> get copyWith =>
+      __$RemoveNodeCopyWithImpl<_RemoveNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _RemoveObject &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId));
+            other is _RemoveNode &&
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId);
+  int get hashCode => Object.hash(runtimeType, nodeId);
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.removeObject(objectId: $objectId)';
+    return 'ShapeLayerEvent.removeNode(nodeId: $nodeId)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$RemoveObjectCopyWith<$Res>
+abstract mixin class _$RemoveNodeCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$RemoveObjectCopyWith(
-    _RemoveObject value,
-    $Res Function(_RemoveObject) _then,
-  ) = __$RemoveObjectCopyWithImpl;
+  factory _$RemoveNodeCopyWith(
+    _RemoveNode value,
+    $Res Function(_RemoveNode) _then,
+  ) = __$RemoveNodeCopyWithImpl;
   @useResult
-  $Res call({int objectId});
+  $Res call({int nodeId});
 }
 
 /// @nodoc
-class __$RemoveObjectCopyWithImpl<$Res>
-    implements _$RemoveObjectCopyWith<$Res> {
-  __$RemoveObjectCopyWithImpl(this._self, this._then);
+class __$RemoveNodeCopyWithImpl<$Res> implements _$RemoveNodeCopyWith<$Res> {
+  __$RemoveNodeCopyWithImpl(this._self, this._then);
 
-  final _RemoveObject _self;
-  final $Res Function(_RemoveObject) _then;
+  final _RemoveNode _self;
+  final $Res Function(_RemoveNode) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = null}) {
+  $Res call({Object? nodeId = null}) {
     return _then(
-      _RemoveObject(
-        null == objectId
-            ? _self.objectId
-            : objectId // ignore: cast_nullable_to_non_nullable
+      _RemoveNode(
+        null == nodeId
+            ? _self.nodeId
+            : nodeId // ignore: cast_nullable_to_non_nullable
                 as int,
       ),
     );
@@ -577,9 +571,9 @@ class __$RemoveObjectCopyWithImpl<$Res>
 /// @nodoc
 
 class _ShapeSelected implements ShapeLayerEvent {
-  const _ShapeSelected({required this.objectId});
+  const _ShapeSelected({required this.nodeId});
 
-  final int objectId;
+  final int nodeId;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -593,16 +587,15 @@ class _ShapeSelected implements ShapeLayerEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ShapeSelected &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId));
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId);
+  int get hashCode => Object.hash(runtimeType, nodeId);
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.shapeSelected(objectId: $objectId)';
+    return 'ShapeLayerEvent.shapeSelected(nodeId: $nodeId)';
   }
 }
 
@@ -614,7 +607,7 @@ abstract mixin class _$ShapeSelectedCopyWith<$Res>
     $Res Function(_ShapeSelected) _then,
   ) = __$ShapeSelectedCopyWithImpl;
   @useResult
-  $Res call({int objectId});
+  $Res call({int nodeId});
 }
 
 /// @nodoc
@@ -628,13 +621,13 @@ class __$ShapeSelectedCopyWithImpl<$Res>
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = null}) {
+  $Res call({Object? nodeId = null}) {
     return _then(
       _ShapeSelected(
-        objectId:
-            null == objectId
-                ? _self.objectId
-                : objectId // ignore: cast_nullable_to_non_nullable
+        nodeId:
+            null == nodeId
+                ? _self.nodeId
+                : nodeId // ignore: cast_nullable_to_non_nullable
                     as int,
       ),
     );
@@ -643,64 +636,63 @@ class __$ShapeSelectedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _ObjectSelected implements ShapeLayerEvent {
-  const _ObjectSelected(this.objectId);
+class _NodeSelected implements ShapeLayerEvent {
+  const _NodeSelected(this.nodeId);
 
-  final int? objectId;
+  final int? nodeId;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ObjectSelectedCopyWith<_ObjectSelected> get copyWith =>
-      __$ObjectSelectedCopyWithImpl<_ObjectSelected>(this, _$identity);
+  _$NodeSelectedCopyWith<_NodeSelected> get copyWith =>
+      __$NodeSelectedCopyWithImpl<_NodeSelected>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ObjectSelected &&
-            (identical(other.objectId, objectId) ||
-                other.objectId == objectId));
+            other is _NodeSelected &&
+            (identical(other.nodeId, nodeId) || other.nodeId == nodeId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, objectId);
+  int get hashCode => Object.hash(runtimeType, nodeId);
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.objectSelected(objectId: $objectId)';
+    return 'ShapeLayerEvent.nodeSelected(nodeId: $nodeId)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ObjectSelectedCopyWith<$Res>
+abstract mixin class _$NodeSelectedCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$ObjectSelectedCopyWith(
-    _ObjectSelected value,
-    $Res Function(_ObjectSelected) _then,
-  ) = __$ObjectSelectedCopyWithImpl;
+  factory _$NodeSelectedCopyWith(
+    _NodeSelected value,
+    $Res Function(_NodeSelected) _then,
+  ) = __$NodeSelectedCopyWithImpl;
   @useResult
-  $Res call({int? objectId});
+  $Res call({int? nodeId});
 }
 
 /// @nodoc
-class __$ObjectSelectedCopyWithImpl<$Res>
-    implements _$ObjectSelectedCopyWith<$Res> {
-  __$ObjectSelectedCopyWithImpl(this._self, this._then);
+class __$NodeSelectedCopyWithImpl<$Res>
+    implements _$NodeSelectedCopyWith<$Res> {
+  __$NodeSelectedCopyWithImpl(this._self, this._then);
 
-  final _ObjectSelected _self;
-  final $Res Function(_ObjectSelected) _then;
+  final _NodeSelected _self;
+  final $Res Function(_NodeSelected) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectId = freezed}) {
+  $Res call({Object? nodeId = freezed}) {
     return _then(
-      _ObjectSelected(
-        freezed == objectId
-            ? _self.objectId
-            : objectId // ignore: cast_nullable_to_non_nullable
+      _NodeSelected(
+        freezed == nodeId
+            ? _self.nodeId
+            : nodeId // ignore: cast_nullable_to_non_nullable
                 as int?,
       ),
     );
@@ -774,70 +766,69 @@ class __$SelectAtPointCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _UpdateObjects implements ShapeLayerEvent {
-  const _UpdateObjects(final List<SpaceObject> objects) : _objects = objects;
+class _UpdateNodes implements ShapeLayerEvent {
+  const _UpdateNodes(final List<Node> nodes) : _nodes = nodes;
 
-  final List<SpaceObject> _objects;
-  List<SpaceObject> get objects {
-    if (_objects is EqualUnmodifiableListView) return _objects;
+  final List<Node> _nodes;
+  List<Node> get nodes {
+    if (_nodes is EqualUnmodifiableListView) return _nodes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_objects);
+    return EqualUnmodifiableListView(_nodes);
   }
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$UpdateObjectsCopyWith<_UpdateObjects> get copyWith =>
-      __$UpdateObjectsCopyWithImpl<_UpdateObjects>(this, _$identity);
+  _$UpdateNodesCopyWith<_UpdateNodes> get copyWith =>
+      __$UpdateNodesCopyWithImpl<_UpdateNodes>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _UpdateObjects &&
-            const DeepCollectionEquality().equals(other._objects, _objects));
+            other is _UpdateNodes &&
+            const DeepCollectionEquality().equals(other._nodes, _nodes));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_objects));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_nodes));
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.updateObjects(objects: $objects)';
+    return 'ShapeLayerEvent.updateNodes(nodes: $nodes)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$UpdateObjectsCopyWith<$Res>
+abstract mixin class _$UpdateNodesCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$UpdateObjectsCopyWith(
-    _UpdateObjects value,
-    $Res Function(_UpdateObjects) _then,
-  ) = __$UpdateObjectsCopyWithImpl;
+  factory _$UpdateNodesCopyWith(
+    _UpdateNodes value,
+    $Res Function(_UpdateNodes) _then,
+  ) = __$UpdateNodesCopyWithImpl;
   @useResult
-  $Res call({List<SpaceObject> objects});
+  $Res call({List<Node> nodes});
 }
 
 /// @nodoc
-class __$UpdateObjectsCopyWithImpl<$Res>
-    implements _$UpdateObjectsCopyWith<$Res> {
-  __$UpdateObjectsCopyWithImpl(this._self, this._then);
+class __$UpdateNodesCopyWithImpl<$Res> implements _$UpdateNodesCopyWith<$Res> {
+  __$UpdateNodesCopyWithImpl(this._self, this._then);
 
-  final _UpdateObjects _self;
-  final $Res Function(_UpdateObjects) _then;
+  final _UpdateNodes _self;
+  final $Res Function(_UpdateNodes) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objects = null}) {
+  $Res call({Object? nodes = null}) {
     return _then(
-      _UpdateObjects(
-        null == objects
-            ? _self._objects
-            : objects // ignore: cast_nullable_to_non_nullable
-                as List<SpaceObject>,
+      _UpdateNodes(
+        null == nodes
+            ? _self._nodes
+            : nodes // ignore: cast_nullable_to_non_nullable
+                as List<Node>,
       ),
     );
   }
@@ -845,72 +836,68 @@ class __$UpdateObjectsCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _HiddenObjects implements ShapeLayerEvent {
-  const _HiddenObjects(final Set<int> objectIds) : _objectIds = objectIds;
+class _HiddenNodes implements ShapeLayerEvent {
+  const _HiddenNodes(final Set<int> nodeIds) : _nodeIds = nodeIds;
 
-  final Set<int> _objectIds;
-  Set<int> get objectIds {
-    if (_objectIds is EqualUnmodifiableSetView) return _objectIds;
+  final Set<int> _nodeIds;
+  Set<int> get nodeIds {
+    if (_nodeIds is EqualUnmodifiableSetView) return _nodeIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_objectIds);
+    return EqualUnmodifiableSetView(_nodeIds);
   }
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$HiddenObjectsCopyWith<_HiddenObjects> get copyWith =>
-      __$HiddenObjectsCopyWithImpl<_HiddenObjects>(this, _$identity);
+  _$HiddenNodesCopyWith<_HiddenNodes> get copyWith =>
+      __$HiddenNodesCopyWithImpl<_HiddenNodes>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _HiddenObjects &&
-            const DeepCollectionEquality().equals(
-              other._objectIds,
-              _objectIds,
-            ));
+            other is _HiddenNodes &&
+            const DeepCollectionEquality().equals(other._nodeIds, _nodeIds));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_objectIds));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_nodeIds));
 
   @override
   String toString() {
-    return 'ShapeLayerEvent.hiddenObjects(objectIds: $objectIds)';
+    return 'ShapeLayerEvent.hiddenNodes(nodeIds: $nodeIds)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$HiddenObjectsCopyWith<$Res>
+abstract mixin class _$HiddenNodesCopyWith<$Res>
     implements $ShapeLayerEventCopyWith<$Res> {
-  factory _$HiddenObjectsCopyWith(
-    _HiddenObjects value,
-    $Res Function(_HiddenObjects) _then,
-  ) = __$HiddenObjectsCopyWithImpl;
+  factory _$HiddenNodesCopyWith(
+    _HiddenNodes value,
+    $Res Function(_HiddenNodes) _then,
+  ) = __$HiddenNodesCopyWithImpl;
   @useResult
-  $Res call({Set<int> objectIds});
+  $Res call({Set<int> nodeIds});
 }
 
 /// @nodoc
-class __$HiddenObjectsCopyWithImpl<$Res>
-    implements _$HiddenObjectsCopyWith<$Res> {
-  __$HiddenObjectsCopyWithImpl(this._self, this._then);
+class __$HiddenNodesCopyWithImpl<$Res> implements _$HiddenNodesCopyWith<$Res> {
+  __$HiddenNodesCopyWithImpl(this._self, this._then);
 
-  final _HiddenObjects _self;
-  final $Res Function(_HiddenObjects) _then;
+  final _HiddenNodes _self;
+  final $Res Function(_HiddenNodes) _then;
 
   /// Create a copy of ShapeLayerEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  $Res call({Object? objectIds = null}) {
+  $Res call({Object? nodeIds = null}) {
     return _then(
-      _HiddenObjects(
-        null == objectIds
-            ? _self._objectIds
-            : objectIds // ignore: cast_nullable_to_non_nullable
+      _HiddenNodes(
+        null == nodeIds
+            ? _self._nodeIds
+            : nodeIds // ignore: cast_nullable_to_non_nullable
                 as Set<int>,
       ),
     );
@@ -1559,10 +1546,10 @@ class _$ShapeLayerStateFailureCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$ShapeLayerData {
-  Map<int, SpaceObject> get objects;
+  Map<int, Node> get nodes;
   int? get selectedTool;
-  int? get selectedObjectId;
-  Set<int> get hiddenObjectIds;
+  int? get selectedNodeId;
+  Set<int> get hiddenNodeIds;
 
   /// Create a copy of ShapeLayerData
   /// with the given fields replaced by the non-null parameter values.
@@ -1579,29 +1566,29 @@ mixin _$ShapeLayerData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ShapeLayerData &&
-            const DeepCollectionEquality().equals(other.objects, objects) &&
+            const DeepCollectionEquality().equals(other.nodes, nodes) &&
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
-            (identical(other.selectedObjectId, selectedObjectId) ||
-                other.selectedObjectId == selectedObjectId) &&
+            (identical(other.selectedNodeId, selectedNodeId) ||
+                other.selectedNodeId == selectedNodeId) &&
             const DeepCollectionEquality().equals(
-              other.hiddenObjectIds,
-              hiddenObjectIds,
+              other.hiddenNodeIds,
+              hiddenNodeIds,
             ));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    const DeepCollectionEquality().hash(objects),
+    const DeepCollectionEquality().hash(nodes),
     selectedTool,
-    selectedObjectId,
-    const DeepCollectionEquality().hash(hiddenObjectIds),
+    selectedNodeId,
+    const DeepCollectionEquality().hash(hiddenNodeIds),
   );
 
   @override
   String toString() {
-    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId, hiddenObjectIds: $hiddenObjectIds)';
+    return 'ShapeLayerData(nodes: $nodes, selectedTool: $selectedTool, selectedNodeId: $selectedNodeId, hiddenNodeIds: $hiddenNodeIds)';
   }
 }
 
@@ -1613,10 +1600,10 @@ abstract mixin class $ShapeLayerDataCopyWith<$Res> {
   ) = _$ShapeLayerDataCopyWithImpl;
   @useResult
   $Res call({
-    Map<int, SpaceObject> objects,
+    Map<int, Node> nodes,
     int? selectedTool,
-    int? selectedObjectId,
-    Set<int> hiddenObjectIds,
+    int? selectedNodeId,
+    Set<int> hiddenNodeIds,
   });
 }
 
@@ -1633,32 +1620,32 @@ class _$ShapeLayerDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? objects = null,
+    Object? nodes = null,
     Object? selectedTool = freezed,
-    Object? selectedObjectId = freezed,
-    Object? hiddenObjectIds = null,
+    Object? selectedNodeId = freezed,
+    Object? hiddenNodeIds = null,
   }) {
     return _then(
       _self.copyWith(
-        objects:
-            null == objects
-                ? _self.objects
-                : objects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+        nodes:
+            null == nodes
+                ? _self.nodes
+                : nodes // ignore: cast_nullable_to_non_nullable
+                    as Map<int, Node>,
         selectedTool:
             freezed == selectedTool
                 ? _self.selectedTool
                 : selectedTool // ignore: cast_nullable_to_non_nullable
                     as int?,
-        selectedObjectId:
-            freezed == selectedObjectId
-                ? _self.selectedObjectId
-                : selectedObjectId // ignore: cast_nullable_to_non_nullable
+        selectedNodeId:
+            freezed == selectedNodeId
+                ? _self.selectedNodeId
+                : selectedNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
-        hiddenObjectIds:
-            null == hiddenObjectIds
-                ? _self.hiddenObjectIds
-                : hiddenObjectIds // ignore: cast_nullable_to_non_nullable
+        hiddenNodeIds:
+            null == hiddenNodeIds
+                ? _self.hiddenNodeIds
+                : hiddenNodeIds // ignore: cast_nullable_to_non_nullable
                     as Set<int>,
       ),
     );
@@ -1759,10 +1746,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-      Map<int, SpaceObject> objects,
+      Map<int, Node> nodes,
       int? selectedTool,
-      int? selectedObjectId,
-      Set<int> hiddenObjectIds,
+      int? selectedNodeId,
+      Set<int> hiddenNodeIds,
     )?
     $default, {
     required TResult orElse(),
@@ -1771,10 +1758,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData() when $default != null:
         return $default(
-          _that.objects,
+          _that.nodes,
           _that.selectedTool,
-          _that.selectedObjectId,
-          _that.hiddenObjectIds,
+          _that.selectedNodeId,
+          _that.hiddenNodeIds,
         );
       case _:
         return orElse();
@@ -1797,10 +1784,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-      Map<int, SpaceObject> objects,
+      Map<int, Node> nodes,
       int? selectedTool,
-      int? selectedObjectId,
-      Set<int> hiddenObjectIds,
+      int? selectedNodeId,
+      Set<int> hiddenNodeIds,
     )
     $default,
   ) {
@@ -1808,10 +1795,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData():
         return $default(
-          _that.objects,
+          _that.nodes,
           _that.selectedTool,
-          _that.selectedObjectId,
-          _that.hiddenObjectIds,
+          _that.selectedNodeId,
+          _that.hiddenNodeIds,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -1833,10 +1820,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-      Map<int, SpaceObject> objects,
+      Map<int, Node> nodes,
       int? selectedTool,
-      int? selectedObjectId,
-      Set<int> hiddenObjectIds,
+      int? selectedNodeId,
+      Set<int> hiddenNodeIds,
     )?
     $default,
   ) {
@@ -1844,10 +1831,10 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
     switch (_that) {
       case _ShapeLayerData() when $default != null:
         return $default(
-          _that.objects,
+          _that.nodes,
           _that.selectedTool,
-          _that.selectedObjectId,
-          _that.hiddenObjectIds,
+          _that.selectedNodeId,
+          _that.hiddenNodeIds,
         );
       case _:
         return null;
@@ -1859,33 +1846,33 @@ extension ShapeLayerDataPatterns on ShapeLayerData {
 
 class _ShapeLayerData implements ShapeLayerData {
   const _ShapeLayerData({
-    final Map<int, SpaceObject> objects = const {},
+    final Map<int, Node> nodes = const {},
     this.selectedTool,
-    this.selectedObjectId,
-    final Set<int> hiddenObjectIds = const {},
-  }) : _objects = objects,
-       _hiddenObjectIds = hiddenObjectIds;
+    this.selectedNodeId,
+    final Set<int> hiddenNodeIds = const {},
+  }) : _nodes = nodes,
+       _hiddenNodeIds = hiddenNodeIds;
 
-  final Map<int, SpaceObject> _objects;
+  final Map<int, Node> _nodes;
   @override
   @JsonKey()
-  Map<int, SpaceObject> get objects {
-    if (_objects is EqualUnmodifiableMapView) return _objects;
+  Map<int, Node> get nodes {
+    if (_nodes is EqualUnmodifiableMapView) return _nodes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_objects);
+    return EqualUnmodifiableMapView(_nodes);
   }
 
   @override
   final int? selectedTool;
   @override
-  final int? selectedObjectId;
-  final Set<int> _hiddenObjectIds;
+  final int? selectedNodeId;
+  final Set<int> _hiddenNodeIds;
   @override
   @JsonKey()
-  Set<int> get hiddenObjectIds {
-    if (_hiddenObjectIds is EqualUnmodifiableSetView) return _hiddenObjectIds;
+  Set<int> get hiddenNodeIds {
+    if (_hiddenNodeIds is EqualUnmodifiableSetView) return _hiddenNodeIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_hiddenObjectIds);
+    return EqualUnmodifiableSetView(_hiddenNodeIds);
   }
 
   /// Create a copy of ShapeLayerData
@@ -1901,29 +1888,29 @@ class _ShapeLayerData implements ShapeLayerData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ShapeLayerData &&
-            const DeepCollectionEquality().equals(other._objects, _objects) &&
+            const DeepCollectionEquality().equals(other._nodes, _nodes) &&
             (identical(other.selectedTool, selectedTool) ||
                 other.selectedTool == selectedTool) &&
-            (identical(other.selectedObjectId, selectedObjectId) ||
-                other.selectedObjectId == selectedObjectId) &&
+            (identical(other.selectedNodeId, selectedNodeId) ||
+                other.selectedNodeId == selectedNodeId) &&
             const DeepCollectionEquality().equals(
-              other._hiddenObjectIds,
-              _hiddenObjectIds,
+              other._hiddenNodeIds,
+              _hiddenNodeIds,
             ));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    const DeepCollectionEquality().hash(_objects),
+    const DeepCollectionEquality().hash(_nodes),
     selectedTool,
-    selectedObjectId,
-    const DeepCollectionEquality().hash(_hiddenObjectIds),
+    selectedNodeId,
+    const DeepCollectionEquality().hash(_hiddenNodeIds),
   );
 
   @override
   String toString() {
-    return 'ShapeLayerData(objects: $objects, selectedTool: $selectedTool, selectedObjectId: $selectedObjectId, hiddenObjectIds: $hiddenObjectIds)';
+    return 'ShapeLayerData(nodes: $nodes, selectedTool: $selectedTool, selectedNodeId: $selectedNodeId, hiddenNodeIds: $hiddenNodeIds)';
   }
 }
 
@@ -1937,10 +1924,10 @@ abstract mixin class _$ShapeLayerDataCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    Map<int, SpaceObject> objects,
+    Map<int, Node> nodes,
     int? selectedTool,
-    int? selectedObjectId,
-    Set<int> hiddenObjectIds,
+    int? selectedNodeId,
+    Set<int> hiddenNodeIds,
   });
 }
 
@@ -1957,32 +1944,32 @@ class __$ShapeLayerDataCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? objects = null,
+    Object? nodes = null,
     Object? selectedTool = freezed,
-    Object? selectedObjectId = freezed,
-    Object? hiddenObjectIds = null,
+    Object? selectedNodeId = freezed,
+    Object? hiddenNodeIds = null,
   }) {
     return _then(
       _ShapeLayerData(
-        objects:
-            null == objects
-                ? _self._objects
-                : objects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+        nodes:
+            null == nodes
+                ? _self._nodes
+                : nodes // ignore: cast_nullable_to_non_nullable
+                    as Map<int, Node>,
         selectedTool:
             freezed == selectedTool
                 ? _self.selectedTool
                 : selectedTool // ignore: cast_nullable_to_non_nullable
                     as int?,
-        selectedObjectId:
-            freezed == selectedObjectId
-                ? _self.selectedObjectId
-                : selectedObjectId // ignore: cast_nullable_to_non_nullable
+        selectedNodeId:
+            freezed == selectedNodeId
+                ? _self.selectedNodeId
+                : selectedNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
-        hiddenObjectIds:
-            null == hiddenObjectIds
-                ? _self._hiddenObjectIds
-                : hiddenObjectIds // ignore: cast_nullable_to_non_nullable
+        hiddenNodeIds:
+            null == hiddenNodeIds
+                ? _self._hiddenNodeIds
+                : hiddenNodeIds // ignore: cast_nullable_to_non_nullable
                     as Set<int>,
       ),
     );

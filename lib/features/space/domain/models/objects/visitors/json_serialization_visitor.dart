@@ -1,19 +1,19 @@
 import 'dart:ui';
 
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 class JsonSerializationVisitor
-    implements SpaceObjectVisitor<Map<String, dynamic>> {
+    implements NodeVisitor<Map<String, dynamic>> {
   const JsonSerializationVisitor();
 
   @override
-  Map<String, dynamic> visitConnector(ConnectorObject object) {
+  Map<String, dynamic> visitConnector(ConnectorNode object) {
     return {
       'type': 'connector',
       'id': object.id,
       'zIndex': object.zIndex,
-      'startObjectId': object.startObjectId,
-      'endObjectId': object.endObjectId,
+      'startNodeId': object.startNodeId,
+      'endNodeId': object.endNodeId,
       'startPoint': _offsetToJson(object.startPoint),
       'endPoint': _offsetToJson(object.endPoint),
       'strokeWidth': object.strokeWidth,
@@ -22,7 +22,7 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitGroup(GroupObject object) {
+  Map<String, dynamic> visitGroup(GroupNode object) {
     return {
       'type': 'group',
       'id': object.id,
@@ -33,7 +33,7 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitImage(ImageObject object) {
+  Map<String, dynamic> visitImage(ImageNode object) {
     return {
       'type': 'image',
       'id': object.id,
@@ -44,7 +44,7 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitListOfPoint(ListOfPointObject object) {
+  Map<String, dynamic> visitListOfPoint(ListOfPointNode object) {
     return {
       'type': 'listOfPoint',
       'id': object.id,
@@ -56,9 +56,9 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitPath(PathObject object) {
-    // PathObject based on dart:ui Path cannot be easily serialized.
-    // Ideally, we should use ListOfPointObject for user drawings.
+  Map<String, dynamic> visitPath(PathNode object) {
+    // PathNode based on dart:ui Path cannot be easily serialized.
+    // Ideally, we should use ListOfPointNode for user drawings.
     // We will return a basic representation but reconstruction might be impossible
     // without the source data.
     return {
@@ -71,7 +71,7 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitShape(ShapeObject object) {
+  Map<String, dynamic> visitShape(ShapeNode object) {
     return {
       'type': 'shape',
       'id': object.id,
@@ -84,7 +84,7 @@ class JsonSerializationVisitor
   }
 
   @override
-  Map<String, dynamic> visitText(TextObject object) {
+  Map<String, dynamic> visitText(TextNode object) {
     return {
       'type': 'text',
       'id': object.id,

@@ -42,21 +42,21 @@ abstract class SpaceCommand {
 To create a strictly typed command (e.g., for moving an object), implement `SpaceCommand`:
 
 ```dart
-class MoveObjectCommand implements SpaceCommand {
-  final int objectId;
+class MoveNodeCommand implements SpaceCommand {
+  final int nodeId;
   final Offset oldPos;
   final Offset newPos;
 
-  MoveObjectCommand(this.objectId, this.oldPos, this.newPos);
+  MoveNodeCommand(this.nodeId, this.oldPos, this.newPos);
 
   @override
   Future<void> execute(ShapeLayerBloc bloc) async {
-    bloc.add(ShapeLayerEvent.objectMoved(id: objectId, position: newPos));
+    bloc.add(ShapeLayerEvent.objectMoved(id: nodeId, position: newPos));
   }
 
   @override
   Future<void> undo(ShapeLayerBloc bloc) async {
-    bloc.add(ShapeLayerEvent.objectMoved(id: objectId, position: oldPos));
+    bloc.add(ShapeLayerEvent.objectMoved(id: nodeId, position: oldPos));
   }
 }
 ```
@@ -66,7 +66,7 @@ Inject `HistoryManager` (provided via `RepositoryProvider`) and execute the comm
 
 ```dart
 // Within a Widget or ToolHandler
-final command = MoveObjectCommand(id, startPos, endPos);
+final command = MoveNodeCommand(id, startPos, endPos);
 context.read<HistoryManager>().execute(command);
 ```
 
@@ -125,11 +125,11 @@ The `SpaceListener` monitors the `ToolbarBloc` for tool changes. To prevent data
 ```
 lib/features/space/domain/
 ├── commands/           # Concrete implementations of SpaceCommand
-│   ├── add_shape_command.dart
-│   ├── delete_object_command.dart
+│   ├── add_node_command.dart
+│   ├── delete_node_command.dart
 │   └── space_command.dart
 ├── factories/          # Helpers for creating complex objects
-│   └── space_object_factory.dart
+│   └── node_factory.dart
 ├── managers/           # Stateful logic managers
 │   └── history_manager.dart
 ├── interaction_mediator.dart # Mediator for cross-bloc coordination

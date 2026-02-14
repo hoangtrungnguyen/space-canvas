@@ -6,14 +6,14 @@ import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/toolbar/toolbar_widget.dart';
 import 'package:ideascape/features/space/view/widgets/shape_library.dart';
 
-import 'package:ideascape/features/space/domain/models/object_painter.dart';
+import 'package:ideascape/features/space/domain/models/node_painter.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler_factory.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/widgets/inline_text_editor.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
 class ToolbarLayer extends StatelessWidget {
   const ToolbarLayer({super.key, required this.transformationController});
@@ -53,8 +53,8 @@ class ToolbarLayer extends StatelessWidget {
                         child: RepaintBoundary(
                           child: CustomPaint(
                             size: Size.infinite,
-                            painter: ObjectPainter(
-                              objects: [state.activeDrawingObject!],
+                            painter: NodePainter(
+                              nodes: [state.activeDrawingObject!],
                               transform: transformationController.value,
                             ),
                           ),
@@ -176,15 +176,15 @@ class ToolbarLayer extends StatelessWidget {
     final shapeState = context.read<ShapeLayerBloc>().state;
     if (shapeState is ShapeLayerStateSuccess) {
       int? hoveredId;
-      // Find object under cursor (sorted by z-index, top-most first)
+      // Find node under cursor (sorted by z-index, top-most first)
       final sorted =
-          shapeState.data.objects.values.toList()
+          shapeState.data.nodes.values.toList()
             ..sort((a, b) => b.zIndex.compareTo(a.zIndex));
 
-      for (final obj in sorted) {
-        if (obj is ConnectorObject) continue;
-        if (obj.rect.contains(worldPoint)) {
-          hoveredId = obj.id;
+      for (final node in sorted) {
+        if (node is ConnectorNode) continue;
+        if (node.rect.contains(worldPoint)) {
+          hoveredId = node.id;
           break;
         }
       }

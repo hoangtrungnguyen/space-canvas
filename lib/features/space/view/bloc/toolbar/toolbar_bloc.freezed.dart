@@ -181,8 +181,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult Function(SpaceTool tool)? selected,
     TResult Function(ShapeType type)? shapeSelected,
     TResult Function()? toDefault,
-    TResult Function(SpaceObject? object)? updateDrawingObject,
-    TResult Function(TextObject object)? startedEditing,
+    TResult Function(Node? object)? updateDrawingObject,
+    TResult Function(TextNode object)? startedEditing,
     TResult Function()? endedEditing,
     TResult Function()? toggledSelectionTool,
     required TResult orElse(),
@@ -226,8 +226,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
     required TResult Function(SpaceTool tool) selected,
     required TResult Function(ShapeType type) shapeSelected,
     required TResult Function() toDefault,
-    required TResult Function(SpaceObject? object) updateDrawingObject,
-    required TResult Function(TextObject object) startedEditing,
+    required TResult Function(Node? object) updateDrawingObject,
+    required TResult Function(TextNode object) startedEditing,
     required TResult Function() endedEditing,
     required TResult Function() toggledSelectionTool,
   }) {
@@ -267,8 +267,8 @@ extension ToolbarEventPatterns on ToolbarEvent {
     TResult? Function(SpaceTool tool)? selected,
     TResult? Function(ShapeType type)? shapeSelected,
     TResult? Function()? toDefault,
-    TResult? Function(SpaceObject? object)? updateDrawingObject,
-    TResult? Function(TextObject object)? startedEditing,
+    TResult? Function(Node? object)? updateDrawingObject,
+    TResult? Function(TextNode object)? startedEditing,
     TResult? Function()? endedEditing,
     TResult? Function()? toggledSelectionTool,
   }) {
@@ -459,7 +459,7 @@ class __$ToDefaultCopyWithImpl<$Res> implements _$ToDefaultCopyWith<$Res> {
 class _UpdateDrawingObject implements ToolbarEvent {
   const _UpdateDrawingObject(this.object);
 
-  final SpaceObject? object;
+  final Node? object;
 
   /// Create a copy of ToolbarEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -496,7 +496,7 @@ abstract mixin class _$UpdateDrawingObjectCopyWith<$Res>
     $Res Function(_UpdateDrawingObject) _then,
   ) = __$UpdateDrawingObjectCopyWithImpl;
   @useResult
-  $Res call({SpaceObject? object});
+  $Res call({Node? object});
 }
 
 /// @nodoc
@@ -516,7 +516,7 @@ class __$UpdateDrawingObjectCopyWithImpl<$Res>
         freezed == object
             ? _self.object
             : object // ignore: cast_nullable_to_non_nullable
-                as SpaceObject?,
+                as Node?,
       ),
     );
   }
@@ -527,7 +527,7 @@ class __$UpdateDrawingObjectCopyWithImpl<$Res>
 class _StartedEditing implements ToolbarEvent {
   const _StartedEditing(this.object);
 
-  final TextObject object;
+  final TextNode object;
 
   /// Create a copy of ToolbarEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -561,9 +561,9 @@ abstract mixin class _$StartedEditingCopyWith<$Res>
     $Res Function(_StartedEditing) _then,
   ) = __$StartedEditingCopyWithImpl;
   @useResult
-  $Res call({TextObject object});
+  $Res call({TextNode object});
 
-  $TextObjectCopyWith<$Res> get object;
+  $TextNodeCopyWith<$Res> get object;
 }
 
 /// @nodoc
@@ -583,7 +583,7 @@ class __$StartedEditingCopyWithImpl<$Res>
         null == object
             ? _self.object
             : object // ignore: cast_nullable_to_non_nullable
-                as TextObject,
+                as TextNode,
       ),
     );
   }
@@ -592,8 +592,8 @@ class __$StartedEditingCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TextObjectCopyWith<$Res> get object {
-    return $TextObjectCopyWith<$Res>(_self.object, (value) {
+  $TextNodeCopyWith<$Res> get object {
+    return $TextNodeCopyWith<$Res>(_self.object, (value) {
       return _then(_self.copyWith(object: value));
     });
   }
@@ -675,8 +675,8 @@ class __$ToggledSelectionToolCopyWithImpl<$Res>
 mixin _$ToolbarState {
   SpaceTool get tool;
   ShapeType get activeShapeType;
-  SpaceObject? get activeDrawingObject;
-  TextObject? get editingObject;
+  Node? get activeDrawingObject;
+  TextNode? get editingObject;
 
   /// Create a copy of ToolbarState
   /// with the given fields replaced by the non-null parameter values.
@@ -727,11 +727,11 @@ abstract mixin class $ToolbarStateCopyWith<$Res> {
   $Res call({
     SpaceTool tool,
     ShapeType activeShapeType,
-    SpaceObject? activeDrawingObject,
-    TextObject? editingObject,
+    Node? activeDrawingObject,
+    TextNode? editingObject,
   });
 
-  $TextObjectCopyWith<$Res>? get editingObject;
+  $TextNodeCopyWith<$Res>? get editingObject;
 }
 
 /// @nodoc
@@ -767,12 +767,12 @@ class _$ToolbarStateCopyWithImpl<$Res> implements $ToolbarStateCopyWith<$Res> {
             freezed == activeDrawingObject
                 ? _self.activeDrawingObject
                 : activeDrawingObject // ignore: cast_nullable_to_non_nullable
-                    as SpaceObject?,
+                    as Node?,
         editingObject:
             freezed == editingObject
                 ? _self.editingObject
                 : editingObject // ignore: cast_nullable_to_non_nullable
-                    as TextObject?,
+                    as TextNode?,
       ),
     );
   }
@@ -781,12 +781,12 @@ class _$ToolbarStateCopyWithImpl<$Res> implements $ToolbarStateCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TextObjectCopyWith<$Res>? get editingObject {
+  $TextNodeCopyWith<$Res>? get editingObject {
     if (_self.editingObject == null) {
       return null;
     }
 
-    return $TextObjectCopyWith<$Res>(_self.editingObject!, (value) {
+    return $TextNodeCopyWith<$Res>(_self.editingObject!, (value) {
       return _then(_self.copyWith(editingObject: value));
     });
   }
@@ -888,8 +888,8 @@ extension ToolbarStatePatterns on ToolbarState {
     TResult Function(
       SpaceTool tool,
       ShapeType activeShapeType,
-      SpaceObject? activeDrawingObject,
-      TextObject? editingObject,
+      Node? activeDrawingObject,
+      TextNode? editingObject,
     )?
     $default, {
     required TResult orElse(),
@@ -926,8 +926,8 @@ extension ToolbarStatePatterns on ToolbarState {
     TResult Function(
       SpaceTool tool,
       ShapeType activeShapeType,
-      SpaceObject? activeDrawingObject,
-      TextObject? editingObject,
+      Node? activeDrawingObject,
+      TextNode? editingObject,
     )
     $default,
   ) {
@@ -962,8 +962,8 @@ extension ToolbarStatePatterns on ToolbarState {
     TResult? Function(
       SpaceTool tool,
       ShapeType activeShapeType,
-      SpaceObject? activeDrawingObject,
-      TextObject? editingObject,
+      Node? activeDrawingObject,
+      TextNode? editingObject,
     )?
     $default,
   ) {
@@ -999,9 +999,9 @@ class _ToolbarState implements ToolbarState {
   @JsonKey()
   final ShapeType activeShapeType;
   @override
-  final SpaceObject? activeDrawingObject;
+  final Node? activeDrawingObject;
   @override
-  final TextObject? editingObject;
+  final TextNode? editingObject;
 
   /// Create a copy of ToolbarState
   /// with the given fields replaced by the non-null parameter values.
@@ -1052,12 +1052,12 @@ abstract mixin class _$ToolbarStateCopyWith<$Res>
   $Res call({
     SpaceTool tool,
     ShapeType activeShapeType,
-    SpaceObject? activeDrawingObject,
-    TextObject? editingObject,
+    Node? activeDrawingObject,
+    TextNode? editingObject,
   });
 
   @override
-  $TextObjectCopyWith<$Res>? get editingObject;
+  $TextNodeCopyWith<$Res>? get editingObject;
 }
 
 /// @nodoc
@@ -1094,12 +1094,12 @@ class __$ToolbarStateCopyWithImpl<$Res>
             freezed == activeDrawingObject
                 ? _self.activeDrawingObject
                 : activeDrawingObject // ignore: cast_nullable_to_non_nullable
-                    as SpaceObject?,
+                    as Node?,
         editingObject:
             freezed == editingObject
                 ? _self.editingObject
                 : editingObject // ignore: cast_nullable_to_non_nullable
-                    as TextObject?,
+                    as TextNode?,
       ),
     );
   }
@@ -1108,12 +1108,12 @@ class __$ToolbarStateCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TextObjectCopyWith<$Res>? get editingObject {
+  $TextNodeCopyWith<$Res>? get editingObject {
     if (_self.editingObject == null) {
       return null;
     }
 
-    return $TextObjectCopyWith<$Res>(_self.editingObject!, (value) {
+    return $TextNodeCopyWith<$Res>(_self.editingObject!, (value) {
       return _then(_self.copyWith(editingObject: value));
     });
   }

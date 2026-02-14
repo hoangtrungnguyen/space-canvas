@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/commands/add_connector_command.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
 import 'package:ideascape/features/space/domain/models/connector_handle.dart';
 import 'package:ideascape/features/space/domain/commands/reshape_connector_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
-import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_object_command.dart';
+import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/models/objects/extensions/space_object_extensions.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
+import 'package:ideascape/features/space/domain/models/objects/extensions/node_extensions.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
@@ -28,42 +28,42 @@ class InteractionStateManager {
 
   void finalizeInteraction() {
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final obj = state.activeObjects.values.first;
-      final originalObject = state.originalObject;
+    if (state.activeNodes.isNotEmpty) {
+      final node = state.activeNodes.values.first;
+      final originalNode = state.originalNode;
 
-      // If we have an original object and position changed, record the move
-      if (originalObject != null && originalObject.id == obj.id) {
-        // Check if the object actually moved
-        if (_hasObjectMoved(originalObject, obj)) {
+      // If we have an original node and position changed, record the move
+      if (originalNode != null && originalNode.id == node.id) {
+        // Check if the node actually moved
+        if (_hasNodeMoved(originalNode, node)) {
           history.execute(
-            MoveObjectCommand(originalObject: originalObject, movedObject: obj),
+            MoveNodeCommand(originalNode: originalNode, movedNode: node),
           );
         }
       }
 
-      activeBloc.add(ActiveLayerEvent.objectActivated(obj));
+      activeBloc.add(ActiveLayerEvent.nodeActivated(node));
     }
   }
 
   void commitAndDeactivate() {
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final obj = state.activeObjects.values.first;
-      final originalObj = state.originalObject;
+    if (state.activeNodes.isNotEmpty) {
+      final node = state.activeNodes.values.first;
+      final originalNode = state.originalNode;
 
-      final existsInShapeLayer = shapeBloc.state.data.objects.containsKey(
-        obj.id,
+      final existsInShapeLayer = shapeBloc.state.data.nodes.containsKey(
+        node.id,
       );
 
       // An object is "existing" if it's in the ShapeLayer OR if we have its original state tracked
       final isExisting =
           existsInShapeLayer ||
-          (originalObj != null && originalObj.id == obj.id);
+          (originalNode != null && originalNode.id == node.id);
 
       if (isExisting) {
-        // If the object exists, we should finalize any pending interactions (moves, reshapes)
-        if (obj is ConnectorObject) {
+        // If the node exists, we should finalize any pending interactions (moves, reshapes)
+        if (node is ConnectorNode) {
           finalizeConnectorInteraction();
         } else {
           finalizeInteraction();
@@ -72,83 +72,83 @@ class InteractionStateManager {
         // If the object was removed from ShapeLayer (e.g. valid "Layer Hopping") but NOT modified,
         // no Command would have been executed by finalize* methods.
         // We must manually restore it to the ShapeLayer in this case.
-        if (!existsInShapeLayer && originalObj != null) {
+        if (!existsInShapeLayer && originalNode != null) {
           bool changed = false;
-          if (obj is ConnectorObject) {
+          if (node is ConnectorNode) {
             // Connector interactions generally create a new instance if changed
-            changed = (originalObj != obj);
+            changed = (originalNode != node);
           } else {
-            changed = _hasObjectMoved(originalObj, obj);
+            changed = _hasNodeMoved(originalNode, node);
           }
 
           if (!changed) {
-            shapeBloc.add(ShapeLayerEvent.addObject(obj));
+            shapeBloc.add(ShapeLayerEvent.addNode(node));
           }
         }
       } else {
-        // It's a truly new object (or we lost tracking), so add it via Command
-        history.execute(AddShapeCommand(obj));
+        // It's a truly new node (or we lost tracking), so add it via Command
+        history.execute(AddNodeCommand(node));
       }
 
-      activeBloc.add(ActiveLayerEvent.objectDeactivated(obj.id));
+      activeBloc.add(ActiveLayerEvent.nodeDeactivated(node.id));
     }
   }
 
-  void commitImmediate(SpaceObject object) {
-    history.execute(AddShapeCommand(object));
+  void commitImmediate(Node node) {
+    history.execute(AddNodeCommand(node));
   }
 
-  void deleteObject(SpaceObject object) {
-    history.execute(DeleteObjectCommand(object));
+  void deleteNode(Node node) {
+    history.execute(DeleteNodeCommand(node));
   }
 
-  void deleteObjects(List<SpaceObject> objects) {
-    if (objects.isEmpty) return;
-    if (objects.length == 1) {
-      deleteObject(objects.first);
+  void deleteNodes(List<Node> nodes) {
+    if (nodes.isEmpty) return;
+    if (nodes.length == 1) {
+      deleteNode(nodes.first);
     } else {
-      history.execute(BatchDeleteCommand(objects));
+      history.execute(BatchDeleteCommand(nodes));
     }
   }
 
   void createConnector({
     required Offset startPoint,
     required Offset endPoint,
-    int? startObjectId,
-    int? endObjectId,
+    int? startNodeId,
+    int? endNodeId,
     ConnectorEdge? startLocation,
     ConnectorEdge? endLocation,
   }) {
     final id = DateTime.now().microsecondsSinceEpoch; // Simple unique ID
-    final connector = ConnectorObject(
+    final connector = ConnectorNode(
       id: id,
-      startObjectId: startObjectId,
-      endObjectId: endObjectId,
+      startNodeId: startNodeId,
+      endNodeId: endNodeId,
       startPoint: startPoint,
       endPoint: endPoint,
       strokeWidth: 2.0,
-      color: Colors.black.value,
+      color: Colors.black.toARGB32(),
       startLocation: startLocation,
       endLocation: endLocation,
     );
     history.execute(AddConnectorCommand(connector));
   }
 
-  /// Checks if an object has actually moved from its original position.
-  bool _hasObjectMoved(SpaceObject original, SpaceObject current) {
+  /// Checks if a node has actually moved from its original position.
+  bool _hasNodeMoved(Node original, Node current) {
     return current.hasMovedFrom(original);
   }
 
-  void dragActiveObject(Offset worldPoint, Offset delta) {
+  void dragActiveNode(Offset worldPoint, Offset delta) {
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty && state.dragStartPoint != null) {
-      final obj = state.activeObjects.values.first;
-      final updatedObj = obj.move(delta);
+    if (state.activeNodes.isNotEmpty && state.dragStartPoint != null) {
+      final node = state.activeNodes.values.first;
+      final updatedNode = node.move(delta);
 
-      if (updatedObj != null) {
+      if (updatedNode != null) {
         activeBloc.add(
           ActiveLayerEvent.interactionStarted(
-            object: updatedObj,
+            node: updatedNode,
             point: worldPoint,
           ),
         );
@@ -158,25 +158,25 @@ class InteractionStateManager {
 
   void dragActiveConnector(Offset worldPoint, Offset delta) {
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty && state.dragStartPoint != null) {
-      final obj = state.activeObjects.values.first;
+    if (state.activeNodes.isNotEmpty && state.dragStartPoint != null) {
+      final node = state.activeNodes.values.first;
 
-      if (obj is ConnectorObject) {
-        ConnectorObject updatedConnector;
+      if (node is ConnectorNode) {
+        ConnectorNode updatedConnector;
         if (state.connectorHandle == ConnectorHandle.start) {
-          updatedConnector = obj.copyWith(startPoint: obj.startPoint + delta);
+          updatedConnector = node.copyWith(startPoint: node.startPoint + delta);
         } else if (state.connectorHandle == ConnectorHandle.end) {
-          updatedConnector = obj.copyWith(endPoint: obj.endPoint + delta);
+          updatedConnector = node.copyWith(endPoint: node.endPoint + delta);
         } else {
-          updatedConnector = obj.copyWith(
-            startPoint: obj.startPoint + delta,
-            endPoint: obj.endPoint + delta,
+          updatedConnector = node.copyWith(
+            startPoint: node.startPoint + delta,
+            endPoint: node.endPoint + delta,
           );
         }
 
         activeBloc.add(
           ActiveLayerEvent.interactionStarted(
-            object: updatedConnector,
+            node: updatedConnector,
             point: worldPoint,
           ),
         );
@@ -186,21 +186,21 @@ class InteractionStateManager {
 
   void finalizeConnectorInteraction() {
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final obj = state.activeObjects.values.first;
-      if (obj is ConnectorObject) {
-        final original = state.originalObject;
-        if (original is ConnectorObject && original.id == obj.id) {
-          if (original != obj) {
+    if (state.activeNodes.isNotEmpty) {
+      final node = state.activeNodes.values.first;
+      if (node is ConnectorNode) {
+        final original = state.originalNode;
+        if (original is ConnectorNode && original.id == node.id) {
+          if (original != node) {
             history.execute(
               ReshapeConnectorCommand(
-                originalObject: original,
-                modifiedObject: obj,
+                originalNode: original,
+                modifiedNode: node,
               ),
             );
           }
         }
-        activeBloc.add(ActiveLayerEvent.objectActivated(obj));
+        activeBloc.add(ActiveLayerEvent.nodeActivated(node));
       }
     }
   }

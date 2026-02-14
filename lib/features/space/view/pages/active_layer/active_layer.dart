@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
-import 'package:ideascape/features/space/domain/models/object_painter.dart';
+import 'package:ideascape/features/space/domain/models/node_painter.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/selection_painter.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/connector_preview_painter.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/connector_anchor_painter.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/connector_selection_painter.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/connector_painter.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 class ActiveLayer extends StatelessWidget {
   const ActiveLayer({super.key, required this.transformationController});
@@ -24,13 +24,13 @@ class ActiveLayer extends StatelessWidget {
     return BlocBuilder<ActiveLayerBloc, ActiveLayerState>(
       builder: (context, state) {
         // Check if there's anything to render
-        final hasActiveObjects = state.activeObjects.isNotEmpty;
+        final hasActiveNodes = state.activeNodes.isNotEmpty;
         final hasConnectorPreview =
             state.connectorStartPoint != null &&
             state.connectorDragPosition != null;
-        final hasConnectorHover = state.connectorHoverObjectId != null;
+        final hasConnectorHover = state.connectorHoverNodeId != null;
 
-        if (!hasActiveObjects && !hasConnectorPreview && !hasConnectorHover) {
+        if (!hasActiveNodes && !hasConnectorPreview && !hasConnectorHover) {
           return const SizedBox.shrink();
         }
 
@@ -44,22 +44,22 @@ class ActiveLayer extends StatelessWidget {
                     return Stack(
                       fit: StackFit.expand,
                       children: [
-                        if (hasActiveObjects)
-                          _ActiveObjectsView(
-                            activeObjects: state.activeObjects,
+                        if (hasActiveNodes)
+                          _ActiveNodesView(
+                            activeNodes: state.activeNodes,
                             transform: transformationController.value,
                           ),
-                        if (hasActiveObjects)
+                        if (hasActiveNodes)
                           _SelectionView(
-                            activeObjects: state.activeObjects,
+                            activeNodes: state.activeNodes,
                             tool: toolbarState.tool,
                             transform: transformationController.value,
                           ),
                         if (hasConnectorHover &&
                             toolbarState.tool == SpaceTool.connector)
                           _ConnectorAnchorView(
-                            hoveredObjectId: state.connectorHoverObjectId,
-                            shapeObjects: shapeState.data.objects,
+                            hoveredNodeId: state.connectorHoverNodeId,
+                            shapeNodes: shapeState.data.nodes,
                           ),
                         if (hasConnectorPreview)
                           _ConnectorPreviewView(
@@ -79,22 +79,18 @@ class ActiveLayer extends StatelessWidget {
   }
 }
 
-class _ActiveObjectsView extends StatelessWidget {
-  const _ActiveObjectsView({
-    required this.activeObjects,
-    required this.transform,
-  });
+class _ActiveNodesView extends StatelessWidget {
+  const _ActiveNodesView({required this.activeNodes, required this.transform});
 
-  final Map<int, SpaceObject> activeObjects;
+  final Map<int, Node> activeNodes;
   final Matrix4 transform;
 
   @override
   Widget build(BuildContext context) {
-    // Split objects into connectors and others for layering
-    final connectors =
-        activeObjects.values.whereType<ConnectorObject>().toList();
-    final otherObjects =
-        activeObjects.values.where((obj) => obj is! ConnectorObject).toList();
+    // Split nodes into connectors and others for layering
+    final connectors = activeNodes.values.whereType<ConnectorNode>().toList();
+    final otherNodes =
+        activeNodes.values.where((node) => node is! ConnectorNode).toList();
 
     return Stack(
       fit: StackFit.expand,
@@ -107,10 +103,10 @@ class _ActiveObjectsView extends StatelessWidget {
               transform: transform,
             ),
           ),
-        if (otherObjects.isNotEmpty)
+        if (otherNodes.isNotEmpty)
           CustomPaint(
             size: Size.infinite,
-            painter: ObjectPainter(objects: otherObjects, transform: transform),
+            painter: NodePainter(nodes: otherNodes, transform: transform),
           ),
       ],
     );
@@ -119,12 +115,12 @@ class _ActiveObjectsView extends StatelessWidget {
 
 class _SelectionView extends StatelessWidget {
   const _SelectionView({
-    required this.activeObjects,
+    required this.activeNodes,
     required this.tool,
     required this.transform,
   });
 
-  final Map<int, SpaceObject> activeObjects;
+  final Map<int, Node> activeNodes;
   final SpaceTool tool;
   final Matrix4 transform;
 
@@ -134,15 +130,14 @@ class _SelectionView extends StatelessWidget {
       return CustomPaint(
         size: Size.infinite,
         painter: SelectionPainter(
-          objects: activeObjects.values.toList(),
+          nodes: activeNodes.values.toList(),
           transform: transform,
         ),
       );
     }
 
     if (tool == SpaceTool.selectConnector) {
-      final connectors =
-          activeObjects.values.whereType<ConnectorObject>().toList();
+      final connectors = activeNodes.values.whereType<ConnectorNode>().toList();
       if (connectors.isNotEmpty) {
         return CustomPaint(
           size: Size.infinite,
@@ -160,23 +155,23 @@ class _SelectionView extends StatelessWidget {
 
 class _ConnectorAnchorView extends StatelessWidget {
   const _ConnectorAnchorView({
-    required this.hoveredObjectId,
-    required this.shapeObjects,
+    required this.hoveredNodeId,
+    required this.shapeNodes,
   });
 
-  final int? hoveredObjectId;
-  final Map<int, SpaceObject> shapeObjects;
+  final int? hoveredNodeId;
+  final Map<int, Node> shapeNodes;
 
   @override
   Widget build(BuildContext context) {
-    if (hoveredObjectId == null) return const SizedBox.shrink();
+    if (hoveredNodeId == null) return const SizedBox.shrink();
 
-    final hoveredObject = shapeObjects[hoveredObjectId];
-    if (hoveredObject == null) return const SizedBox.shrink();
+    final hoveredNode = shapeNodes[hoveredNodeId];
+    if (hoveredNode == null) return const SizedBox.shrink();
 
     return CustomPaint(
       size: Size.infinite,
-      painter: ConnectorAnchorPainter(object: hoveredObject),
+      painter: ConnectorAnchorPainter(node: hoveredNode),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/object_painter.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/node_painter.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 import '../../domain/models/grid_painter.dart';
 
@@ -14,12 +14,12 @@ class SpaceDemoPage extends StatefulWidget {
 }
 
 class _SpaceDemoPageState extends State<SpaceDemoPage> {
-  Map<int, SpaceObject> objects = {};
+  Map<int, Node> nodes = {};
   late TransformationController _controller;
   final Matrix4 _transformMatrix = Matrix4.identity();
   bool _panEnabled = false;
 
-  final List<PathObject> _paths = [];
+  final List<PathNode> _paths = [];
 
   @override
   void initState() {
@@ -77,17 +77,17 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
                         // Set a size for the canvas world.
                         size: Size(double.infinity, double.infinity),
                         // The painter gets the objects and the current transform matrix from the state.
-                        painter: ObjectPainter(
-                          objects: _paths,
+                        painter: NodePainter(
+                          nodes: _paths,
                           transform: _transformMatrix,
                         ),
                       ),
                       if (_currentPath != null)
                         CustomPaint(
                           size: Size(double.infinity, double.infinity),
-                          painter: ObjectPainter(
-                            objects: [
-                              PathObject(
+                          painter: NodePainter(
+                            nodes: [
+                              PathNode(
                                 path: _currentPath!,
                                 paint: _currentPaint,
                                 id: -1,
@@ -153,7 +153,7 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
     if (!_panEnabled && _currentPath != null) {
       setState(() {
         _paths.add(
-          PathObject(
+          PathNode(
             path: _currentPath!,
             paint: _currentPaint,
             id: DateTime.now().millisecondsSinceEpoch,

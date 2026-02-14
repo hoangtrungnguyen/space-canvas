@@ -5,7 +5,7 @@ import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/active_layer/active_layer.dart';
 import 'package:ideascape/features/space/view/pages/shapes_layer/shapes_layer.dart';
-import 'package:ideascape/features/space/view/widgets/active_object_observer.dart';
+import 'package:ideascape/features/space/view/widgets/active_node_observer.dart';
 
 class CanvasLayer extends StatefulWidget {
   const CanvasLayer({super.key, required this.transformationController});
@@ -63,7 +63,7 @@ class _CanvasLayerState extends State<CanvasLayer> {
                   ShapesLayer(
                     transformationController: widget.transformationController,
                   ),
-                  ActiveObjectObserver(
+                  ActiveNodeObserver(
                     child: ActiveLayer(
                       transformationController: widget.transformationController,
                     ),

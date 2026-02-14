@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
@@ -16,15 +16,15 @@ import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.da
 import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
 import 'package:provider/provider.dart';
 
-/// Handles selection and manipulation (move/resize) of objects.
+/// Handles selection and manipulation (move/resize) of nodes.
 ///
-/// This handler serves as the primary entry point for object interaction.
+/// This handler serves as the primary entry point for node interaction.
 /// It delegates specific interaction logic to [InteractionStrategy] implementations
 /// based on the current state (e.g., [ResizeStrategy] or [MoveStrategy]).
 class SelectToolHandler extends ToolHandler {
   const SelectToolHandler();
 
-  /// Handles tap gestures to select objects.
+  /// Handles tap gestures to select nodes.
   ///
   /// Uses [CanvasInteractionMediator.selectAt] to verify hits on the canvas.
   @override
@@ -39,8 +39,8 @@ class SelectToolHandler extends ToolHandler {
       controller,
     );
 
-    final hitObject = mediator.hitTest(worldPoint);
-    if (hitObject is ConnectorObject) {
+    final hitNode = mediator.hitTest(worldPoint);
+    if (hitNode is ConnectorNode) {
       context.read<ToolbarBloc>().add(
         const ToolbarEvent.selected(SpaceTool.selectConnector),
       );
@@ -76,15 +76,15 @@ class SelectToolHandler extends ToolHandler {
 
     // Check for handle hit
     ResizeHandle? hitHandle;
-    if (state.activeObjects.isNotEmpty) {
-      // Check handles of the first active object (or iterate).
-      // If we hit a handle of an ALREADY selected object, that takes precedence.
+    if (state.activeNodes.isNotEmpty) {
+      // Check handles of the first active node (or iterate).
+      // If we hit a handle of an ALREADY selected node, that takes precedence.
 
       final scale = controller.value.getMaxScaleOnAxis();
       final hitRadius = 20.0 / scale; // Larger target for touch
 
-      for (final object in state.activeObjects.values) {
-        final rect = object.rect.inflate(4.0); // Padding from SelectionPainter
+      for (final node in state.activeNodes.values) {
+        final rect = node.rect.inflate(4.0); // Padding from SelectionPainter
         hitHandle = _getHitHandle(worldPoint, rect, hitRadius);
         if (hitHandle != null) break;
       }
@@ -94,16 +94,16 @@ class SelectToolHandler extends ToolHandler {
       // Start Resize
       activeBloc.add(ActiveLayerEvent.handleChanged(hitHandle));
 
-      final activeObject = state.activeObjects.values.first;
+      final activeNode = state.activeNodes.values.first;
       // Temporarily remove from ShapeLayer so we don't see the "old" version
       // beneath the active one being resized.
       context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(activeObject.id),
+        ShapeLayerEvent.removeNode(activeNode.id),
       );
 
       context.read<ActiveLayerBloc>().add(
         ActiveLayerEvent.interactionStarted(
-          object: activeObject,
+          node: activeNode,
           point: worldPoint,
         ),
       );
@@ -111,8 +111,8 @@ class SelectToolHandler extends ToolHandler {
       // Normal selection logic
       final mediator = context.read<CanvasInteractionMediator>();
 
-      final hitObject = mediator.hitTest(worldPoint);
-      if (hitObject is ConnectorObject) {
+      final hitNode = mediator.hitTest(worldPoint);
+      if (hitNode is ConnectorNode) {
         context.read<ToolbarBloc>().add(
           const ToolbarEvent.selected(SpaceTool.selectConnector),
         );
@@ -167,7 +167,7 @@ class SelectToolHandler extends ToolHandler {
   InteractionStrategy _getStrategyForState(ActiveLayerState state) {
     if (state.resizeHandle != null) {
       return const ResizeStrategy();
-    } else if (state.activeObjects.isNotEmpty) {
+    } else if (state.activeNodes.isNotEmpty) {
       return const MoveStrategy();
     }
     return const IdleStrategy();

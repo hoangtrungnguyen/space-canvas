@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-class SpaceObjectJsonMapper {
-  static SpaceObject fromJson(Map<String, dynamic> json) {
+class NodeJsonMapper {
+  static Node fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
 
     switch (type) {
@@ -28,8 +28,8 @@ class SpaceObjectJsonMapper {
     }
   }
 
-  static ShapeObject _shapeFromJson(Map<String, dynamic> json) {
-    return ShapeObject(
+  static ShapeNode _shapeFromJson(Map<String, dynamic> json) {
+    return ShapeNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
       type: ShapeType.values.byName(json['shapeType'] as String),
@@ -39,8 +39,8 @@ class SpaceObjectJsonMapper {
     );
   }
 
-  static TextObject _textFromJson(Map<String, dynamic> json) {
-    return TextObject(
+  static TextNode _textFromJson(Map<String, dynamic> json) {
+    return TextNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
       text: json['textContent'] as String,
@@ -51,12 +51,12 @@ class SpaceObjectJsonMapper {
     );
   }
 
-  static ConnectorObject _connectorFromJson(Map<String, dynamic> json) {
-    return ConnectorObject(
+  static ConnectorNode _connectorFromJson(Map<String, dynamic> json) {
+    return ConnectorNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
-      startObjectId: json['startObjectId'] as int,
-      endObjectId: json['endObjectId'] as int,
+      startNodeId: json['startNodeId'] as int,
+      endNodeId: json['endNodeId'] as int,
       startPoint: _offsetFromJson(json['startPoint'] as Map<String, dynamic>),
       endPoint: _offsetFromJson(json['endPoint'] as Map<String, dynamic>),
       strokeWidth: (json['strokeWidth'] as num).toDouble(),
@@ -64,8 +64,8 @@ class SpaceObjectJsonMapper {
     );
   }
 
-  static ImageObject _imageFromJson(Map<String, dynamic> json) {
-    return ImageObject(
+  static ImageNode _imageFromJson(Map<String, dynamic> json) {
+    return ImageNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
       imageUrl: json['imageUrl'] as String,
@@ -73,8 +73,8 @@ class SpaceObjectJsonMapper {
     );
   }
 
-  static GroupObject _groupFromJson(Map<String, dynamic> json) {
-    return GroupObject(
+  static GroupNode _groupFromJson(Map<String, dynamic> json) {
+    return GroupNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
       childrenIds: (json['childrenIds'] as List).cast<int>(),
@@ -82,8 +82,8 @@ class SpaceObjectJsonMapper {
     );
   }
 
-  static ListOfPointObject _listOfPointFromJson(Map<String, dynamic> json) {
-    return ListOfPointObject(
+  static ListOfPointNode _listOfPointFromJson(Map<String, dynamic> json) {
+    return ListOfPointNode(
       id: json['id'] as int,
       zIndex: json['zIndex'] as int? ?? 0,
       points:

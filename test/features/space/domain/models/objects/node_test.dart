@@ -1,30 +1,30 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 // Mock visitor for testing accept methods
-class MockVisitor implements SpaceObjectVisitor<String> {
+class MockVisitor implements NodeVisitor<String> {
   @override
-  String visitPath(PathObject object) => 'path:${object.id}';
+  String visitPath(PathNode object) => 'path:${object.id}';
 
   @override
-  String visitShape(ShapeObject object) => 'shape:${object.id}';
+  String visitShape(ShapeNode object) => 'shape:${object.id}';
 
   @override
-  String visitText(TextObject object) => 'text:${object.id}';
+  String visitText(TextNode object) => 'text:${object.id}';
 
   @override
-  String visitImage(ImageObject object) => 'image:${object.id}';
+  String visitImage(ImageNode object) => 'image:${object.id}';
 
   @override
-  String visitConnector(ConnectorObject object) => 'connector:${object.id}';
+  String visitConnector(ConnectorNode object) => 'connector:${object.id}';
 
   @override
-  String visitGroup(GroupObject object) => 'group:${object.id}';
+  String visitGroup(GroupNode object) => 'group:${object.id}';
 
   @override
-  String visitListOfPoint(ListOfPointObject object) =>
+  String visitListOfPoint(ListOfPointNode object) =>
       'listOfPoint:${object.id}';
 }
 
@@ -43,15 +43,15 @@ void main() {
     });
   });
 
-  group('SpaceObject.intersects', () {
+  group('Node.intersects', () {
     test('returns true when shapes overlap', () {
-      final shape1 = ShapeObject(
+      final shape1 = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
       );
-      final shape2 = ShapeObject(
+      final shape2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(50, 50, 100, 100),
@@ -61,13 +61,13 @@ void main() {
     });
 
     test('returns false when shapes do not overlap', () {
-      final shape1 = ShapeObject(
+      final shape1 = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
         paint: Paint(),
       );
-      final shape2 = ShapeObject(
+      final shape2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 50, 50),
@@ -76,14 +76,14 @@ void main() {
       expect(shape1.intersects(shape2), isFalse);
     });
 
-    test('works between different SpaceObject types', () {
-      final shape = ShapeObject(
+    test('works between different Node types', () {
+      final shape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
       );
-      final text = TextObject(
+      final text = TextNode(
         id: 2,
         text: 'Hello',
         position: const Offset(50, 50),
@@ -94,7 +94,7 @@ void main() {
     });
   });
 
-  group('PathObject', () {
+  group('PathNode', () {
     late Path testPath;
     late Paint testPaint;
 
@@ -110,7 +110,7 @@ void main() {
     });
 
     test('can be created with required parameters', () {
-      final pathObject = PathObject(path: testPath, paint: testPaint, id: 1);
+      final pathObject = PathNode(path: testPath, paint: testPaint, id: 1);
       expect(pathObject.id, 1);
       expect(pathObject.zIndex, 0);
       expect(pathObject.path, testPath);
@@ -118,7 +118,7 @@ void main() {
     });
 
     test('can be created with custom zIndex', () {
-      final pathObject = PathObject(
+      final pathObject = PathNode(
         path: testPath,
         paint: testPaint,
         id: 1,
@@ -128,18 +128,18 @@ void main() {
     });
 
     test('rect returns path bounds', () {
-      final pathObject = PathObject(path: testPath, paint: testPaint, id: 1);
+      final pathObject = PathNode(path: testPath, paint: testPaint, id: 1);
       expect(pathObject.rect, const Rect.fromLTRB(0, 0, 100, 100));
     });
 
     test('accept calls visitPath', () {
-      final pathObject = PathObject(path: testPath, paint: testPaint, id: 42);
+      final pathObject = PathNode(path: testPath, paint: testPaint, id: 42);
       final visitor = MockVisitor();
       expect(pathObject.accept(visitor), 'path:42');
     });
   });
 
-  group('ShapeObject', () {
+  group('ShapeNode', () {
     late Paint testPaint;
 
     setUp(() {
@@ -147,7 +147,7 @@ void main() {
     });
 
     test('can be created with required parameters', () {
-      final shape = ShapeObject(
+      final shape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(10, 20, 100, 200),
@@ -161,7 +161,7 @@ void main() {
     });
 
     test('can be created with optional text and zIndex', () {
-      final shape = ShapeObject(
+      final shape = ShapeNode(
         id: 2,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
@@ -174,7 +174,7 @@ void main() {
     });
 
     test('copyWith works correctly', () {
-      final original = ShapeObject(
+      final original = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -191,7 +191,7 @@ void main() {
     });
 
     test('accept calls visitShape', () {
-      final shape = ShapeObject(
+      final shape = ShapeNode(
         id: 99,
         type: ShapeType.triangle,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
@@ -201,9 +201,9 @@ void main() {
     });
   });
 
-  group('TextObject', () {
+  group('TextNode', () {
     test('can be created with required parameters', () {
-      final text = TextObject(
+      final text = TextNode(
         id: 1,
         text: 'Hello World',
         position: const Offset(100, 200),
@@ -220,7 +220,7 @@ void main() {
     });
 
     test('can be created with optional fontFamily and zIndex', () {
-      final text = TextObject(
+      final text = TextNode(
         id: 2,
         text: 'Styled',
         position: const Offset(0, 0),
@@ -234,7 +234,7 @@ void main() {
     });
 
     test('rect is calculated based on text length and fontSize', () {
-      final text = TextObject(
+      final text = TextNode(
         id: 1,
         text: 'Hello', // 5 chars
         position: const Offset(10, 20),
@@ -247,7 +247,7 @@ void main() {
     });
 
     test('rect handles empty text', () {
-      final text = TextObject(
+      final text = TextNode(
         id: 1,
         text: '',
         position: const Offset(0, 0),
@@ -259,7 +259,7 @@ void main() {
     });
 
     test('accept calls visitText', () {
-      final text = TextObject(
+      final text = TextNode(
         id: 77,
         text: 'Test',
         position: const Offset(0, 0),
@@ -270,9 +270,9 @@ void main() {
     });
   });
 
-  group('ImageObject', () {
+  group('ImageNode', () {
     test('can be created with required parameters', () {
-      final image = ImageObject(
+      final image = ImageNode(
         id: 1,
         imageUrl: 'https://example.com/image.png',
         rect: const Rect.fromLTWH(0, 0, 200, 150),
@@ -284,7 +284,7 @@ void main() {
     });
 
     test('can be created with custom zIndex', () {
-      final image = ImageObject(
+      final image = ImageNode(
         id: 2,
         imageUrl: 'local/path.jpg',
         rect: const Rect.fromLTWH(10, 10, 100, 100),
@@ -294,7 +294,7 @@ void main() {
     });
 
     test('accept calls visitImage', () {
-      final image = ImageObject(
+      final image = ImageNode(
         id: 55,
         imageUrl: 'test.png',
         rect: const Rect.fromLTWH(0, 0, 50, 50),
@@ -303,20 +303,20 @@ void main() {
     });
   });
 
-  group('ConnectorObject', () {
+  group('ConnectorNode', () {
     test('can be created with required parameters', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 1,
-        startObjectId: 10,
-        endObjectId: 20,
+        startNodeId: 10,
+        endNodeId: 20,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
         strokeWidth: 2,
         color: 0xFF000000,
       );
       expect(connector.id, 1);
-      expect(connector.startObjectId, 10);
-      expect(connector.endObjectId, 20);
+      expect(connector.startNodeId, 10);
+      expect(connector.endNodeId, 20);
       expect(connector.startPoint, const Offset(0, 0));
       expect(connector.endPoint, const Offset(100, 100));
       expect(connector.strokeWidth, 2);
@@ -325,10 +325,10 @@ void main() {
     });
 
     test('can be created with custom zIndex', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 2,
-        startObjectId: 1,
-        endObjectId: 2,
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(50, 50),
         strokeWidth: 1,
@@ -339,10 +339,10 @@ void main() {
     });
 
     test('rect is calculated from start/end points with stroke inflation', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 1,
-        startObjectId: 1,
-        endObjectId: 2,
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(10, 20),
         endPoint: const Offset(110, 120),
         strokeWidth: 4,
@@ -354,10 +354,10 @@ void main() {
     });
 
     test('accept calls visitConnector', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 88,
-        startObjectId: 1,
-        endObjectId: 2,
+        startNodeId: 1,
+        endNodeId: 2,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(10, 10),
         strokeWidth: 1,
@@ -367,9 +367,9 @@ void main() {
     });
   });
 
-  group('GroupObject', () {
+  group('GroupNode', () {
     test('can be created with required parameters', () {
-      final group = GroupObject(
+      final group = GroupNode(
         id: 1,
         childrenIds: [2, 3, 4],
         rect: const Rect.fromLTWH(0, 0, 200, 200),
@@ -381,7 +381,7 @@ void main() {
     });
 
     test('can be created with empty children', () {
-      final group = GroupObject(
+      final group = GroupNode(
         id: 2,
         childrenIds: [],
         rect: const Rect.fromLTWH(10, 10, 50, 50),
@@ -392,7 +392,7 @@ void main() {
     });
 
     test('accept calls visitGroup', () {
-      final group = GroupObject(
+      final group = GroupNode(
         id: 66,
         childrenIds: [1, 2],
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -401,9 +401,9 @@ void main() {
     });
   });
 
-  group('ListOfPointObject', () {
+  group('ListOfPointNode', () {
     test('can be created with required parameters', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 1,
         points: [const Offset(0, 0), const Offset(10, 10), const Offset(20, 5)],
         strokeWidth: 3,
@@ -417,7 +417,7 @@ void main() {
     });
 
     test('can be created with custom zIndex', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 2,
         points: [const Offset(0, 0)],
         strokeWidth: 1,
@@ -428,7 +428,7 @@ void main() {
     });
 
     test('rect returns Rect.zero for empty points', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 1,
         points: [],
         strokeWidth: 2,
@@ -438,7 +438,7 @@ void main() {
     });
 
     test('rect calculates bounding box from points with stroke inflation', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 1,
         points: [
           const Offset(10, 20),
@@ -455,7 +455,7 @@ void main() {
     });
 
     test('rect handles single point', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 1,
         points: [const Offset(25, 35)],
         strokeWidth: 6,
@@ -468,7 +468,7 @@ void main() {
 
     test('rect covers all branches in bounding calculation', () {
       // Test case where points have varying min/max in different directions
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 1,
         points: [
           const Offset(50, 50), // Initial point
@@ -483,7 +483,7 @@ void main() {
     });
 
     test('accept calls visitListOfPoint', () {
-      final listOfPoint = ListOfPointObject(
+      final listOfPoint = ListOfPointNode(
         id: 33,
         points: [const Offset(0, 0)],
         strokeWidth: 1,

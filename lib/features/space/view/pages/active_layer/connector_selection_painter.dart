@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
 class ConnectorSelectionPainter extends CustomPainter {
-  final List<ConnectorObject> connectors;
+  final List<ConnectorNode> connectors;
   final Matrix4 transform;
   final Color highlightColor;
   final double highlightWidth;

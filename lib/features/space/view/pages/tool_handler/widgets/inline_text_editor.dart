@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
+import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
-import 'package:super_editor/super_editor.dart';
+import 'package:super_editor/super_editor.dart' hide TextNode;
 
 class InlineTextEditor extends StatefulWidget {
   const InlineTextEditor({
@@ -13,7 +13,7 @@ class InlineTextEditor extends StatefulWidget {
     required this.transformationController,
   });
 
-  final TextObject textObject;
+  final TextNode textObject;
   final TransformationController transformationController;
 
   @override
@@ -56,7 +56,7 @@ class _InlineTextEditorState extends State<InlineTextEditor> {
         fontSize: _localFontSize,
         color: _localColor.toARGB32(),
       );
-      context.read<HistoryManager>().execute(AddShapeCommand(updatedObject));
+      context.read<HistoryManager>().execute(AddNodeCommand(updatedObject));
     }
     context.read<ToolbarBloc>().add(const ToolbarEvent.endedEditing());
   }

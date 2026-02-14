@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 /// Paints anchor point indicators (small circles) on an object
 /// when the connector tool is hovering over it.
 class ConnectorAnchorPainter extends CustomPainter {
-  final SpaceObject object;
+  final Node node;
   final Color anchorColor;
   final double anchorRadius;
 
   ConnectorAnchorPainter({
-    required this.object,
+    required this.node,
     this.anchorColor = Colors.blue,
     this.anchorRadius = 6.0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = object.rect;
+    final rect = node.rect;
 
     final fillPaint =
         Paint()
@@ -47,7 +47,7 @@ class ConnectorAnchorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ConnectorAnchorPainter oldDelegate) {
-    return oldDelegate.object != object ||
+    return oldDelegate.node != node ||
         oldDelegate.anchorColor != anchorColor ||
         oldDelegate.anchorRadius != anchorRadius;
   }

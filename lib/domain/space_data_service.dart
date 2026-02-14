@@ -1,13 +1,13 @@
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 class SpaceDataService {
-  // A unique ID generator for our objects to simplify finding them.
+  // A unique ID generator for our nodes to simplify finding them.
   int _uniqueIdCounter = 0;
 
   int get nextUniqueId => _uniqueIdCounter++;
 
-  Map<int, ShapeObject> generateInitialObjects() {
-    final Map<int, ShapeObject> generatedObjects = {};
-    return generatedObjects;
+  Map<int, Node> generateInitialNodes() {
+    final Map<int, Node> generatedNodes = {};
+    return generatedNodes;
   }
 }

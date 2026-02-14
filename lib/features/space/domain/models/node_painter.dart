@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/models/objects/visitors/paint_visitor.dart';
 
-import 'objects/space_object.dart';
+import 'objects/node.dart';
 
-class ObjectPainter extends CustomPainter {
-  final List<SpaceObject> objects;
+class NodePainter extends CustomPainter {
+  final List<Node> nodes;
   final Matrix4 transform;
 
-  ObjectPainter({required this.objects, required this.transform});
+  NodePainter({required this.nodes, required this.transform});
 
   @override
   void paint(Canvas canvas, Size size) {
     // *** PERFORMANCE OPTIMIZATION: VIEW CULLING ***
     final visibleRect = _calculateVisibleRect(canvas, size);
 
-    final visibleObjects = objects.where(
-      (obj) => obj.rect.overlaps(visibleRect),
-    );
+    final visibleNodes = nodes.where((node) => node.rect.overlaps(visibleRect));
 
     final visitor = PaintVisitor(canvas);
-    for (final object in visibleObjects) {
-      object.accept(visitor);
+    for (final node in visibleNodes) {
+      node.accept(visitor);
     }
   }
 
@@ -35,7 +33,7 @@ class ObjectPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant ObjectPainter oldDelegate) {
-    return oldDelegate.objects != objects || oldDelegate.transform != transform;
+  bool shouldRepaint(covariant NodePainter oldDelegate) {
+    return oldDelegate.nodes != nodes || oldDelegate.transform != transform;
   }
 }

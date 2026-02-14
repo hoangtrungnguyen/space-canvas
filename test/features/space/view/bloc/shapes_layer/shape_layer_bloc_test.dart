@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/failure.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -30,12 +30,12 @@ void main() {
   });
 
   group('ShapeLayerBloc', () {
-    late ShapeObject testShape1;
-    late ShapeObject testShape2;
-    late ShapeObject testShape3;
+    late ShapeNode testShape1;
+    late ShapeNode testShape2;
+    late ShapeNode testShape3;
 
     setUp(() {
-      testShape1 = ShapeObject(
+      testShape1 = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 50, 50),
@@ -43,7 +43,7 @@ void main() {
         zIndex: 1,
       );
 
-      testShape2 = ShapeObject(
+      testShape2 = ShapeNode(
         id: 2,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(200, 200, 50, 50),
@@ -51,7 +51,7 @@ void main() {
         zIndex: 2,
       );
 
-      testShape3 = ShapeObject(
+      testShape3 = ShapeNode(
         id: 3,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(
@@ -72,12 +72,15 @@ void main() {
     // Initial State
     // =========================================================================
     group('initial state', () {
-      test('should have initialize state with empty objects', () {
-        final bloc = ShapeLayerBloc('test-id');
+      test('should have initialize state with empty nodes', () {
+        final bloc = ShapeLayerBloc(
+          id: 'test-id',
+          spaceDataService: mockSpaceDataService,
+        );
 
         expect(bloc.state, isA<ShapeLayerStateInitialize>());
-        expect(bloc.state.data.objects, isEmpty);
-        expect(bloc.state.data.selectedObjectId, isNull);
+        expect(bloc.state.data.nodes, isEmpty);
+        expect(bloc.state.data.selectedNodeId, isNull);
 
         bloc.close();
       });
@@ -91,22 +94,26 @@ void main() {
         'emits [loading, success] when initialize succeeds',
         setUp: () {
           when(
-            () => mockSpaceDataService.generateInitialObjects(),
+            () => mockSpaceDataService.generateInitialNodes(),
           ).thenReturn({testShape1.id: testShape1, testShape2.id: testShape2});
         },
-        build: () => ShapeLayerBloc('test-id'),
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         act: (bloc) => bloc.add(const ShapeLayerEvent.initialize()),
         expect:
             () => [
               isA<ShapeLayerStateLoading>(),
               isA<ShapeLayerStateSuccess>().having(
-                (s) => s.data.objects.length,
-                'objects count',
+                (s) => s.data.nodes.length,
+                'nodes count',
                 2,
               ),
             ],
         verify: (_) {
-          verify(() => mockSpaceDataService.generateInitialObjects()).called(1);
+          verify(() => mockSpaceDataService.generateInitialNodes()).called(1);
         },
       );
 
@@ -114,10 +121,14 @@ void main() {
         'emits [loading, failure] when initialize throws exception',
         setUp: () {
           when(
-            () => mockSpaceDataService.generateInitialObjects(),
+            () => mockSpaceDataService.generateInitialNodes(),
           ).thenThrow(Exception('Failed to load'));
         },
-        build: () => ShapeLayerBloc('test-id'),
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         act: (bloc) => bloc.add(const ShapeLayerEvent.initialize()),
         expect:
             () => [
@@ -134,60 +145,72 @@ void main() {
     // =========================================================================
     // AddObject Event
     // =========================================================================
-    group('addObject event', () {
+    group('addNode event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should add object to state',
-        build: () => ShapeLayerBloc('test-id'),
-        act: (bloc) => bloc.add(ShapeLayerEvent.addObject(testShape1)),
+        'should add node to state',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
+        act: (bloc) => bloc.add(ShapeLayerEvent.addNode(testShape1)),
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.objects.containsKey(testShape1.id),
-                'contains object',
+                (s) => s.data.nodes.containsKey(testShape1.id),
+                'contains node',
                 true,
               ),
             ],
       );
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should add multiple objects',
-        build: () => ShapeLayerBloc('test-id'),
+        'should add multiple nodes',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         act: (bloc) {
-          bloc.add(ShapeLayerEvent.addObject(testShape1));
-          bloc.add(ShapeLayerEvent.addObject(testShape2));
+          bloc.add(ShapeLayerEvent.addNode(testShape1));
+          bloc.add(ShapeLayerEvent.addNode(testShape2));
         },
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.objects.length,
-                'objects count',
+                (s) => s.data.nodes.length,
+                'nodes count',
                 1,
               ),
               isA<ShapeLayerState>().having(
-                (s) => s.data.objects.length,
-                'objects count',
+                (s) => s.data.nodes.length,
+                'nodes count',
                 2,
               ),
             ],
       );
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should replace object with same id',
-        build: () => ShapeLayerBloc('test-id'),
+        'should replace node with same id',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
         act: (bloc) {
           final updatedShape = testShape1.copyWith(
             rect: const Rect.fromLTWH(300, 300, 50, 50),
           );
-          bloc.add(ShapeLayerEvent.addObject(updatedShape));
+          bloc.add(ShapeLayerEvent.addNode(updatedShape));
         },
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.objects[testShape1.id]?.rect.left,
+                (s) => s.data.nodes[testShape1.id]?.rect.left,
                 'updated left',
                 300.0,
               ),
@@ -198,20 +221,24 @@ void main() {
     // =========================================================================
     // RemoveObject Event
     // =========================================================================
-    group('removeObject event', () {
+    group('removeNode event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should remove object from state',
-        build: () => ShapeLayerBloc('test-id'),
+        'should remove node from state',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
-        act: (bloc) => bloc.add(ShapeLayerEvent.removeObject(testShape1.id)),
+        act: (bloc) => bloc.add(ShapeLayerEvent.removeNode(testShape1.id)),
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.objects.containsKey(testShape1.id),
-                'contains object',
+                (s) => s.data.nodes.containsKey(testShape1.id),
+                'contains node',
                 false,
               ),
             ],
@@ -219,17 +246,21 @@ void main() {
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
         'should handle removing non-existent object gracefully',
-        build: () => ShapeLayerBloc('test-id'),
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
-        act: (bloc) => bloc.add(const ShapeLayerEvent.removeObject(999)),
-        // No state change emitted since the objects map is unchanged (freezed equality)
+        act: (bloc) => bloc.add(const ShapeLayerEvent.removeNode(999)),
+        // No state change emitted since the nodes map is unchanged (freezed equality)
         expect: () => [],
         verify: (bloc) {
-          // Verify original object still exists
-          expect(bloc.state.data.objects.containsKey(testShape1.id), isTrue);
+          // Verify original node still exists
+          expect(bloc.state.data.nodes.containsKey(testShape1.id), isTrue);
         },
       );
     });
@@ -237,20 +268,24 @@ void main() {
     // =========================================================================
     // ObjectSelected Event
     // =========================================================================
-    group('objectSelected event', () {
+    group('nodeSelected event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should set selectedObjectId',
-        build: () => ShapeLayerBloc('test-id'),
+        'should set selectedNodeId',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
-        act: (bloc) => bloc.add(ShapeLayerEvent.objectSelected(testShape1.id)),
+        act: (bloc) => bloc.add(ShapeLayerEvent.nodeSelected(testShape1.id)),
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.selectedObjectId,
-                'selectedObjectId',
+                (s) => s.data.selectedNodeId,
+                'selectedNodeId',
                 testShape1.id,
               ),
             ],
@@ -258,20 +293,24 @@ void main() {
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
         'should clear selection with null',
-        build: () => ShapeLayerBloc('test-id'),
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
               data: ShapeLayerData(
-                objects: {testShape1.id: testShape1},
-                selectedObjectId: testShape1.id,
+                nodes: {testShape1.id: testShape1},
+                selectedNodeId: testShape1.id,
               ),
             ),
-        act: (bloc) => bloc.add(const ShapeLayerEvent.objectSelected(null)),
+        act: (bloc) => bloc.add(const ShapeLayerEvent.nodeSelected(null)),
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.selectedObjectId,
-                'selectedObjectId',
+                (s) => s.data.selectedNodeId,
+                'selectedNodeId',
                 isNull,
               ),
             ],
@@ -283,11 +322,15 @@ void main() {
     // =========================================================================
     group('selectAtPoint event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should select object when point hits',
-        build: () => ShapeLayerBloc('test-id'),
+        'should select node when point hits',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
         act:
             (bloc) => bloc.add(
@@ -297,21 +340,25 @@ void main() {
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.selectedObjectId,
-                'selectedObjectId',
+                (s) => s.data.selectedNodeId,
+                'selectedNodeId',
                 testShape1.id,
               ),
             ],
       );
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should clear selection when point misses all objects',
-        build: () => ShapeLayerBloc('test-id'),
+        'should clear selection when point misses all nodes',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
               data: ShapeLayerData(
-                objects: {testShape1.id: testShape1},
-                selectedObjectId: testShape1.id,
+                nodes: {testShape1.id: testShape1},
+                selectedNodeId: testShape1.id,
               ),
             ),
         act:
@@ -322,20 +369,24 @@ void main() {
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.selectedObjectId,
-                'selectedObjectId',
+                (s) => s.data.selectedNodeId,
+                'selectedNodeId',
                 isNull,
               ),
             ],
       );
 
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should select object with highest zIndex when multiple overlap',
-        build: () => ShapeLayerBloc('test-id'),
+        'should select node with highest zIndex when multiple overlap',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
               data: ShapeLayerData(
-                objects: {
+                nodes: {
                   testShape1.id: testShape1, // zIndex 1, rect (100,100,50,50)
                   testShape3.id:
                       testShape3, // zIndex 3, rect (100,100,100,100) - overlaps
@@ -350,8 +401,8 @@ void main() {
         expect:
             () => [
               isA<ShapeLayerState>().having(
-                (s) => s.data.selectedObjectId,
-                'selectedObjectId',
+                (s) => s.data.selectedNodeId,
+                'selectedNodeId',
                 testShape3.id, // Higher zIndex wins
               ),
             ],
@@ -361,18 +412,22 @@ void main() {
     // =========================================================================
     // ObjectDragged Event (currently no-op)
     // =========================================================================
-    group('objectDragged event', () {
+    group('nodeDragged event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
         'should not emit any state (no-op handler)',
-        build: () => ShapeLayerBloc('test-id'),
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
-              data: ShapeLayerData(objects: {testShape1.id: testShape1}),
+              data: ShapeLayerData(nodes: {testShape1.id: testShape1}),
             ),
         act:
             (bloc) => bloc.add(
-              ShapeLayerEvent.objectDragged(
-                objectId: testShape1.id,
+              ShapeLayerEvent.nodeDragged(
+                nodeId: testShape1.id,
                 delta: const Offset(10, 10),
               ),
             ),
@@ -383,14 +438,18 @@ void main() {
     // =========================================================================
     // UpdateObjects Event
     // =========================================================================
-    group('updateObjects event', () {
+    group('updateNodes event', () {
       blocTest<ShapeLayerBloc, ShapeLayerState>(
-        'should update multiple objects in state',
-        build: () => ShapeLayerBloc('test-id'),
+        'should update multiple nodes in state',
+        build:
+            () => ShapeLayerBloc(
+              id: 'test-id',
+              spaceDataService: mockSpaceDataService,
+            ),
         seed:
             () => ShapeLayerState.success(
               data: ShapeLayerData(
-                objects: {testShape1.id: testShape1, testShape2.id: testShape2},
+                nodes: {testShape1.id: testShape1, testShape2.id: testShape2},
               ),
             ),
         act: (bloc) {
@@ -400,21 +459,19 @@ void main() {
           final updatedShape2 = testShape2.copyWith(
             rect: const Rect.fromLTWH(250, 250, 50, 50),
           );
-          bloc.add(
-            ShapeLayerEvent.updateObjects([updatedShape1, updatedShape2]),
-          );
+          bloc.add(ShapeLayerEvent.updateNodes([updatedShape1, updatedShape2]));
         },
         expect:
             () => [
               isA<ShapeLayerState>()
                   .having(
-                    (s) => s.data.objects[testShape1.id]?.rect.left,
-                    'updated shape1 left',
+                    (s) => s.data.nodes[testShape1.id]?.rect.left,
+                    'updated node1 left',
                     150.0,
                   )
                   .having(
-                    (s) => s.data.objects[testShape2.id]?.rect.left,
-                    'updated shape2 left',
+                    (s) => s.data.nodes[testShape2.id]?.rect.left,
+                    'updated node2 left',
                     250.0,
                   ),
             ],

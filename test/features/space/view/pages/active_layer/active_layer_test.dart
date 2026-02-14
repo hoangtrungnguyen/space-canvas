@@ -2,8 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
@@ -56,7 +56,7 @@ void main() {
     testWidgets(
       'renders ConnectorSelectionPainter when tool is selectConnector and active object is Connector',
       (tester) async {
-        final connector = ConnectorObject(
+        final connector = ConnectorNode(
           id: 1,
           startPoint: const Offset(0, 0),
           endPoint: const Offset(100, 100),
@@ -66,7 +66,7 @@ void main() {
 
         when(
           () => activeBloc.state,
-        ).thenReturn(ActiveLayerState(activeObjects: {1: connector}));
+        ).thenReturn(ActiveLayerState(activeNodes: {1: connector}));
         when(
           () => toolbarBloc.state,
         ).thenReturn(ToolbarState(tool: SpaceTool.selectConnector));
@@ -95,7 +95,7 @@ void main() {
     testWidgets(
       'does NOT render ConnectorSelectionPainter when tool is select',
       (tester) async {
-        final connector = ConnectorObject(
+        final connector = ConnectorNode(
           id: 1,
           startPoint: const Offset(0, 0),
           endPoint: const Offset(100, 100),
@@ -105,7 +105,7 @@ void main() {
 
         when(
           () => activeBloc.state,
-        ).thenReturn(ActiveLayerState(activeObjects: {1: connector}));
+        ).thenReturn(ActiveLayerState(activeNodes: {1: connector}));
         when(
           () => toolbarBloc.state,
         ).thenReturn(ToolbarState(tool: SpaceTool.select));
@@ -132,7 +132,7 @@ void main() {
     testWidgets(
       'does NOT render ConnectorSelectionPainter when active object is NOT Connector',
       (tester) async {
-        final shape = ShapeObject(
+        final shape = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -141,7 +141,7 @@ void main() {
 
         when(
           () => activeBloc.state,
-        ).thenReturn(ActiveLayerState(activeObjects: {1: shape}));
+        ).thenReturn(ActiveLayerState(activeNodes: {1: shape}));
         when(
           () => toolbarBloc.state,
         ).thenReturn(ToolbarState(tool: SpaceTool.selectConnector));
@@ -152,8 +152,8 @@ void main() {
 
         // Should check that ConnectorSelectionPainter is NOT rendered
         final paints = tester.widgetList<CustomPaint>(find.byType(CustomPaint));
-        // Filter out ObjectPainter
-        // Filter out ObjectPainter
+        // Filter out NodePainter
+        // Filter out NodePainter
         final hasConnectorPainter = paints.any(
           (widget) => widget.painter is ConnectorSelectionPainter,
         );

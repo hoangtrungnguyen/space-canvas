@@ -13,17 +13,17 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ActiveLayerState {
-  Map<int, SpaceObject> get activeObjects;
+  Map<int, Node> get activeNodes;
   Offset? get dragStartPoint;
 
   /// The original object state before a move operation started.
-  /// Used for creating MoveObjectCommand for undo/redo.
-  SpaceObject? get originalObject;
+  /// Used for creating MoveNodeCommand for undo/redo.
+  Node? get originalNode;
   ResizeHandle? get resizeHandle;
   ConnectorHandle? get connectorHandle;
 
   /// The ID of the object where a connector drag started (optional).
-  int? get connectorStartObjectId;
+  int? get connectorStartNodeId;
 
   /// The starting point of the connector drag.
   Offset? get connectorStartPoint;
@@ -32,7 +32,7 @@ mixin _$ActiveLayerState {
   Offset? get connectorDragPosition;
 
   /// The ID of the object being hovered while connector tool is active.
-  int? get connectorHoverObjectId;
+  int? get connectorHoverNodeId;
 
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
@@ -50,44 +50,44 @@ mixin _$ActiveLayerState {
         (other.runtimeType == runtimeType &&
             other is ActiveLayerState &&
             const DeepCollectionEquality().equals(
-              other.activeObjects,
-              activeObjects,
+              other.activeNodes,
+              activeNodes,
             ) &&
             (identical(other.dragStartPoint, dragStartPoint) ||
                 other.dragStartPoint == dragStartPoint) &&
-            (identical(other.originalObject, originalObject) ||
-                other.originalObject == originalObject) &&
+            (identical(other.originalNode, originalNode) ||
+                other.originalNode == originalNode) &&
             (identical(other.resizeHandle, resizeHandle) ||
                 other.resizeHandle == resizeHandle) &&
             (identical(other.connectorHandle, connectorHandle) ||
                 other.connectorHandle == connectorHandle) &&
-            (identical(other.connectorStartObjectId, connectorStartObjectId) ||
-                other.connectorStartObjectId == connectorStartObjectId) &&
+            (identical(other.connectorStartNodeId, connectorStartNodeId) ||
+                other.connectorStartNodeId == connectorStartNodeId) &&
             (identical(other.connectorStartPoint, connectorStartPoint) ||
                 other.connectorStartPoint == connectorStartPoint) &&
             (identical(other.connectorDragPosition, connectorDragPosition) ||
                 other.connectorDragPosition == connectorDragPosition) &&
-            (identical(other.connectorHoverObjectId, connectorHoverObjectId) ||
-                other.connectorHoverObjectId == connectorHoverObjectId));
+            (identical(other.connectorHoverNodeId, connectorHoverNodeId) ||
+                other.connectorHoverNodeId == connectorHoverNodeId));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    const DeepCollectionEquality().hash(activeObjects),
+    const DeepCollectionEquality().hash(activeNodes),
     dragStartPoint,
-    originalObject,
+    originalNode,
     resizeHandle,
     connectorHandle,
-    connectorStartObjectId,
+    connectorStartNodeId,
     connectorStartPoint,
     connectorDragPosition,
-    connectorHoverObjectId,
+    connectorHoverNodeId,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
+    return 'ActiveLayerState(activeNodes: $activeNodes, dragStartPoint: $dragStartPoint, originalNode: $originalNode, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartNodeId: $connectorStartNodeId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverNodeId: $connectorHoverNodeId)';
   }
 }
 
@@ -99,15 +99,15 @@ abstract mixin class $ActiveLayerStateCopyWith<$Res> {
   ) = _$ActiveLayerStateCopyWithImpl;
   @useResult
   $Res call({
-    Map<int, SpaceObject> activeObjects,
+    Map<int, Node> activeNodes,
     Offset? dragStartPoint,
-    SpaceObject? originalObject,
+    Node? originalNode,
     ResizeHandle? resizeHandle,
     ConnectorHandle? connectorHandle,
-    int? connectorStartObjectId,
+    int? connectorStartNodeId,
     Offset? connectorStartPoint,
     Offset? connectorDragPosition,
-    int? connectorHoverObjectId,
+    int? connectorHoverNodeId,
   });
 }
 
@@ -124,33 +124,33 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? activeObjects = null,
+    Object? activeNodes = null,
     Object? dragStartPoint = freezed,
-    Object? originalObject = freezed,
+    Object? originalNode = freezed,
     Object? resizeHandle = freezed,
     Object? connectorHandle = freezed,
-    Object? connectorStartObjectId = freezed,
+    Object? connectorStartNodeId = freezed,
     Object? connectorStartPoint = freezed,
     Object? connectorDragPosition = freezed,
-    Object? connectorHoverObjectId = freezed,
+    Object? connectorHoverNodeId = freezed,
   }) {
     return _then(
       _self.copyWith(
-        activeObjects:
-            null == activeObjects
-                ? _self.activeObjects
-                : activeObjects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+        activeNodes:
+            null == activeNodes
+                ? _self.activeNodes
+                : activeNodes // ignore: cast_nullable_to_non_nullable
+                    as Map<int, Node>,
         dragStartPoint:
             freezed == dragStartPoint
                 ? _self.dragStartPoint
                 : dragStartPoint // ignore: cast_nullable_to_non_nullable
                     as Offset?,
-        originalObject:
-            freezed == originalObject
-                ? _self.originalObject
-                : originalObject // ignore: cast_nullable_to_non_nullable
-                    as SpaceObject?,
+        originalNode:
+            freezed == originalNode
+                ? _self.originalNode
+                : originalNode // ignore: cast_nullable_to_non_nullable
+                    as Node?,
         resizeHandle:
             freezed == resizeHandle
                 ? _self.resizeHandle
@@ -161,10 +161,10 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.connectorHandle
                 : connectorHandle // ignore: cast_nullable_to_non_nullable
                     as ConnectorHandle?,
-        connectorStartObjectId:
-            freezed == connectorStartObjectId
-                ? _self.connectorStartObjectId
-                : connectorStartObjectId // ignore: cast_nullable_to_non_nullable
+        connectorStartNodeId:
+            freezed == connectorStartNodeId
+                ? _self.connectorStartNodeId
+                : connectorStartNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
         connectorStartPoint:
             freezed == connectorStartPoint
@@ -176,10 +176,10 @@ class _$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.connectorDragPosition
                 : connectorDragPosition // ignore: cast_nullable_to_non_nullable
                     as Offset?,
-        connectorHoverObjectId:
-            freezed == connectorHoverObjectId
-                ? _self.connectorHoverObjectId
-                : connectorHoverObjectId // ignore: cast_nullable_to_non_nullable
+        connectorHoverNodeId:
+            freezed == connectorHoverNodeId
+                ? _self.connectorHoverNodeId
+                : connectorHoverNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
       ),
     );
@@ -280,15 +280,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-      Map<int, SpaceObject> activeObjects,
+      Map<int, Node> activeNodes,
       Offset? dragStartPoint,
-      SpaceObject? originalObject,
+      Node? originalNode,
       ResizeHandle? resizeHandle,
       ConnectorHandle? connectorHandle,
-      int? connectorStartObjectId,
+      int? connectorStartNodeId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
-      int? connectorHoverObjectId,
+      int? connectorHoverNodeId,
     )?
     $default, {
     required TResult orElse(),
@@ -297,15 +297,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     switch (_that) {
       case _ActiveLayerState() when $default != null:
         return $default(
-          _that.activeObjects,
+          _that.activeNodes,
           _that.dragStartPoint,
-          _that.originalObject,
+          _that.originalNode,
           _that.resizeHandle,
           _that.connectorHandle,
-          _that.connectorStartObjectId,
+          _that.connectorStartNodeId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
-          _that.connectorHoverObjectId,
+          _that.connectorHoverNodeId,
         );
       case _:
         return orElse();
@@ -328,15 +328,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-      Map<int, SpaceObject> activeObjects,
+      Map<int, Node> activeNodes,
       Offset? dragStartPoint,
-      SpaceObject? originalObject,
+      Node? originalNode,
       ResizeHandle? resizeHandle,
       ConnectorHandle? connectorHandle,
-      int? connectorStartObjectId,
+      int? connectorStartNodeId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
-      int? connectorHoverObjectId,
+      int? connectorHoverNodeId,
     )
     $default,
   ) {
@@ -344,15 +344,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     switch (_that) {
       case _ActiveLayerState():
         return $default(
-          _that.activeObjects,
+          _that.activeNodes,
           _that.dragStartPoint,
-          _that.originalObject,
+          _that.originalNode,
           _that.resizeHandle,
           _that.connectorHandle,
-          _that.connectorStartObjectId,
+          _that.connectorStartNodeId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
-          _that.connectorHoverObjectId,
+          _that.connectorHoverNodeId,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -374,15 +374,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-      Map<int, SpaceObject> activeObjects,
+      Map<int, Node> activeNodes,
       Offset? dragStartPoint,
-      SpaceObject? originalObject,
+      Node? originalNode,
       ResizeHandle? resizeHandle,
       ConnectorHandle? connectorHandle,
-      int? connectorStartObjectId,
+      int? connectorStartNodeId,
       Offset? connectorStartPoint,
       Offset? connectorDragPosition,
-      int? connectorHoverObjectId,
+      int? connectorHoverNodeId,
     )?
     $default,
   ) {
@@ -390,15 +390,15 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
     switch (_that) {
       case _ActiveLayerState() when $default != null:
         return $default(
-          _that.activeObjects,
+          _that.activeNodes,
           _that.dragStartPoint,
-          _that.originalObject,
+          _that.originalNode,
           _that.resizeHandle,
           _that.connectorHandle,
-          _that.connectorStartObjectId,
+          _that.connectorStartNodeId,
           _that.connectorStartPoint,
           _that.connectorDragPosition,
-          _that.connectorHoverObjectId,
+          _that.connectorHoverNodeId,
         );
       case _:
         return null;
@@ -410,33 +410,33 @@ extension ActiveLayerStatePatterns on ActiveLayerState {
 
 class _ActiveLayerState implements ActiveLayerState {
   const _ActiveLayerState({
-    final Map<int, SpaceObject> activeObjects = const {},
+    final Map<int, Node> activeNodes = const {},
     this.dragStartPoint,
-    this.originalObject,
+    this.originalNode,
     this.resizeHandle,
     this.connectorHandle,
-    this.connectorStartObjectId,
+    this.connectorStartNodeId,
     this.connectorStartPoint,
     this.connectorDragPosition,
-    this.connectorHoverObjectId,
-  }) : _activeObjects = activeObjects;
+    this.connectorHoverNodeId,
+  }) : _activeNodes = activeNodes;
 
-  final Map<int, SpaceObject> _activeObjects;
+  final Map<int, Node> _activeNodes;
   @override
   @JsonKey()
-  Map<int, SpaceObject> get activeObjects {
-    if (_activeObjects is EqualUnmodifiableMapView) return _activeObjects;
+  Map<int, Node> get activeNodes {
+    if (_activeNodes is EqualUnmodifiableMapView) return _activeNodes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_activeObjects);
+    return EqualUnmodifiableMapView(_activeNodes);
   }
 
   @override
   final Offset? dragStartPoint;
 
   /// The original object state before a move operation started.
-  /// Used for creating MoveObjectCommand for undo/redo.
+  /// Used for creating MoveNodeCommand for undo/redo.
   @override
-  final SpaceObject? originalObject;
+  final Node? originalNode;
   @override
   final ResizeHandle? resizeHandle;
   @override
@@ -444,7 +444,7 @@ class _ActiveLayerState implements ActiveLayerState {
 
   /// The ID of the object where a connector drag started (optional).
   @override
-  final int? connectorStartObjectId;
+  final int? connectorStartNodeId;
 
   /// The starting point of the connector drag.
   @override
@@ -456,7 +456,7 @@ class _ActiveLayerState implements ActiveLayerState {
 
   /// The ID of the object being hovered while connector tool is active.
   @override
-  final int? connectorHoverObjectId;
+  final int? connectorHoverNodeId;
 
   /// Create a copy of ActiveLayerState
   /// with the given fields replaced by the non-null parameter values.
@@ -472,44 +472,44 @@ class _ActiveLayerState implements ActiveLayerState {
         (other.runtimeType == runtimeType &&
             other is _ActiveLayerState &&
             const DeepCollectionEquality().equals(
-              other._activeObjects,
-              _activeObjects,
+              other._activeNodes,
+              _activeNodes,
             ) &&
             (identical(other.dragStartPoint, dragStartPoint) ||
                 other.dragStartPoint == dragStartPoint) &&
-            (identical(other.originalObject, originalObject) ||
-                other.originalObject == originalObject) &&
+            (identical(other.originalNode, originalNode) ||
+                other.originalNode == originalNode) &&
             (identical(other.resizeHandle, resizeHandle) ||
                 other.resizeHandle == resizeHandle) &&
             (identical(other.connectorHandle, connectorHandle) ||
                 other.connectorHandle == connectorHandle) &&
-            (identical(other.connectorStartObjectId, connectorStartObjectId) ||
-                other.connectorStartObjectId == connectorStartObjectId) &&
+            (identical(other.connectorStartNodeId, connectorStartNodeId) ||
+                other.connectorStartNodeId == connectorStartNodeId) &&
             (identical(other.connectorStartPoint, connectorStartPoint) ||
                 other.connectorStartPoint == connectorStartPoint) &&
             (identical(other.connectorDragPosition, connectorDragPosition) ||
                 other.connectorDragPosition == connectorDragPosition) &&
-            (identical(other.connectorHoverObjectId, connectorHoverObjectId) ||
-                other.connectorHoverObjectId == connectorHoverObjectId));
+            (identical(other.connectorHoverNodeId, connectorHoverNodeId) ||
+                other.connectorHoverNodeId == connectorHoverNodeId));
   }
 
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    const DeepCollectionEquality().hash(_activeObjects),
+    const DeepCollectionEquality().hash(_activeNodes),
     dragStartPoint,
-    originalObject,
+    originalNode,
     resizeHandle,
     connectorHandle,
-    connectorStartObjectId,
+    connectorStartNodeId,
     connectorStartPoint,
     connectorDragPosition,
-    connectorHoverObjectId,
+    connectorHoverNodeId,
   );
 
   @override
   String toString() {
-    return 'ActiveLayerState(activeObjects: $activeObjects, dragStartPoint: $dragStartPoint, originalObject: $originalObject, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartObjectId: $connectorStartObjectId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverObjectId: $connectorHoverObjectId)';
+    return 'ActiveLayerState(activeNodes: $activeNodes, dragStartPoint: $dragStartPoint, originalNode: $originalNode, resizeHandle: $resizeHandle, connectorHandle: $connectorHandle, connectorStartNodeId: $connectorStartNodeId, connectorStartPoint: $connectorStartPoint, connectorDragPosition: $connectorDragPosition, connectorHoverNodeId: $connectorHoverNodeId)';
   }
 }
 
@@ -523,15 +523,15 @@ abstract mixin class _$ActiveLayerStateCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    Map<int, SpaceObject> activeObjects,
+    Map<int, Node> activeNodes,
     Offset? dragStartPoint,
-    SpaceObject? originalObject,
+    Node? originalNode,
     ResizeHandle? resizeHandle,
     ConnectorHandle? connectorHandle,
-    int? connectorStartObjectId,
+    int? connectorStartNodeId,
     Offset? connectorStartPoint,
     Offset? connectorDragPosition,
-    int? connectorHoverObjectId,
+    int? connectorHoverNodeId,
   });
 }
 
@@ -548,33 +548,33 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? activeObjects = null,
+    Object? activeNodes = null,
     Object? dragStartPoint = freezed,
-    Object? originalObject = freezed,
+    Object? originalNode = freezed,
     Object? resizeHandle = freezed,
     Object? connectorHandle = freezed,
-    Object? connectorStartObjectId = freezed,
+    Object? connectorStartNodeId = freezed,
     Object? connectorStartPoint = freezed,
     Object? connectorDragPosition = freezed,
-    Object? connectorHoverObjectId = freezed,
+    Object? connectorHoverNodeId = freezed,
   }) {
     return _then(
       _ActiveLayerState(
-        activeObjects:
-            null == activeObjects
-                ? _self._activeObjects
-                : activeObjects // ignore: cast_nullable_to_non_nullable
-                    as Map<int, SpaceObject>,
+        activeNodes:
+            null == activeNodes
+                ? _self._activeNodes
+                : activeNodes // ignore: cast_nullable_to_non_nullable
+                    as Map<int, Node>,
         dragStartPoint:
             freezed == dragStartPoint
                 ? _self.dragStartPoint
                 : dragStartPoint // ignore: cast_nullable_to_non_nullable
                     as Offset?,
-        originalObject:
-            freezed == originalObject
-                ? _self.originalObject
-                : originalObject // ignore: cast_nullable_to_non_nullable
-                    as SpaceObject?,
+        originalNode:
+            freezed == originalNode
+                ? _self.originalNode
+                : originalNode // ignore: cast_nullable_to_non_nullable
+                    as Node?,
         resizeHandle:
             freezed == resizeHandle
                 ? _self.resizeHandle
@@ -585,10 +585,10 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.connectorHandle
                 : connectorHandle // ignore: cast_nullable_to_non_nullable
                     as ConnectorHandle?,
-        connectorStartObjectId:
-            freezed == connectorStartObjectId
-                ? _self.connectorStartObjectId
-                : connectorStartObjectId // ignore: cast_nullable_to_non_nullable
+        connectorStartNodeId:
+            freezed == connectorStartNodeId
+                ? _self.connectorStartNodeId
+                : connectorStartNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
         connectorStartPoint:
             freezed == connectorStartPoint
@@ -600,10 +600,10 @@ class __$ActiveLayerStateCopyWithImpl<$Res>
                 ? _self.connectorDragPosition
                 : connectorDragPosition // ignore: cast_nullable_to_non_nullable
                     as Offset?,
-        connectorHoverObjectId:
-            freezed == connectorHoverObjectId
-                ? _self.connectorHoverObjectId
-                : connectorHoverObjectId // ignore: cast_nullable_to_non_nullable
+        connectorHoverNodeId:
+            freezed == connectorHoverNodeId
+                ? _self.connectorHoverNodeId
+                : connectorHoverNodeId // ignore: cast_nullable_to_non_nullable
                     as int?,
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
 class ConnectorUtils {
   /// Calculates the [ConnectorEdge] (closest edge) of a [Rect] from a given [point].

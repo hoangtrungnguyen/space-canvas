@@ -8,7 +8,7 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_blo
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
@@ -57,8 +57,8 @@ void main() {
       );
     });
 
-    test('selectAt with no active object and hit on shape layer object', () {
-      final obj = ShapeObject(
+    test('selectAt with no active node and hit on shape layer node', () {
+      final node = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -68,7 +68,7 @@ void main() {
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: ShapeLayerData(objects: {1: obj})),
+        ShapeLayerState.success(data: ShapeLayerData(nodes: {1: node})),
       );
 
       // Hit at (50, 50) which is inside the rect
@@ -77,7 +77,7 @@ void main() {
       verify(
         () => activeBloc.add(any(that: isA<ActiveLayerEvent>())),
       ).called(2);
-      // originalObjectSet
+      // originalNodeSet
       // interactionStarted
 
       verify(
@@ -85,8 +85,8 @@ void main() {
       ).called(1);
     });
 
-    test('selectAt with active object hit (isDrag=true)', () {
-      final obj = ShapeObject(
+    test('selectAt with active node hit (isDrag=true)', () {
+      final node = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -95,21 +95,21 @@ void main() {
 
       when(
         () => activeBloc.state,
-      ).thenReturn(ActiveLayerState(activeObjects: {1: obj}));
+      ).thenReturn(ActiveLayerState(activeNodes: {1: node}));
 
       manager.selectAt(const Offset(50, 50), isDrag: true);
 
       verify(
         () => activeBloc.add(any(that: isA<ActiveLayerEvent>())),
       ).called(2);
-      // originalObjectSet
+      // originalNodeSet
       // interactionStarted
 
       verifyNever(() => interactionManager.commitAndDeactivate());
     });
 
-    test('selectAt with active object NOT hit (deselects)', () {
-      final obj = ShapeObject(
+    test('selectAt with active node NOT hit (deselects)', () {
+      final node = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -118,9 +118,9 @@ void main() {
 
       when(
         () => activeBloc.state,
-      ).thenReturn(ActiveLayerState(activeObjects: {1: obj}));
+      ).thenReturn(ActiveLayerState(activeNodes: {1: node}));
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: const ShapeLayerData(objects: {})),
+        ShapeLayerState.success(data: const ShapeLayerData(nodes: {})),
       );
 
       // Hit outside
@@ -129,15 +129,15 @@ void main() {
       verify(() => interactionManager.commitAndDeactivate()).called(1);
     });
 
-    test('selects topmost object based on z-index', () {
-      final obj1 = ShapeObject(
+    test('selects topmost node based on z-index', () {
+      final node1 = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         paint: Paint(),
         zIndex: 1,
       );
-      final obj2 = ShapeObject(
+      final node2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -148,7 +148,7 @@ void main() {
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
         ShapeLayerState.success(
-          data: ShapeLayerData(objects: {1: obj1, 2: obj2}),
+          data: ShapeLayerData(nodes: {1: node1, 2: node2}),
         ),
       );
 
@@ -165,13 +165,13 @@ void main() {
 
       (event as ActiveLayerEvent).maybeMap(
         interactionStarted: (e) {
-          expect(e.object.id, 2);
+          expect(e.node.id, 2);
         },
         orElse: () => fail('Expected interactionStarted event'),
       );
     });
     test('selectAt with excludeConnectors filter should ignore connectors', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 3,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
@@ -181,7 +181,7 @@ void main() {
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: ShapeLayerData(objects: {3: connector})),
+        ShapeLayerState.success(data: ShapeLayerData(nodes: {3: connector})),
       );
 
       // Hit the connector
@@ -194,15 +194,15 @@ void main() {
       // Should NOT select, but should reset selection
       verifyNever(() => interactionManager.commitAndDeactivate());
       verify(
-        () => activeBloc.add(const ActiveLayerEvent.originalObjectSet(null)),
+        () => activeBloc.add(const ActiveLayerEvent.originalNodeSet(null)),
       ).called(1);
       verify(
-        () => shapeBloc.add(const ShapeLayerEvent.objectSelected(null)),
+        () => shapeBloc.add(const ShapeLayerEvent.nodeSelected(null)),
       ).called(1);
     });
 
     test('selectAt with connectorsOnly filter should ignore shapes', () {
-      final shape = ShapeObject(
+      final shape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -211,7 +211,7 @@ void main() {
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: ShapeLayerData(objects: {1: shape})),
+        ShapeLayerState.success(data: ShapeLayerData(nodes: {1: shape})),
       );
 
       // Hit the shape
@@ -224,15 +224,15 @@ void main() {
       // Should NOT select, but should reset selection
       verifyNever(() => interactionManager.commitAndDeactivate());
       verify(
-        () => activeBloc.add(const ActiveLayerEvent.originalObjectSet(null)),
+        () => activeBloc.add(const ActiveLayerEvent.originalNodeSet(null)),
       ).called(1);
       verify(
-        () => shapeBloc.add(const ShapeLayerEvent.objectSelected(null)),
+        () => shapeBloc.add(const ShapeLayerEvent.nodeSelected(null)),
       ).called(1);
     });
 
     test('selectAt with connectorsOnly filter should select connectors', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 3,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
@@ -242,7 +242,7 @@ void main() {
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: ShapeLayerData(objects: {3: connector})),
+        ShapeLayerState.success(data: ShapeLayerData(nodes: {3: connector})),
       );
 
       // Hit the connector
@@ -256,7 +256,7 @@ void main() {
       verify(
         () => activeBloc.add(
           ActiveLayerEvent.interactionStarted(
-            object: connector,
+            node: connector,
             point: const Offset(50, 50),
           ),
         ),
@@ -264,7 +264,7 @@ void main() {
     });
 
     test('selectConnectorAt delegates with connectorsOnly filter', () {
-      final connector = ConnectorObject(
+      final connector = ConnectorNode(
         id: 3,
         startPoint: const Offset(0, 0),
         endPoint: const Offset(100, 100),
@@ -274,7 +274,7 @@ void main() {
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
       when(() => shapeBloc.state).thenReturn(
-        ShapeLayerState.success(data: ShapeLayerData(objects: {3: connector})),
+        ShapeLayerState.success(data: ShapeLayerData(nodes: {3: connector})),
       );
 
       // Hit the connector using selectConnectorAt
@@ -284,7 +284,7 @@ void main() {
       verify(
         () => activeBloc.add(
           ActiveLayerEvent.interactionStarted(
-            object: connector,
+            node: connector,
             point: const Offset(50, 50),
           ),
         ),
@@ -292,8 +292,8 @@ void main() {
     });
 
     group('hitTest', () {
-      test('returns active object if hit', () {
-        final obj = ShapeObject(
+      test('returns active node if hit', () {
+        final node = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -302,14 +302,14 @@ void main() {
 
         when(
           () => activeBloc.state,
-        ).thenReturn(ActiveLayerState(activeObjects: {1: obj}));
+        ).thenReturn(ActiveLayerState(activeNodes: {1: node}));
 
         final result = manager.hitTest(const Offset(50, 50));
-        expect(result, obj);
+        expect(result, node);
       });
 
-      test('returns active object if hit (connectorsOnly)', () {
-        final obj = ShapeObject(
+      test('returns active node if hit (connectorsOnly)', () {
+        final node = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -318,9 +318,9 @@ void main() {
 
         when(
           () => activeBloc.state,
-        ).thenReturn(ActiveLayerState(activeObjects: {1: obj}));
+        ).thenReturn(ActiveLayerState(activeNodes: {1: node}));
         when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: const ShapeLayerData(objects: {})),
+          ShapeLayerState.success(data: const ShapeLayerData(nodes: {})),
         );
 
         final result = manager.hitTest(
@@ -330,8 +330,8 @@ void main() {
         expect(result, isNull);
       });
 
-      test('returns shape layer object if hit', () {
-        final obj = ShapeObject(
+      test('returns shape layer node if hit', () {
+        final node = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -340,22 +340,22 @@ void main() {
 
         when(() => activeBloc.state).thenReturn(const ActiveLayerState());
         when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: ShapeLayerData(objects: {1: obj})),
+          ShapeLayerState.success(data: ShapeLayerData(nodes: {1: node})),
         );
 
         final result = manager.hitTest(const Offset(50, 50));
-        expect(result, obj);
+        expect(result, node);
       });
 
-      test('returns topmost shape layer object if multiple hit', () {
-        final obj1 = ShapeObject(
+      test('returns topmost shape layer node if multiple hit', () {
+        final node1 = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
           paint: Paint(),
           zIndex: 1,
         );
-        final obj2 = ShapeObject(
+        final node2 = ShapeNode(
           id: 2,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -366,18 +366,18 @@ void main() {
         when(() => activeBloc.state).thenReturn(const ActiveLayerState());
         when(() => shapeBloc.state).thenReturn(
           ShapeLayerState.success(
-            data: ShapeLayerData(objects: {1: obj1, 2: obj2}),
+            data: ShapeLayerData(nodes: {1: node1, 2: node2}),
           ),
         );
 
         final result = manager.hitTest(const Offset(50, 50));
-        expect(result, obj2);
+        expect(result, node2);
       });
 
       test('returns null if nothing hit', () {
         when(() => activeBloc.state).thenReturn(const ActiveLayerState());
         when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: const ShapeLayerData(objects: {})),
+          ShapeLayerState.success(data: const ShapeLayerData(nodes: {})),
         );
 
         final result = manager.hitTest(const Offset(50, 50));

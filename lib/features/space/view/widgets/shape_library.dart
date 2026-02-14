@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/models/objects/space_object.dart';
+import '../../domain/models/objects/node.dart';
 
 class ShapeLibrary extends StatelessWidget {
   final ValueChanged<ShapeType> onShapeSelected;

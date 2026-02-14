@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
-import 'package:ideascape/features/space/domain/factories/space_object_factory.dart';
+import 'package:ideascape/features/space/domain/factories/node_factory.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
@@ -23,7 +23,7 @@ class TextToolHandler extends ToolHandler {
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
     final id = getIt<SpaceDataService>().nextUniqueId;
-    final textObject = SpaceObjectFactory.createText(
+    final textObject = NodeFactory.createText(
       id: id,
       text: "",
       position: worldPoint,
@@ -43,7 +43,7 @@ class TextToolHandler extends ToolHandler {
     final mediator = context.read<CanvasInteractionMediator>();
 
     final id = getIt<SpaceDataService>().nextUniqueId;
-    final textObject = SpaceObjectFactory.createText(
+    final textObject = NodeFactory.createText(
       id: id,
       text: "",
       position: worldPoint,
@@ -67,10 +67,10 @@ class TextToolHandler extends ToolHandler {
     final mediator = context.read<CanvasInteractionMediator>();
     final startPoint = activeState.dragStartPoint;
 
-    if (startPoint != null && activeState.activeObjects.isNotEmpty) {
-      final currentObject = activeState.activeObjects.values.first;
+    if (startPoint != null && activeState.activeNodes.isNotEmpty) {
+      final currentObject = activeState.activeNodes.values.first;
 
-      if (currentObject is TextObject) {
+      if (currentObject is TextNode) {
         final currentPoint = _toWorldPoint(details.localPosition, controller);
 
         final distance = (currentPoint - startPoint).distance;
@@ -96,17 +96,17 @@ class TextToolHandler extends ToolHandler {
     final activeState = context.read<ActiveLayerBloc>().state;
     final activeBloc = context.read<ActiveLayerBloc>();
 
-    if (activeState.activeObjects.isNotEmpty) {
-      final finalObject = activeState.activeObjects.values.first;
+    if (activeState.activeNodes.isNotEmpty) {
+      final finalObject = activeState.activeNodes.values.first;
 
-      if (finalObject is TextObject) {
+      if (finalObject is TextNode) {
         context.read<ToolbarBloc>().add(
           ToolbarEvent.startedEditing(finalObject),
         );
       }
 
       // Deactivate without commit (InlineTextEditor handles commit)
-      activeBloc.add(ActiveLayerEvent.objectDeactivated(finalObject.id));
+      activeBloc.add(ActiveLayerEvent.nodeDeactivated(finalObject.id));
 
       context.read<ToolbarBloc>().add(
         const ToolbarEvent.updateDrawingObject(null),

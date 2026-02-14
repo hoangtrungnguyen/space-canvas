@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/domain/utils/connector_utils.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
@@ -32,7 +32,7 @@ class ConnectorToolHandler extends ToolHandler {
       _finalizeConnector(
         context,
         startPoint: activeState.connectorStartPoint!,
-        startObjectId: activeState.connectorStartObjectId,
+        startNodeId: activeState.connectorStartNodeId,
         endPoint: worldPoint,
         shapeState: shapeState,
       );
@@ -41,25 +41,19 @@ class ConnectorToolHandler extends ToolHandler {
 
     // Case 2: Start the connector (Tap-to-Start)
     if (shapeState is ShapeLayerStateSuccess) {
-      final objectId = _findObjectAt(worldPoint, shapeState.data.objects);
-      if (objectId != null) {
-        final object = shapeState.data.objects[objectId];
-        if (object != null) {
+      final nodeId = _findNodeAt(worldPoint, shapeState.data.nodes);
+      if (nodeId != null) {
+        final node = shapeState.data.nodes[nodeId];
+        if (node != null) {
           // Check if we are close to an anchor
-          final anchor = ConnectorUtils.getEdgeFromPoint(
-            object.rect,
-            worldPoint,
-          );
-          final anchorPoint = ConnectorUtils.getPointOnEdge(
-            object.rect,
-            anchor,
-          );
+          final anchor = ConnectorUtils.getEdgeFromPoint(node.rect, worldPoint);
+          final anchorPoint = ConnectorUtils.getPointOnEdge(node.rect, anchor);
 
           // Simple distance check (e.g. 20.0 radius)
           if ((worldPoint - anchorPoint).distance <= 20.0) {
             context.read<ActiveLayerBloc>().add(
               ActiveLayerEvent.connectorDragStarted(
-                startObjectId: objectId,
+                startNodeId: nodeId,
                 startPoint: anchorPoint,
               ),
             );
@@ -85,16 +79,16 @@ class ConnectorToolHandler extends ToolHandler {
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
     // Find if we're starting on an object (optional)
-    int? startObjectId;
+    int? startNodeId;
     final state = context.read<ShapeLayerBloc>().state;
     if (state is ShapeLayerStateSuccess) {
-      startObjectId = _findObjectAt(worldPoint, state.data.objects);
+      startNodeId = _findNodeAt(worldPoint, state.data.nodes);
     }
 
     // Always start the drag, even without an object
     context.read<ActiveLayerBloc>().add(
       ActiveLayerEvent.connectorDragStarted(
-        startObjectId: startObjectId,
+        startNodeId: startNodeId,
         startPoint: worldPoint,
       ),
     );
@@ -123,7 +117,7 @@ class ConnectorToolHandler extends ToolHandler {
   ) {
     final activeState = context.read<ActiveLayerBloc>().state;
     final startPoint = activeState.connectorStartPoint;
-    final startObjectId = activeState.connectorStartObjectId;
+    final startNodeId = activeState.connectorStartNodeId;
     final endPoint = activeState.connectorDragPosition;
 
     if (startPoint != null && endPoint != null) {
@@ -131,7 +125,7 @@ class ConnectorToolHandler extends ToolHandler {
       _finalizeConnector(
         context,
         startPoint: startPoint,
-        startObjectId: startObjectId,
+        startNodeId: startNodeId,
         endPoint: endPoint,
         shapeState: shapeState,
       );
@@ -147,14 +141,14 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context, {
     required Offset startPoint,
     required Offset endPoint,
-    required int? startObjectId,
+    required int? startNodeId,
     required ShapeLayerState shapeState,
   }) {
     final mediator = context.read<CanvasInteractionMediator>();
 
-    int? endObjectId;
+    int? endNodeId;
     if (shapeState is ShapeLayerStateSuccess) {
-      endObjectId = _findObjectAt(endPoint, shapeState.data.objects);
+      endNodeId = _findNodeAt(endPoint, shapeState.data.nodes);
     }
 
     // Calculate locations
@@ -162,19 +156,19 @@ class ConnectorToolHandler extends ToolHandler {
     ConnectorEdge? endLocation;
 
     if (shapeState is ShapeLayerStateSuccess) {
-      if (startObjectId != null) {
-        final startObj = shapeState.data.objects[startObjectId];
-        if (startObj != null) {
+      if (startNodeId != null) {
+        final startNode = shapeState.data.nodes[startNodeId];
+        if (startNode != null) {
           startLocation = ConnectorUtils.getEdgeFromPoint(
-            startObj.rect,
+            startNode.rect,
             startPoint,
           );
         }
       }
-      if (endObjectId != null) {
-        final endObj = shapeState.data.objects[endObjectId];
-        if (endObj != null) {
-          endLocation = ConnectorUtils.getEdgeFromPoint(endObj.rect, endPoint);
+      if (endNodeId != null) {
+        final endNode = shapeState.data.nodes[endNodeId];
+        if (endNode != null) {
+          endLocation = ConnectorUtils.getEdgeFromPoint(endNode.rect, endPoint);
         }
       }
     }
@@ -183,8 +177,8 @@ class ConnectorToolHandler extends ToolHandler {
     mediator.createConnector(
       startPoint: startPoint,
       endPoint: endPoint,
-      startObjectId: startObjectId,
-      endObjectId: endObjectId,
+      startNodeId: startNodeId,
+      endNodeId: endNodeId,
       startLocation: startLocation,
       endLocation: endLocation,
     );
@@ -200,12 +194,12 @@ class ConnectorToolHandler extends ToolHandler {
     );
   }
 
-  int? _findObjectAt(Offset position, Map<int, SpaceObject> objects) {
+  int? _findNodeAt(Offset position, Map<int, Node> nodes) {
     final sorted =
-        objects.values.toList()..sort((a, b) => b.zIndex.compareTo(a.zIndex));
-    for (final obj in sorted) {
-      if (obj.rect.contains(position)) {
-        return obj.id;
+        nodes.values.toList()..sort((a, b) => b.zIndex.compareTo(a.zIndex));
+    for (final node in sorted) {
+      if (node.rect.contains(position)) {
+        return node.id;
       }
     }
     return null;

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 
 class SelectionPainter extends CustomPainter {
-  final List<SpaceObject> objects;
+  final List<Node> nodes;
   final Matrix4 transform;
   final double padding;
   final ResizeHandle? activeHandle;
 
   SelectionPainter({
-    required this.objects,
+    required this.nodes,
     required this.transform,
     this.padding = 4.0,
     this.activeHandle,
@@ -18,7 +18,7 @@ class SelectionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (objects.isEmpty) return;
+    if (nodes.isEmpty) return;
 
     final paint =
         Paint()
@@ -46,8 +46,8 @@ class SelectionPainter extends CustomPainter {
     final double scale = transform.getMaxScaleOnAxis();
     final double handleRadius = 4.0 / scale;
 
-    for (final object in objects) {
-      final rect = object.rect.inflate(padding);
+    for (final node in nodes) {
+      final rect = node.rect.inflate(padding);
       canvas.drawRect(rect, paint);
 
       // Draw handles
@@ -145,7 +145,7 @@ class SelectionPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SelectionPainter oldDelegate) {
-    return oldDelegate.objects != objects ||
+    return oldDelegate.nodes != nodes ||
         oldDelegate.transform != transform ||
         oldDelegate.padding != padding ||
         oldDelegate.activeHandle != activeHandle;

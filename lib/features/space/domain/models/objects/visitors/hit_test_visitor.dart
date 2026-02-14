@@ -1,8 +1,8 @@
 import 'dart:ui';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-/// A visitor that checks if a point hits a [SpaceObject].
-class HitTestVisitor implements SpaceObjectVisitor<bool> {
+/// A visitor that checks if a point hits a [Node].
+class HitTestVisitor implements NodeVisitor<bool> {
   final Offset point;
 
   /// The distance within which a hit is considered valid for lines and paths.
@@ -11,56 +11,56 @@ class HitTestVisitor implements SpaceObjectVisitor<bool> {
   const HitTestVisitor(this.point, {this.threshold = 5.0});
 
   @override
-  bool visitShape(ShapeObject object) {
-    return object.rect.contains(point);
+  bool visitShape(ShapeNode node) {
+    return node.rect.contains(point);
   }
 
   @override
-  bool visitPath(PathObject object) {
+  bool visitPath(PathNode node) {
     // Basic implementation: check if point is within the path.
     // Ideally, for thin paths, we should check proximity.
-    return object.path.contains(point);
+    return node.path.contains(point);
   }
 
   @override
-  bool visitText(TextObject object) {
-    return object.rect.contains(point);
+  bool visitText(TextNode node) {
+    return node.rect.contains(point);
   }
 
   @override
-  bool visitImage(ImageObject object) {
-    return object.rect.contains(point);
+  bool visitImage(ImageNode node) {
+    return node.rect.contains(point);
   }
 
   @override
-  bool visitConnector(ConnectorObject object) {
+  bool visitConnector(ConnectorNode node) {
     // For connectors, we can check proximity to the line segment.
-    final start = object.startPoint;
-    final end = object.endPoint;
+    final start = node.startPoint;
+    final end = node.endPoint;
 
     // Distance from point to line segment
     final distance = _distanceToSegment(point, start, end);
-    return distance <= (object.strokeWidth / 2 + threshold);
+    return distance <= (node.strokeWidth / 2 + threshold);
   }
 
   @override
-  bool visitGroup(GroupObject object) {
-    return object.rect.contains(point);
+  bool visitGroup(GroupNode node) {
+    return node.rect.contains(point);
   }
 
   @override
-  bool visitListOfPoint(ListOfPointObject object) {
-    if (object.points.isEmpty) return false;
+  bool visitListOfPoint(ListOfPointNode node) {
+    if (node.points.isEmpty) return false;
 
     // Check bounding box first for optimization
-    if (!object.rect.contains(point)) return false;
+    if (!node.rect.contains(point)) return false;
 
     // Check proximity to each segment
-    for (int i = 0; i < object.points.length - 1; i++) {
-      final start = object.points[i];
-      final end = object.points[i + 1];
+    for (int i = 0; i < node.points.length - 1; i++) {
+      final start = node.points[i];
+      final end = node.points[i + 1];
       final distance = _distanceToSegment(point, start, end);
-      if (distance <= (object.strokeWidth / 2 + threshold)) {
+      if (distance <= (node.strokeWidth / 2 + threshold)) {
         return true;
       }
     }

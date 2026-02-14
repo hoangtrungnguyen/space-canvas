@@ -18,7 +18,7 @@ The `CanvasBloc` is a specialized BLoC component dedicated to managing the trans
 The state is implemented using the `freezed` package for immutability and value equality.
 
 #### Properties
-- `objects` (`Map<int, SpaceObject>`):
+- `objects` (`Map<int, Node>`):
   - Stores all objects present on the canvas, mapped by their unique integer ID.
   - **Default**: `{}` (Empty Key-Value Map).
   - Used for efficient O(1) lookup of objects during rendering or interaction handling.
@@ -33,7 +33,7 @@ Events are defined as a Freezed union to represent distinct actions.
 
 - `started`: Triggered when the Bloc is first initialized.
 - `transformUpdated(Matrix4 matrix)`: Dispatched when the user pans or zooms the canvas. Updates the `transformMatrix`.
-- `objectsUpdated(Map<int, SpaceObject> objects)`: Dispatched when the collection of objects changes (added, removed, or modified).
+- `objectsUpdated(Map<int, Node> objects)`: Dispatched when the collection of objects changes (added, removed, or modified).
 
 ## Usage Example
 
@@ -106,9 +106,9 @@ To ensure scalability and maintainability, the following design patterns are ado
   - When a new command is executed, `redoStack` is cleared.
 
 **Example Commands**:
-- `AddObjectCommand(SpaceObject object)`
+- `AddObjectCommand(Node object)`
 - `TransformObjectCommand(int id, Matrix4 oldMatrix, Matrix4 newMatrix)`
-- `DeleteObjectCommand(int id)`
+- `DeleteNodeCommand(int id)`
 
 ### 2. State Pattern (Tool Handling)
 **Problem**: The `SpacePage` needs to handle gestures differently depending on the active tool (e.g., Panning vs. Drawing vs. Selecting), leading to complex `switch` statements.
@@ -120,9 +120,9 @@ To ensure scalability and maintainability, the following design patterns are ado
 - **Concrete States**: `PenToolHandler`, `ShapeToolHandler`, `PanToolHandler`.
 
 ### 3. Factory Method (Object Creation)
-**Problem**: Creating different instances of `SpaceObject` (Circle, Square, Star) requires complex initialization logic scattered across the UI.
+**Problem**: Creating different instances of `Node` (Circle, Square, Star) requires complex initialization logic scattered across the UI.
 **Solution**: Centralize object creation.
 
-- **Usage**: `SpaceObjectFactory.create(SpaceShapeType type, Offset position)`
+- **Usage**: `NodeFactory.create(SpaceShapeType type, Offset position)`
 - This ensures that default properties (color, size, ID generation) are handled consistently in one place.
 

@@ -64,15 +64,15 @@ class HistoryManager extends ChangeNotifier {
     final typeName = command.runtimeType.toString();
 
     try {
-      if (typeName == 'AddShapeCommand') {
+      if (typeName == 'AddNodeCommand') {
         final dynamic cmd = command;
         return 'id: ${cmd.object.id}';
-      } else if (typeName == 'DeleteObjectCommand') {
+      } else if (typeName == 'DeleteNodeCommand') {
         final dynamic cmd = command;
         return 'id: ${cmd.object.id}';
-      } else if (typeName == 'MoveObjectCommand') {
+      } else if (typeName == 'MoveNodeCommand') {
         final dynamic cmd = command;
-        return 'id: ${cmd.originalObject.id}';
+        return 'id: ${cmd.originalNode.id}';
       } else if (typeName == 'BatchDeleteCommand') {
         final dynamic cmd = command;
         final ids = (cmd.objects as List).map((o) => o.id).toList();

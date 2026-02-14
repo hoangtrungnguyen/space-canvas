@@ -8,10 +8,10 @@ import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_blo
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
-import 'package:ideascape/features/space/domain/commands/add_shape_command.dart';
-import 'package:ideascape/features/space/domain/commands/delete_object_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_object_command.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
+import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/commands/add_connector_command.dart';
 
@@ -27,9 +27,9 @@ class FakeActiveLayerEvent extends Fake implements ActiveLayerEvent {}
 
 class FakeShapeLayerEvent extends Fake implements ShapeLayerEvent {}
 
-class FakeSpaceObject extends Fake implements SpaceObject {
+class FakeNode extends Fake implements Node {
   final int _id;
-  FakeSpaceObject(this._id);
+  FakeNode(this._id);
   @override
   int get id => _id;
 }
@@ -38,18 +38,15 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeActiveLayerEvent());
     registerFallbackValue(FakeShapeLayerEvent());
-    registerFallbackValue(AddShapeCommand(FakeSpaceObject(1)));
-    registerFallbackValue(DeleteObjectCommand(FakeSpaceObject(1)));
+    registerFallbackValue(AddNodeCommand(FakeNode(1)));
+    registerFallbackValue(DeleteNodeCommand(FakeNode(1)));
     registerFallbackValue(
-      MoveObjectCommand(
-        originalObject: FakeSpaceObject(1),
-        movedObject: FakeSpaceObject(1),
-      ),
+      MoveNodeCommand(originalNode: FakeNode(1), movedNode: FakeNode(1)),
     );
     registerFallbackValue(BatchDeleteCommand([]));
     registerFallbackValue(
       AddConnectorCommand(
-        ConnectorObject(
+        ConnectorNode(
           id: 0,
           startPoint: Offset.zero,
           endPoint: Offset.zero,
@@ -81,8 +78,8 @@ void main() {
     });
 
     group('finalizeInteraction', () {
-      test('should execute MoveObjectCommand if object moved', () {
-        final original = ShapeObject(
+      test('should execute MoveNodeCommand if object moved', () {
+        final original = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -93,21 +90,21 @@ void main() {
         );
 
         when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(activeObjects: {1: moved}, originalObject: original),
+          ActiveLayerState(activeNodes: {1: moved}, originalNode: original),
         );
 
         manager.finalizeInteraction();
 
         verify(
-          () => historyManager.execute(any(that: isA<MoveObjectCommand>())),
+          () => historyManager.execute(any(that: isA<MoveNodeCommand>())),
         ).called(1);
         verify(
-          () => activeBloc.add(ActiveLayerEvent.objectActivated(moved)),
+          () => activeBloc.add(ActiveLayerEvent.nodeActivated(moved)),
         ).called(1);
       });
 
-      test('should NOT execute MoveObjectCommand if object NOT moved', () {
-        final original = ShapeObject(
+      test('should NOT execute MoveNodeCommand if object NOT moved', () {
+        final original = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -117,26 +114,23 @@ void main() {
         final current = original.copyWith();
 
         when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(
-            activeObjects: {1: current},
-            originalObject: original,
-          ),
+          ActiveLayerState(activeNodes: {1: current}, originalNode: original),
         );
 
         manager.finalizeInteraction();
 
         verifyNever(
-          () => historyManager.execute(any(that: isA<MoveObjectCommand>())),
+          () => historyManager.execute(any(that: isA<MoveNodeCommand>())),
         );
         verify(
-          () => activeBloc.add(ActiveLayerEvent.objectActivated(current)),
+          () => activeBloc.add(ActiveLayerEvent.nodeActivated(current)),
         ).called(1);
       });
     });
 
     group('commitAndDeactivate', () {
       test('should add new object via History if not in ShapeLayer', () {
-        final obj = ShapeObject(
+        final obj = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -144,26 +138,26 @@ void main() {
         );
 
         when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(activeObjects: {1: obj}, originalObject: null),
+          ActiveLayerState(activeNodes: {1: obj}, originalNode: null),
         );
         when(() => shapeBloc.state).thenReturn(
-          ShapeLayerState.success(data: const ShapeLayerData(objects: {})),
+          ShapeLayerState.success(data: const ShapeLayerData(nodes: {})),
         );
 
         manager.commitAndDeactivate();
 
         verify(
-          () => historyManager.execute(any(that: isA<AddShapeCommand>())),
+          () => historyManager.execute(any(that: isA<AddNodeCommand>())),
         ).called(1);
         verify(
-          () => activeBloc.add(ActiveLayerEvent.objectDeactivated(1)),
+          () => activeBloc.add(ActiveLayerEvent.nodeDeactivated(1)),
         ).called(1);
       });
 
       test(
         'should restore existing object directly if id matches original',
         () {
-          final obj = ShapeObject(
+          final obj = ShapeNode(
             id: 1,
             type: ShapeType.rectangle,
             rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -171,71 +165,71 @@ void main() {
           );
 
           when(() => activeBloc.state).thenReturn(
-            ActiveLayerState(activeObjects: {1: obj}, originalObject: obj),
+            ActiveLayerState(activeNodes: {1: obj}, originalNode: obj),
           );
           // Not in shape layer currently (because it was moved to active layer)
           when(() => shapeBloc.state).thenReturn(
-            ShapeLayerState.success(data: const ShapeLayerData(objects: {})),
+            ShapeLayerState.success(data: const ShapeLayerData(nodes: {})),
           );
 
           manager.commitAndDeactivate();
 
           // Should NOT add history command
           verifyNever(
-            () => historyManager.execute(any(that: isA<AddShapeCommand>())),
+            () => historyManager.execute(any(that: isA<AddNodeCommand>())),
           );
           // Should simply add back to shape layer
-          verify(() => shapeBloc.add(ShapeLayerEvent.addObject(obj))).called(1);
+          verify(() => shapeBloc.add(ShapeLayerEvent.addNode(obj))).called(1);
           verify(
-            () => activeBloc.add(ActiveLayerEvent.objectDeactivated(1)),
+            () => activeBloc.add(ActiveLayerEvent.nodeDeactivated(1)),
           ).called(1);
         },
       );
     });
 
-    group('deleteObject', () {
-      test('should execute DeleteObjectCommand', () {
-        final obj = ShapeObject(
+    group('deleteNode', () {
+      test('should execute DeleteNodeCommand', () {
+        final obj = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
           paint: Paint(),
         );
-        manager.deleteObject(obj);
+        manager.deleteNode(obj);
         verify(
-          () => historyManager.execute(any(that: isA<DeleteObjectCommand>())),
+          () => historyManager.execute(any(that: isA<DeleteNodeCommand>())),
         ).called(1);
       });
     });
 
-    group('deleteObjects', () {
-      test('should execute DeleteObjectCommand for single object', () {
-        final obj = ShapeObject(
+    group('deleteNodes', () {
+      test('should execute DeleteNodeCommand for single object', () {
+        final obj = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
           paint: Paint(),
         );
-        manager.deleteObjects([obj]);
+        manager.deleteNodes([obj]);
         verify(
-          () => historyManager.execute(any(that: isA<DeleteObjectCommand>())),
+          () => historyManager.execute(any(that: isA<DeleteNodeCommand>())),
         ).called(1);
       });
 
       test('should execute BatchDeleteCommand for multiple objects', () {
-        final obj1 = ShapeObject(
+        final obj1 = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
           paint: Paint(),
         );
-        final obj2 = ShapeObject(
+        final obj2 = ShapeNode(
           id: 2,
           type: ShapeType.rectangle,
           rect: Rect.zero,
           paint: Paint(),
         );
-        manager.deleteObjects([obj1, obj2]);
+        manager.deleteNodes([obj1, obj2]);
         verify(
           () => historyManager.execute(any(that: isA<BatchDeleteCommand>())),
         ).called(1);
@@ -255,7 +249,7 @@ void main() {
     });
     group('dragActiveObject', () {
       test('should move object and emit interactionStarted', () {
-        final obj = ShapeObject(
+        final obj = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
@@ -263,14 +257,10 @@ void main() {
         );
 
         when(() => activeBloc.state).thenReturn(
-          ActiveLayerState(
-            activeObjects: {1: obj},
-            dragStartPoint: Offset.zero,
-          ),
+          ActiveLayerState(activeNodes: {1: obj}, dragStartPoint: Offset.zero),
         );
 
-        final delta = const Offset(10, 10);
-        manager.dragActiveObject(Offset.zero, delta);
+        manager.dragActiveNode(const Offset(10, 10), const Offset(10, 10));
 
         final captured = verify(() => activeBloc.add(captureAny())).captured;
         expect(captured.length, 1);
@@ -278,8 +268,8 @@ void main() {
         final event = captured.first as ActiveLayerEvent;
         event.maybeMap(
           interactionStarted: (e) {
-            expect(e.object.rect.left, 10.0);
-            expect(e.object.rect.top, 10.0);
+            expect(e.node.rect.left, 10.0);
+            expect(e.node.rect.top, 10.0);
           },
           orElse: () => fail('Expected interactionStarted event'),
         );

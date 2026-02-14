@@ -20,9 +20,9 @@ abstract class ShapeLayerState with _$ShapeLayerState {
 @freezed
 abstract class ShapeLayerData with _$ShapeLayerData {
   const factory ShapeLayerData({
-    @Default({}) Map<int, SpaceObject> objects,
+    @Default({}) Map<int, Node> nodes,
     int? selectedTool,
-    int? selectedObjectId,
-    @Default({}) Set<int> hiddenObjectIds,
+    int? selectedNodeId,
+    @Default({}) Set<int> hiddenNodeIds,
   }) = _ShapeLayerData;
 }

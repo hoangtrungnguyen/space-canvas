@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'space_object.dart';
+part of 'node.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,24 +12,24 @@ part of 'space_object.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$PathObject {
+mixin _$PathNode {
   Path get path;
   Paint get paint;
   int get id;
   int get zIndex;
 
-  /// Create a copy of PathObject
+  /// Create a copy of PathNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $PathObjectCopyWith<PathObject> get copyWith =>
-      _$PathObjectCopyWithImpl<PathObject>(this as PathObject, _$identity);
+  $PathNodeCopyWith<PathNode> get copyWith =>
+      _$PathNodeCopyWithImpl<PathNode>(this as PathNode, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is PathObject &&
+            other is PathNode &&
             (identical(other.path, path) || other.path == path) &&
             (identical(other.paint, paint) || other.paint == paint) &&
             (identical(other.id, id) || other.id == id) &&
@@ -41,28 +41,26 @@ mixin _$PathObject {
 
   @override
   String toString() {
-    return 'PathObject(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
+    return 'PathNode(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class $PathObjectCopyWith<$Res> {
-  factory $PathObjectCopyWith(
-    PathObject value,
-    $Res Function(PathObject) _then,
-  ) = _$PathObjectCopyWithImpl;
+abstract mixin class $PathNodeCopyWith<$Res> {
+  factory $PathNodeCopyWith(PathNode value, $Res Function(PathNode) _then) =
+      _$PathNodeCopyWithImpl;
   @useResult
   $Res call({Path path, Paint paint, int id, int zIndex});
 }
 
 /// @nodoc
-class _$PathObjectCopyWithImpl<$Res> implements $PathObjectCopyWith<$Res> {
-  _$PathObjectCopyWithImpl(this._self, this._then);
+class _$PathNodeCopyWithImpl<$Res> implements $PathNodeCopyWith<$Res> {
+  _$PathNodeCopyWithImpl(this._self, this._then);
 
-  final PathObject _self;
-  final $Res Function(PathObject) _then;
+  final PathNode _self;
+  final $Res Function(PathNode) _then;
 
-  /// Create a copy of PathObject
+  /// Create a copy of PathNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -99,8 +97,8 @@ class _$PathObjectCopyWithImpl<$Res> implements $PathObjectCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [PathObject].
-extension PathObjectPatterns on PathObject {
+/// Adds pattern-matching-related methods to [PathNode].
+extension PathNodePatterns on PathNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -115,12 +113,12 @@ extension PathObjectPatterns on PathObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_PathObject value)? $default, {
+    TResult Function(_PathNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _PathObject() when $default != null:
+      case _PathNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -142,11 +140,11 @@ extension PathObjectPatterns on PathObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_PathObject value) $default,
+    TResult Function(_PathNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _PathObject():
+      case _PathNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -167,11 +165,11 @@ extension PathObjectPatterns on PathObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_PathObject value)? $default,
+    TResult? Function(_PathNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _PathObject() when $default != null:
+      case _PathNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -197,7 +195,7 @@ extension PathObjectPatterns on PathObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _PathObject() when $default != null:
+      case _PathNode() when $default != null:
         return $default(_that.path, _that.paint, _that.id, _that.zIndex);
       case _:
         return orElse();
@@ -223,7 +221,7 @@ extension PathObjectPatterns on PathObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _PathObject():
+      case _PathNode():
         return $default(_that.path, _that.paint, _that.id, _that.zIndex);
       case _:
         throw StateError('Unexpected subclass');
@@ -248,7 +246,7 @@ extension PathObjectPatterns on PathObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _PathObject() when $default != null:
+      case _PathNode() when $default != null:
         return $default(_that.path, _that.paint, _that.id, _that.zIndex);
       case _:
         return null;
@@ -258,8 +256,8 @@ extension PathObjectPatterns on PathObject {
 
 /// @nodoc
 
-class _PathObject extends PathObject {
-  _PathObject({
+class _PathNode extends PathNode {
+  _PathNode({
     required this.path,
     required this.paint,
     required this.id,
@@ -276,19 +274,19 @@ class _PathObject extends PathObject {
   @JsonKey()
   final int zIndex;
 
-  /// Create a copy of PathObject
+  /// Create a copy of PathNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$PathObjectCopyWith<_PathObject> get copyWith =>
-      __$PathObjectCopyWithImpl<_PathObject>(this, _$identity);
+  _$PathNodeCopyWith<_PathNode> get copyWith =>
+      __$PathNodeCopyWithImpl<_PathNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _PathObject &&
+            other is _PathNode &&
             (identical(other.path, path) || other.path == path) &&
             (identical(other.paint, paint) || other.paint == paint) &&
             (identical(other.id, id) || other.id == id) &&
@@ -300,30 +298,28 @@ class _PathObject extends PathObject {
 
   @override
   String toString() {
-    return 'PathObject(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
+    return 'PathNode(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$PathObjectCopyWith<$Res>
-    implements $PathObjectCopyWith<$Res> {
-  factory _$PathObjectCopyWith(
-    _PathObject value,
-    $Res Function(_PathObject) _then,
-  ) = __$PathObjectCopyWithImpl;
+abstract mixin class _$PathNodeCopyWith<$Res>
+    implements $PathNodeCopyWith<$Res> {
+  factory _$PathNodeCopyWith(_PathNode value, $Res Function(_PathNode) _then) =
+      __$PathNodeCopyWithImpl;
   @override
   @useResult
   $Res call({Path path, Paint paint, int id, int zIndex});
 }
 
 /// @nodoc
-class __$PathObjectCopyWithImpl<$Res> implements _$PathObjectCopyWith<$Res> {
-  __$PathObjectCopyWithImpl(this._self, this._then);
+class __$PathNodeCopyWithImpl<$Res> implements _$PathNodeCopyWith<$Res> {
+  __$PathNodeCopyWithImpl(this._self, this._then);
 
-  final _PathObject _self;
-  final $Res Function(_PathObject) _then;
+  final _PathNode _self;
+  final $Res Function(_PathNode) _then;
 
-  /// Create a copy of PathObject
+  /// Create a copy of PathNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -334,7 +330,7 @@ class __$PathObjectCopyWithImpl<$Res> implements _$PathObjectCopyWith<$Res> {
     Object? zIndex = null,
   }) {
     return _then(
-      _PathObject(
+      _PathNode(
         path:
             null == path
                 ? _self.path
@@ -361,7 +357,7 @@ class __$PathObjectCopyWithImpl<$Res> implements _$PathObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-mixin _$ShapeObject {
+mixin _$ShapeNode {
   ShapeType get type;
   Rect get rect;
   Paint get paint;
@@ -369,18 +365,18 @@ mixin _$ShapeObject {
   String get text;
   int get zIndex;
 
-  /// Create a copy of ShapeObject
+  /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ShapeObjectCopyWith<ShapeObject> get copyWith =>
-      _$ShapeObjectCopyWithImpl<ShapeObject>(this as ShapeObject, _$identity);
+  $ShapeNodeCopyWith<ShapeNode> get copyWith =>
+      _$ShapeNodeCopyWithImpl<ShapeNode>(this as ShapeNode, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ShapeObject &&
+            other is ShapeNode &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.paint, paint) || other.paint == paint) &&
@@ -395,16 +391,14 @@ mixin _$ShapeObject {
 
   @override
   String toString() {
-    return 'ShapeObject(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
+    return 'ShapeNode(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ShapeObjectCopyWith<$Res> {
-  factory $ShapeObjectCopyWith(
-    ShapeObject value,
-    $Res Function(ShapeObject) _then,
-  ) = _$ShapeObjectCopyWithImpl;
+abstract mixin class $ShapeNodeCopyWith<$Res> {
+  factory $ShapeNodeCopyWith(ShapeNode value, $Res Function(ShapeNode) _then) =
+      _$ShapeNodeCopyWithImpl;
   @useResult
   $Res call({
     ShapeType type,
@@ -417,13 +411,13 @@ abstract mixin class $ShapeObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ShapeObjectCopyWithImpl<$Res> implements $ShapeObjectCopyWith<$Res> {
-  _$ShapeObjectCopyWithImpl(this._self, this._then);
+class _$ShapeNodeCopyWithImpl<$Res> implements $ShapeNodeCopyWith<$Res> {
+  _$ShapeNodeCopyWithImpl(this._self, this._then);
 
-  final ShapeObject _self;
-  final $Res Function(ShapeObject) _then;
+  final ShapeNode _self;
+  final $Res Function(ShapeNode) _then;
 
-  /// Create a copy of ShapeObject
+  /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -472,8 +466,8 @@ class _$ShapeObjectCopyWithImpl<$Res> implements $ShapeObjectCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [ShapeObject].
-extension ShapeObjectPatterns on ShapeObject {
+/// Adds pattern-matching-related methods to [ShapeNode].
+extension ShapeNodePatterns on ShapeNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -488,12 +482,12 @@ extension ShapeObjectPatterns on ShapeObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ShapeObject value)? $default, {
+    TResult Function(_ShapeNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject() when $default != null:
+      case _ShapeNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -515,11 +509,11 @@ extension ShapeObjectPatterns on ShapeObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_ShapeObject value) $default,
+    TResult Function(_ShapeNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject():
+      case _ShapeNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -540,11 +534,11 @@ extension ShapeObjectPatterns on ShapeObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ShapeObject value)? $default,
+    TResult? Function(_ShapeNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject() when $default != null:
+      case _ShapeNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -578,7 +572,7 @@ extension ShapeObjectPatterns on ShapeObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject() when $default != null:
+      case _ShapeNode() when $default != null:
         return $default(
           _that.type,
           _that.rect,
@@ -619,7 +613,7 @@ extension ShapeObjectPatterns on ShapeObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject():
+      case _ShapeNode():
         return $default(
           _that.type,
           _that.rect,
@@ -659,7 +653,7 @@ extension ShapeObjectPatterns on ShapeObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ShapeObject() when $default != null:
+      case _ShapeNode() when $default != null:
         return $default(
           _that.type,
           _that.rect,
@@ -676,8 +670,8 @@ extension ShapeObjectPatterns on ShapeObject {
 
 /// @nodoc
 
-class _ShapeObject extends ShapeObject {
-  _ShapeObject({
+class _ShapeNode extends ShapeNode {
+  _ShapeNode({
     required this.type,
     required this.rect,
     required this.paint,
@@ -701,19 +695,19 @@ class _ShapeObject extends ShapeObject {
   @JsonKey()
   final int zIndex;
 
-  /// Create a copy of ShapeObject
+  /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ShapeObjectCopyWith<_ShapeObject> get copyWith =>
-      __$ShapeObjectCopyWithImpl<_ShapeObject>(this, _$identity);
+  _$ShapeNodeCopyWith<_ShapeNode> get copyWith =>
+      __$ShapeNodeCopyWithImpl<_ShapeNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ShapeObject &&
+            other is _ShapeNode &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.paint, paint) || other.paint == paint) &&
@@ -728,17 +722,17 @@ class _ShapeObject extends ShapeObject {
 
   @override
   String toString() {
-    return 'ShapeObject(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
+    return 'ShapeNode(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ShapeObjectCopyWith<$Res>
-    implements $ShapeObjectCopyWith<$Res> {
-  factory _$ShapeObjectCopyWith(
-    _ShapeObject value,
-    $Res Function(_ShapeObject) _then,
-  ) = __$ShapeObjectCopyWithImpl;
+abstract mixin class _$ShapeNodeCopyWith<$Res>
+    implements $ShapeNodeCopyWith<$Res> {
+  factory _$ShapeNodeCopyWith(
+    _ShapeNode value,
+    $Res Function(_ShapeNode) _then,
+  ) = __$ShapeNodeCopyWithImpl;
   @override
   @useResult
   $Res call({
@@ -752,13 +746,13 @@ abstract mixin class _$ShapeObjectCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ShapeObjectCopyWithImpl<$Res> implements _$ShapeObjectCopyWith<$Res> {
-  __$ShapeObjectCopyWithImpl(this._self, this._then);
+class __$ShapeNodeCopyWithImpl<$Res> implements _$ShapeNodeCopyWith<$Res> {
+  __$ShapeNodeCopyWithImpl(this._self, this._then);
 
-  final _ShapeObject _self;
-  final $Res Function(_ShapeObject) _then;
+  final _ShapeNode _self;
+  final $Res Function(_ShapeNode) _then;
 
-  /// Create a copy of ShapeObject
+  /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -771,7 +765,7 @@ class __$ShapeObjectCopyWithImpl<$Res> implements _$ShapeObjectCopyWith<$Res> {
     Object? zIndex = null,
   }) {
     return _then(
-      _ShapeObject(
+      _ShapeNode(
         type:
             null == type
                 ? _self.type
@@ -808,7 +802,7 @@ class __$ShapeObjectCopyWithImpl<$Res> implements _$ShapeObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-mixin _$TextObject {
+mixin _$TextNode {
   String get text;
   Offset get position;
   double get fontSize;
@@ -817,18 +811,18 @@ mixin _$TextObject {
   int get zIndex;
   String? get fontFamily;
 
-  /// Create a copy of TextObject
+  /// Create a copy of TextNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $TextObjectCopyWith<TextObject> get copyWith =>
-      _$TextObjectCopyWithImpl<TextObject>(this as TextObject, _$identity);
+  $TextNodeCopyWith<TextNode> get copyWith =>
+      _$TextNodeCopyWithImpl<TextNode>(this as TextNode, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is TextObject &&
+            other is TextNode &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.position, position) ||
                 other.position == position) &&
@@ -855,16 +849,14 @@ mixin _$TextObject {
 
   @override
   String toString() {
-    return 'TextObject(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
+    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
   }
 }
 
 /// @nodoc
-abstract mixin class $TextObjectCopyWith<$Res> {
-  factory $TextObjectCopyWith(
-    TextObject value,
-    $Res Function(TextObject) _then,
-  ) = _$TextObjectCopyWithImpl;
+abstract mixin class $TextNodeCopyWith<$Res> {
+  factory $TextNodeCopyWith(TextNode value, $Res Function(TextNode) _then) =
+      _$TextNodeCopyWithImpl;
   @useResult
   $Res call({
     String text,
@@ -878,13 +870,13 @@ abstract mixin class $TextObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TextObjectCopyWithImpl<$Res> implements $TextObjectCopyWith<$Res> {
-  _$TextObjectCopyWithImpl(this._self, this._then);
+class _$TextNodeCopyWithImpl<$Res> implements $TextNodeCopyWith<$Res> {
+  _$TextNodeCopyWithImpl(this._self, this._then);
 
-  final TextObject _self;
-  final $Res Function(TextObject) _then;
+  final TextNode _self;
+  final $Res Function(TextNode) _then;
 
-  /// Create a copy of TextObject
+  /// Create a copy of TextNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -939,8 +931,8 @@ class _$TextObjectCopyWithImpl<$Res> implements $TextObjectCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [TextObject].
-extension TextObjectPatterns on TextObject {
+/// Adds pattern-matching-related methods to [TextNode].
+extension TextNodePatterns on TextNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -955,12 +947,12 @@ extension TextObjectPatterns on TextObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_TextObject value)? $default, {
+    TResult Function(_TextNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _TextObject() when $default != null:
+      case _TextNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -982,11 +974,11 @@ extension TextObjectPatterns on TextObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_TextObject value) $default,
+    TResult Function(_TextNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _TextObject():
+      case _TextNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -1007,11 +999,11 @@ extension TextObjectPatterns on TextObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_TextObject value)? $default,
+    TResult? Function(_TextNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _TextObject() when $default != null:
+      case _TextNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -1046,7 +1038,7 @@ extension TextObjectPatterns on TextObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _TextObject() when $default != null:
+      case _TextNode() when $default != null:
         return $default(
           _that.text,
           _that.position,
@@ -1089,7 +1081,7 @@ extension TextObjectPatterns on TextObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _TextObject():
+      case _TextNode():
         return $default(
           _that.text,
           _that.position,
@@ -1131,7 +1123,7 @@ extension TextObjectPatterns on TextObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _TextObject() when $default != null:
+      case _TextNode() when $default != null:
         return $default(
           _that.text,
           _that.position,
@@ -1149,8 +1141,8 @@ extension TextObjectPatterns on TextObject {
 
 /// @nodoc
 
-class _TextObject extends TextObject {
-  _TextObject({
+class _TextNode extends TextNode {
+  _TextNode({
     required this.text,
     required this.position,
     required this.fontSize,
@@ -1177,19 +1169,19 @@ class _TextObject extends TextObject {
   @override
   final String? fontFamily;
 
-  /// Create a copy of TextObject
+  /// Create a copy of TextNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$TextObjectCopyWith<_TextObject> get copyWith =>
-      __$TextObjectCopyWithImpl<_TextObject>(this, _$identity);
+  _$TextNodeCopyWith<_TextNode> get copyWith =>
+      __$TextNodeCopyWithImpl<_TextNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _TextObject &&
+            other is _TextNode &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.position, position) ||
                 other.position == position) &&
@@ -1216,17 +1208,15 @@ class _TextObject extends TextObject {
 
   @override
   String toString() {
-    return 'TextObject(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
+    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$TextObjectCopyWith<$Res>
-    implements $TextObjectCopyWith<$Res> {
-  factory _$TextObjectCopyWith(
-    _TextObject value,
-    $Res Function(_TextObject) _then,
-  ) = __$TextObjectCopyWithImpl;
+abstract mixin class _$TextNodeCopyWith<$Res>
+    implements $TextNodeCopyWith<$Res> {
+  factory _$TextNodeCopyWith(_TextNode value, $Res Function(_TextNode) _then) =
+      __$TextNodeCopyWithImpl;
   @override
   @useResult
   $Res call({
@@ -1241,13 +1231,13 @@ abstract mixin class _$TextObjectCopyWith<$Res>
 }
 
 /// @nodoc
-class __$TextObjectCopyWithImpl<$Res> implements _$TextObjectCopyWith<$Res> {
-  __$TextObjectCopyWithImpl(this._self, this._then);
+class __$TextNodeCopyWithImpl<$Res> implements _$TextNodeCopyWith<$Res> {
+  __$TextNodeCopyWithImpl(this._self, this._then);
 
-  final _TextObject _self;
-  final $Res Function(_TextObject) _then;
+  final _TextNode _self;
+  final $Res Function(_TextNode) _then;
 
-  /// Create a copy of TextObject
+  /// Create a copy of TextNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1261,7 +1251,7 @@ class __$TextObjectCopyWithImpl<$Res> implements _$TextObjectCopyWith<$Res> {
     Object? fontFamily = freezed,
   }) {
     return _then(
-      _TextObject(
+      _TextNode(
         text:
             null == text
                 ? _self.text
@@ -1303,24 +1293,24 @@ class __$TextObjectCopyWithImpl<$Res> implements _$TextObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-mixin _$ImageObject {
+mixin _$ImageNode {
   String get imageUrl; // or local path / bytes identifier
   Rect get rect;
   int get id;
   int get zIndex;
 
-  /// Create a copy of ImageObject
+  /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ImageObjectCopyWith<ImageObject> get copyWith =>
-      _$ImageObjectCopyWithImpl<ImageObject>(this as ImageObject, _$identity);
+  $ImageNodeCopyWith<ImageNode> get copyWith =>
+      _$ImageNodeCopyWithImpl<ImageNode>(this as ImageNode, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ImageObject &&
+            other is ImageNode &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.rect, rect) || other.rect == rect) &&
@@ -1333,28 +1323,26 @@ mixin _$ImageObject {
 
   @override
   String toString() {
-    return 'ImageObject(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ImageObjectCopyWith<$Res> {
-  factory $ImageObjectCopyWith(
-    ImageObject value,
-    $Res Function(ImageObject) _then,
-  ) = _$ImageObjectCopyWithImpl;
+abstract mixin class $ImageNodeCopyWith<$Res> {
+  factory $ImageNodeCopyWith(ImageNode value, $Res Function(ImageNode) _then) =
+      _$ImageNodeCopyWithImpl;
   @useResult
   $Res call({String imageUrl, Rect rect, int id, int zIndex});
 }
 
 /// @nodoc
-class _$ImageObjectCopyWithImpl<$Res> implements $ImageObjectCopyWith<$Res> {
-  _$ImageObjectCopyWithImpl(this._self, this._then);
+class _$ImageNodeCopyWithImpl<$Res> implements $ImageNodeCopyWith<$Res> {
+  _$ImageNodeCopyWithImpl(this._self, this._then);
 
-  final ImageObject _self;
-  final $Res Function(ImageObject) _then;
+  final ImageNode _self;
+  final $Res Function(ImageNode) _then;
 
-  /// Create a copy of ImageObject
+  /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1391,8 +1379,8 @@ class _$ImageObjectCopyWithImpl<$Res> implements $ImageObjectCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [ImageObject].
-extension ImageObjectPatterns on ImageObject {
+/// Adds pattern-matching-related methods to [ImageNode].
+extension ImageNodePatterns on ImageNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -1407,12 +1395,12 @@ extension ImageObjectPatterns on ImageObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ImageObject value)? $default, {
+    TResult Function(_ImageNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _ImageObject() when $default != null:
+      case _ImageNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -1434,11 +1422,11 @@ extension ImageObjectPatterns on ImageObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_ImageObject value) $default,
+    TResult Function(_ImageNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ImageObject():
+      case _ImageNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -1459,11 +1447,11 @@ extension ImageObjectPatterns on ImageObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ImageObject value)? $default,
+    TResult? Function(_ImageNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ImageObject() when $default != null:
+      case _ImageNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -1490,7 +1478,7 @@ extension ImageObjectPatterns on ImageObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _ImageObject() when $default != null:
+      case _ImageNode() when $default != null:
         return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
       case _:
         return orElse();
@@ -1516,7 +1504,7 @@ extension ImageObjectPatterns on ImageObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ImageObject():
+      case _ImageNode():
         return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
       case _:
         throw StateError('Unexpected subclass');
@@ -1541,7 +1529,7 @@ extension ImageObjectPatterns on ImageObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ImageObject() when $default != null:
+      case _ImageNode() when $default != null:
         return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
       case _:
         return null;
@@ -1551,8 +1539,8 @@ extension ImageObjectPatterns on ImageObject {
 
 /// @nodoc
 
-class _ImageObject extends ImageObject {
-  _ImageObject({
+class _ImageNode extends ImageNode {
+  _ImageNode({
     required this.imageUrl,
     required this.rect,
     required this.id,
@@ -1570,19 +1558,19 @@ class _ImageObject extends ImageObject {
   @JsonKey()
   final int zIndex;
 
-  /// Create a copy of ImageObject
+  /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ImageObjectCopyWith<_ImageObject> get copyWith =>
-      __$ImageObjectCopyWithImpl<_ImageObject>(this, _$identity);
+  _$ImageNodeCopyWith<_ImageNode> get copyWith =>
+      __$ImageNodeCopyWithImpl<_ImageNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ImageObject &&
+            other is _ImageNode &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.rect, rect) || other.rect == rect) &&
@@ -1595,30 +1583,30 @@ class _ImageObject extends ImageObject {
 
   @override
   String toString() {
-    return 'ImageObject(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ImageObjectCopyWith<$Res>
-    implements $ImageObjectCopyWith<$Res> {
-  factory _$ImageObjectCopyWith(
-    _ImageObject value,
-    $Res Function(_ImageObject) _then,
-  ) = __$ImageObjectCopyWithImpl;
+abstract mixin class _$ImageNodeCopyWith<$Res>
+    implements $ImageNodeCopyWith<$Res> {
+  factory _$ImageNodeCopyWith(
+    _ImageNode value,
+    $Res Function(_ImageNode) _then,
+  ) = __$ImageNodeCopyWithImpl;
   @override
   @useResult
   $Res call({String imageUrl, Rect rect, int id, int zIndex});
 }
 
 /// @nodoc
-class __$ImageObjectCopyWithImpl<$Res> implements _$ImageObjectCopyWith<$Res> {
-  __$ImageObjectCopyWithImpl(this._self, this._then);
+class __$ImageNodeCopyWithImpl<$Res> implements _$ImageNodeCopyWith<$Res> {
+  __$ImageNodeCopyWithImpl(this._self, this._then);
 
-  final _ImageObject _self;
-  final $Res Function(_ImageObject) _then;
+  final _ImageNode _self;
+  final $Res Function(_ImageNode) _then;
 
-  /// Create a copy of ImageObject
+  /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -1629,7 +1617,7 @@ class __$ImageObjectCopyWithImpl<$Res> implements _$ImageObjectCopyWith<$Res> {
     Object? zIndex = null,
   }) {
     return _then(
-      _ImageObject(
+      _ImageNode(
         imageUrl:
             null == imageUrl
                 ? _self.imageUrl
@@ -1656,24 +1644,24 @@ class __$ImageObjectCopyWithImpl<$Res> implements _$ImageObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-mixin _$GroupObject {
+mixin _$GroupNode {
   List<int> get childrenIds;
   Rect get rect;
   int get id;
   int get zIndex;
 
-  /// Create a copy of GroupObject
+  /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $GroupObjectCopyWith<GroupObject> get copyWith =>
-      _$GroupObjectCopyWithImpl<GroupObject>(this as GroupObject, _$identity);
+  $GroupNodeCopyWith<GroupNode> get copyWith =>
+      _$GroupNodeCopyWithImpl<GroupNode>(this as GroupNode, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is GroupObject &&
+            other is GroupNode &&
             const DeepCollectionEquality().equals(
               other.childrenIds,
               childrenIds,
@@ -1694,28 +1682,26 @@ mixin _$GroupObject {
 
   @override
   String toString() {
-    return 'GroupObject(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class $GroupObjectCopyWith<$Res> {
-  factory $GroupObjectCopyWith(
-    GroupObject value,
-    $Res Function(GroupObject) _then,
-  ) = _$GroupObjectCopyWithImpl;
+abstract mixin class $GroupNodeCopyWith<$Res> {
+  factory $GroupNodeCopyWith(GroupNode value, $Res Function(GroupNode) _then) =
+      _$GroupNodeCopyWithImpl;
   @useResult
   $Res call({List<int> childrenIds, Rect rect, int id, int zIndex});
 }
 
 /// @nodoc
-class _$GroupObjectCopyWithImpl<$Res> implements $GroupObjectCopyWith<$Res> {
-  _$GroupObjectCopyWithImpl(this._self, this._then);
+class _$GroupNodeCopyWithImpl<$Res> implements $GroupNodeCopyWith<$Res> {
+  _$GroupNodeCopyWithImpl(this._self, this._then);
 
-  final GroupObject _self;
-  final $Res Function(GroupObject) _then;
+  final GroupNode _self;
+  final $Res Function(GroupNode) _then;
 
-  /// Create a copy of GroupObject
+  /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -1752,8 +1738,8 @@ class _$GroupObjectCopyWithImpl<$Res> implements $GroupObjectCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [GroupObject].
-extension GroupObjectPatterns on GroupObject {
+/// Adds pattern-matching-related methods to [GroupNode].
+extension GroupNodePatterns on GroupNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -1768,12 +1754,12 @@ extension GroupObjectPatterns on GroupObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_GroupObject value)? $default, {
+    TResult Function(_GroupNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _GroupObject() when $default != null:
+      case _GroupNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -1795,11 +1781,11 @@ extension GroupObjectPatterns on GroupObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_GroupObject value) $default,
+    TResult Function(_GroupNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _GroupObject():
+      case _GroupNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -1820,11 +1806,11 @@ extension GroupObjectPatterns on GroupObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_GroupObject value)? $default,
+    TResult? Function(_GroupNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _GroupObject() when $default != null:
+      case _GroupNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -1851,7 +1837,7 @@ extension GroupObjectPatterns on GroupObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _GroupObject() when $default != null:
+      case _GroupNode() when $default != null:
         return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
       case _:
         return orElse();
@@ -1878,7 +1864,7 @@ extension GroupObjectPatterns on GroupObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _GroupObject():
+      case _GroupNode():
         return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
       case _:
         throw StateError('Unexpected subclass');
@@ -1904,7 +1890,7 @@ extension GroupObjectPatterns on GroupObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _GroupObject() when $default != null:
+      case _GroupNode() when $default != null:
         return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
       case _:
         return null;
@@ -1914,8 +1900,8 @@ extension GroupObjectPatterns on GroupObject {
 
 /// @nodoc
 
-class _GroupObject extends GroupObject {
-  _GroupObject({
+class _GroupNode extends GroupNode {
+  _GroupNode({
     required final List<int> childrenIds,
     required this.rect,
     required this.id,
@@ -1939,19 +1925,19 @@ class _GroupObject extends GroupObject {
   @JsonKey()
   final int zIndex;
 
-  /// Create a copy of GroupObject
+  /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$GroupObjectCopyWith<_GroupObject> get copyWith =>
-      __$GroupObjectCopyWithImpl<_GroupObject>(this, _$identity);
+  _$GroupNodeCopyWith<_GroupNode> get copyWith =>
+      __$GroupNodeCopyWithImpl<_GroupNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _GroupObject &&
+            other is _GroupNode &&
             const DeepCollectionEquality().equals(
               other._childrenIds,
               _childrenIds,
@@ -1972,30 +1958,30 @@ class _GroupObject extends GroupObject {
 
   @override
   String toString() {
-    return 'GroupObject(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$GroupObjectCopyWith<$Res>
-    implements $GroupObjectCopyWith<$Res> {
-  factory _$GroupObjectCopyWith(
-    _GroupObject value,
-    $Res Function(_GroupObject) _then,
-  ) = __$GroupObjectCopyWithImpl;
+abstract mixin class _$GroupNodeCopyWith<$Res>
+    implements $GroupNodeCopyWith<$Res> {
+  factory _$GroupNodeCopyWith(
+    _GroupNode value,
+    $Res Function(_GroupNode) _then,
+  ) = __$GroupNodeCopyWithImpl;
   @override
   @useResult
   $Res call({List<int> childrenIds, Rect rect, int id, int zIndex});
 }
 
 /// @nodoc
-class __$GroupObjectCopyWithImpl<$Res> implements _$GroupObjectCopyWith<$Res> {
-  __$GroupObjectCopyWithImpl(this._self, this._then);
+class __$GroupNodeCopyWithImpl<$Res> implements _$GroupNodeCopyWith<$Res> {
+  __$GroupNodeCopyWithImpl(this._self, this._then);
 
-  final _GroupObject _self;
-  final $Res Function(_GroupObject) _then;
+  final _GroupNode _self;
+  final $Res Function(_GroupNode) _then;
 
-  /// Create a copy of GroupObject
+  /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -2006,7 +1992,7 @@ class __$GroupObjectCopyWithImpl<$Res> implements _$GroupObjectCopyWith<$Res> {
     Object? zIndex = null,
   }) {
     return _then(
-      _GroupObject(
+      _GroupNode(
         childrenIds:
             null == childrenIds
                 ? _self._childrenIds
@@ -2033,20 +2019,20 @@ class __$GroupObjectCopyWithImpl<$Res> implements _$GroupObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-mixin _$ListOfPointObject {
+mixin _$ListOfPointNode {
   List<Offset> get points;
   double get strokeWidth;
   int get color;
   int get id;
   int get zIndex;
 
-  /// Create a copy of ListOfPointObject
+  /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ListOfPointObjectCopyWith<ListOfPointObject> get copyWith =>
-      _$ListOfPointObjectCopyWithImpl<ListOfPointObject>(
-        this as ListOfPointObject,
+  $ListOfPointNodeCopyWith<ListOfPointNode> get copyWith =>
+      _$ListOfPointNodeCopyWithImpl<ListOfPointNode>(
+        this as ListOfPointNode,
         _$identity,
       );
 
@@ -2054,7 +2040,7 @@ mixin _$ListOfPointObject {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ListOfPointObject &&
+            other is ListOfPointNode &&
             const DeepCollectionEquality().equals(other.points, points) &&
             (identical(other.strokeWidth, strokeWidth) ||
                 other.strokeWidth == strokeWidth) &&
@@ -2075,16 +2061,16 @@ mixin _$ListOfPointObject {
 
   @override
   String toString() {
-    return 'ListOfPointObject(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ListOfPointObjectCopyWith<$Res> {
-  factory $ListOfPointObjectCopyWith(
-    ListOfPointObject value,
-    $Res Function(ListOfPointObject) _then,
-  ) = _$ListOfPointObjectCopyWithImpl;
+abstract mixin class $ListOfPointNodeCopyWith<$Res> {
+  factory $ListOfPointNodeCopyWith(
+    ListOfPointNode value,
+    $Res Function(ListOfPointNode) _then,
+  ) = _$ListOfPointNodeCopyWithImpl;
   @useResult
   $Res call({
     List<Offset> points,
@@ -2096,14 +2082,14 @@ abstract mixin class $ListOfPointObjectCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ListOfPointObjectCopyWithImpl<$Res>
-    implements $ListOfPointObjectCopyWith<$Res> {
-  _$ListOfPointObjectCopyWithImpl(this._self, this._then);
+class _$ListOfPointNodeCopyWithImpl<$Res>
+    implements $ListOfPointNodeCopyWith<$Res> {
+  _$ListOfPointNodeCopyWithImpl(this._self, this._then);
 
-  final ListOfPointObject _self;
-  final $Res Function(ListOfPointObject) _then;
+  final ListOfPointNode _self;
+  final $Res Function(ListOfPointNode) _then;
 
-  /// Create a copy of ListOfPointObject
+  /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -2146,8 +2132,8 @@ class _$ListOfPointObjectCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [ListOfPointObject].
-extension ListOfPointObjectPatterns on ListOfPointObject {
+/// Adds pattern-matching-related methods to [ListOfPointNode].
+extension ListOfPointNodePatterns on ListOfPointNode {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -2162,12 +2148,12 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_ListOfPointObject value)? $default, {
+    TResult Function(_ListOfPointNode value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject() when $default != null:
+      case _ListOfPointNode() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -2189,11 +2175,11 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_ListOfPointObject value) $default,
+    TResult Function(_ListOfPointNode value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject():
+      case _ListOfPointNode():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -2214,11 +2200,11 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_ListOfPointObject value)? $default,
+    TResult? Function(_ListOfPointNode value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject() when $default != null:
+      case _ListOfPointNode() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -2251,7 +2237,7 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
   }) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject() when $default != null:
+      case _ListOfPointNode() when $default != null:
         return $default(
           _that.points,
           _that.strokeWidth,
@@ -2290,7 +2276,7 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject():
+      case _ListOfPointNode():
         return $default(
           _that.points,
           _that.strokeWidth,
@@ -2328,7 +2314,7 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
   ) {
     final _that = this;
     switch (_that) {
-      case _ListOfPointObject() when $default != null:
+      case _ListOfPointNode() when $default != null:
         return $default(
           _that.points,
           _that.strokeWidth,
@@ -2344,8 +2330,8 @@ extension ListOfPointObjectPatterns on ListOfPointObject {
 
 /// @nodoc
 
-class _ListOfPointObject extends ListOfPointObject {
-  _ListOfPointObject({
+class _ListOfPointNode extends ListOfPointNode {
+  _ListOfPointNode({
     required final List<Offset> points,
     required this.strokeWidth,
     required this.color,
@@ -2372,19 +2358,19 @@ class _ListOfPointObject extends ListOfPointObject {
   @JsonKey()
   final int zIndex;
 
-  /// Create a copy of ListOfPointObject
+  /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ListOfPointObjectCopyWith<_ListOfPointObject> get copyWith =>
-      __$ListOfPointObjectCopyWithImpl<_ListOfPointObject>(this, _$identity);
+  _$ListOfPointNodeCopyWith<_ListOfPointNode> get copyWith =>
+      __$ListOfPointNodeCopyWithImpl<_ListOfPointNode>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ListOfPointObject &&
+            other is _ListOfPointNode &&
             const DeepCollectionEquality().equals(other._points, _points) &&
             (identical(other.strokeWidth, strokeWidth) ||
                 other.strokeWidth == strokeWidth) &&
@@ -2405,17 +2391,17 @@ class _ListOfPointObject extends ListOfPointObject {
 
   @override
   String toString() {
-    return 'ListOfPointObject(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ListOfPointObjectCopyWith<$Res>
-    implements $ListOfPointObjectCopyWith<$Res> {
-  factory _$ListOfPointObjectCopyWith(
-    _ListOfPointObject value,
-    $Res Function(_ListOfPointObject) _then,
-  ) = __$ListOfPointObjectCopyWithImpl;
+abstract mixin class _$ListOfPointNodeCopyWith<$Res>
+    implements $ListOfPointNodeCopyWith<$Res> {
+  factory _$ListOfPointNodeCopyWith(
+    _ListOfPointNode value,
+    $Res Function(_ListOfPointNode) _then,
+  ) = __$ListOfPointNodeCopyWithImpl;
   @override
   @useResult
   $Res call({
@@ -2428,14 +2414,14 @@ abstract mixin class _$ListOfPointObjectCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ListOfPointObjectCopyWithImpl<$Res>
-    implements _$ListOfPointObjectCopyWith<$Res> {
-  __$ListOfPointObjectCopyWithImpl(this._self, this._then);
+class __$ListOfPointNodeCopyWithImpl<$Res>
+    implements _$ListOfPointNodeCopyWith<$Res> {
+  __$ListOfPointNodeCopyWithImpl(this._self, this._then);
 
-  final _ListOfPointObject _self;
-  final $Res Function(_ListOfPointObject) _then;
+  final _ListOfPointNode _self;
+  final $Res Function(_ListOfPointNode) _then;
 
-  /// Create a copy of ListOfPointObject
+  /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -2447,7 +2433,7 @@ class __$ListOfPointObjectCopyWithImpl<$Res>
     Object? zIndex = null,
   }) {
     return _then(
-      _ListOfPointObject(
+      _ListOfPointNode(
         points:
             null == points
                 ? _self._points

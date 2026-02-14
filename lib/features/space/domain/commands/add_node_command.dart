@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
-import 'package:ideascape/features/space/domain/models/objects/space_object.dart';
+import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
-class AddShapeCommand extends SpaceCommand {
-  final SpaceObject object;
+class AddNodeCommand extends SpaceCommand {
+  final Node node;
   final String _caller;
 
-  AddShapeCommand(this.object) : _caller = _getCallerInfo();
+  AddNodeCommand(this.node) : _caller = _getCallerInfo();
 
   /// Returns the location where this command was created.
   @override
@@ -22,7 +22,7 @@ class AddShapeCommand extends SpaceCommand {
     for (var i = 2; i < lines.length && i < 6; i++) {
       final line = lines[i].trim();
       if (line.isNotEmpty &&
-          !line.contains('add_shape_command.dart') &&
+          !line.contains('add_node_command.dart') &&
           !line.contains('<anonymous closure>')) {
         // Extract just the relevant part
         final match = RegExp(r'#\d+\s+(.+)').firstMatch(line);
@@ -37,19 +37,19 @@ class AddShapeCommand extends SpaceCommand {
 
   @override
   Future<void> execute(ShapeLayerBloc bloc) async {
-    debugPrint('┌─ AddShapeCommand.execute ─────────────────────────────────');
-    debugPrint('│ Object: ${object.runtimeType} (id: ${object.id})');
+    debugPrint('┌─ AddNodeCommand.execute ─────────────────────────────────');
+    debugPrint('│ Node: ${node.runtimeType} (id: ${node.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.addObject(object));
+    bloc.add(ShapeLayerEvent.addNode(node));
   }
 
   @override
   Future<void> undo(ShapeLayerBloc bloc) async {
-    debugPrint('┌─ AddShapeCommand.undo ────────────────────────────────────');
-    debugPrint('│ Object: ${object.runtimeType} (id: ${object.id})');
+    debugPrint('┌─ AddNodeCommand.undo ────────────────────────────────────');
+    debugPrint('│ Node: ${node.runtimeType} (id: ${node.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.removeObject(object.id));
+    bloc.add(ShapeLayerEvent.removeNode(node.id));
   }
 }

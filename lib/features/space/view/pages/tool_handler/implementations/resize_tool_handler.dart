@@ -43,13 +43,13 @@ class ResizeToolHandler extends ToolHandler {
     final state = activeBloc.state;
     final worldPoint = _toWorldPoint(details.localPosition, controller);
 
-    if (state.resizeHandle != null && state.activeObjects.isNotEmpty) {
-      final object = state.activeObjects.values.first;
+    if (state.resizeHandle != null && state.activeNodes.isNotEmpty) {
+      final object = state.activeNodes.values.first;
       final startPoint = state.dragStartPoint;
 
       if (startPoint != null) {
         final delta = worldPoint - startPoint; // Total delta
-        final original = state.originalObject;
+        final original = state.originalNode;
 
         if (original != null && original.id == object.id) {
           final visitor = ResizeVisitor(
@@ -57,7 +57,7 @@ class ResizeToolHandler extends ToolHandler {
             delta: delta,
           );
           final newObject = original.accept(visitor);
-          activeBloc.add(ActiveLayerEvent.objectChanged(newObject));
+          activeBloc.add(ActiveLayerEvent.nodeChanged(newObject));
         }
       }
     }
@@ -66,7 +66,7 @@ class ResizeToolHandler extends ToolHandler {
   /// Finalizes the resize operation.
   ///
   /// Commits changes via [CanvasInteractionMediator], handles cleanup to prevent
-  /// "ghosting" in the [ShapeLayer], and updates the `originalObject` in
+  /// "ghosting" in the [ShapeLayer], and updates the `originalNode` in
   /// [ActiveLayerState] to support continuous interaction.
   @override
   void onPanEnd(
@@ -82,24 +82,24 @@ class ResizeToolHandler extends ToolHandler {
 
     // Fix ghosting: Remove from ShapeLayer after finalize, as it remains active.
     final state = activeBloc.state;
-    if (state.activeObjects.isNotEmpty) {
-      final activeObject = state.activeObjects.values.first;
+    if (state.activeNodes.isNotEmpty) {
+      final activeNodeect = state.activeNodes.values.first;
       context.read<ShapeLayerBloc>().add(
-        ShapeLayerEvent.removeObject(activeObject.id),
+        ShapeLayerEvent.removeNode(activeNodeect.id),
       );
     }
 
     // UPDATE POSITION FOR CONTINUOUS INTERACTION
-    // After finalization, the originalObject reference in the Bloc is cleared.
+    // After finalization, the originalNode reference in the Bloc is cleared.
     // However, since the user might continue dragging or resizing immediately (without lifting finger fully or re-selecting),
-    // we must Update the `originalObject` to match the *current* state of the object.
+    // we must Update the `originalNode` to match the *current* state of the object.
     // This ensures that the next delta calculation uses the new, resized position as its base,
     // rather than the stale/old position from before the resize started.
     // Note: We use the *current* state from the bloc, as it might have been updated.
-    if (activeBloc.state.activeObjects.isNotEmpty) {
+    if (activeBloc.state.activeNodes.isNotEmpty) {
       activeBloc.add(
-        ActiveLayerEvent.originalObjectSet(
-          activeBloc.state.activeObjects.values.first,
+        ActiveLayerEvent.originalNodeSet(
+          activeBloc.state.activeNodes.values.first,
         ),
       );
     }
