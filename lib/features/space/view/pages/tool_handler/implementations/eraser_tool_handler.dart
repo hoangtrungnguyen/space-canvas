@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/hit_test_visitor.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 import 'package:ideascape/features/space/view/utils/canvas_utils.dart';

@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/domain/failure.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/hit_test_visitor.dart';
 import 'dart:ui';
 
 part 'shape_layer_bloc.freezed.dart';

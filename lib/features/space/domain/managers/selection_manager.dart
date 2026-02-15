@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/hit_test_visitor.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';

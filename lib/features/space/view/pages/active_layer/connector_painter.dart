@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/paint_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/paint_visitor.dart';
 
 class ConnectorPainter extends CustomPainter {
   final List<ConnectorNode> connectors;

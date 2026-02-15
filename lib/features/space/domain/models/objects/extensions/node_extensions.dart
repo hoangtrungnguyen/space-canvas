@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/move_visitor.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/has_moved_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/move_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/has_moved_visitor.dart';
 
 /// Extension methods on [Node] that provide a clean API
 /// while internally delegating to the Visitor pattern.

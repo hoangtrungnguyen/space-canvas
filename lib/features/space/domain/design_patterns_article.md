@@ -29,7 +29,7 @@ This pattern ensures that tool handlers don't need to know about the internal co
 ---
 
 ## 2. Visitor Pattern: Extensible Hit-Testing
-**Key Implementation**: [hit_test_visitor.dart](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/domain/models/objects/visitors/hit_test_visitor.dart)
+**Key Implementation**: [hit_test_visitor.dart](https://github.com/hoangtrungnguyen/space-canvas/blob/master/lib/features/space/domain/models/visitors/hit_test_visitor.dart)
 
 As new object types (e.g., Connectors, Groups) are added, the logic for "did the user click this?" becomes complex. The **Visitor Pattern** allows us to define this logic outside of the data classes.
 

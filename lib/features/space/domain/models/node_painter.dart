@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/paint_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/paint_visitor.dart';
 
 import 'objects/node.dart';
 
