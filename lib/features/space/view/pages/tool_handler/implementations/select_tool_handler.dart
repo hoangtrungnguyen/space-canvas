@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/select_strategies.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
-import 'package:provider/provider.dart';
 
 /// Handles selection and manipulation (move/resize) of nodes.
 ///
 /// This handler serves as the primary entry point for node interaction.
 /// It delegates specific interaction logic to [InteractionStrategy] implementations
 /// based on the current state (e.g., [ResizeStrategy] or [MoveStrategy]).
-class SelectToolHandler extends ToolHandler {
+class SelectToolHandler extends BaseToolHandler {
   const SelectToolHandler();
 
   /// Handles tap gestures to select nodes.
@@ -33,15 +28,12 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = context.read<CanvasInteractionMediator>();
-    final worldPoint = CanvasUtils.toWorldPoint(
-      details.localPosition,
-      controller,
-    );
+    final mediator = getMediator(context);
+    final worldPoint = toWorldPoint(details.localPosition, controller);
 
     final hitNode = mediator.hitTest(worldPoint);
     if (hitNode is ConnectorNode) {
-      context.read<ToolbarBloc>().add(
+      getToolbarBloc(context).add(
         const ToolbarEvent.selected(SpaceTool.selectConnector),
       );
       mediator.selectConnectorAt(worldPoint, isDrag: false);
@@ -67,11 +59,8 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = CanvasUtils.toWorldPoint(
-      details.localPosition,
-      controller,
-    );
-    final activeBloc = context.read<ActiveLayerBloc>();
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final activeBloc = getActiveLayerBloc(context);
     final state = activeBloc.state;
 
     // Check for handle hit
@@ -97,11 +86,11 @@ class SelectToolHandler extends ToolHandler {
       final activeNode = state.activeNodes.values.first;
       // Temporarily remove from ShapeLayer so we don't see the "old" version
       // beneath the active one being resized.
-      context.read<ShapeLayerBloc>().add(
+      getShapeLayerBloc(context).add(
         ShapeLayerEvent.removeNode(activeNode.id),
       );
 
-      context.read<ActiveLayerBloc>().add(
+      activeBloc.add(
         ActiveLayerEvent.interactionStarted(
           node: activeNode,
           point: worldPoint,
@@ -109,11 +98,11 @@ class SelectToolHandler extends ToolHandler {
       );
     } else {
       // Normal selection logic
-      final mediator = context.read<CanvasInteractionMediator>();
+      final mediator = getMediator(context);
 
       final hitNode = mediator.hitTest(worldPoint);
       if (hitNode is ConnectorNode) {
-        context.read<ToolbarBloc>().add(
+        getToolbarBloc(context).add(
           const ToolbarEvent.selected(SpaceTool.selectConnector),
         );
         mediator.selectConnectorAt(worldPoint, isDrag: true);
@@ -141,8 +130,7 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
+    final state = getActiveLayerBloc(context).state;
 
     final strategy = _getStrategyForState(state);
     strategy.onUpdate(details, context, controller);
@@ -157,8 +145,7 @@ class SelectToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
+    final state = getActiveLayerBloc(context).state;
 
     final strategy = _getStrategyForState(state);
     strategy.onEnd(details, context, controller);

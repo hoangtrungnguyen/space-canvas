@@ -10,27 +10,64 @@ import 'package:ideascape/features/space/view/pages/tool_handler/implementations
 import 'package:ideascape/features/space/view/pages/tool_handler/implementations/text_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 
+/// Factory for creating [ToolHandler] instances using the Registry pattern.
+///
+/// This implementation uses a registry map to associate tools with their handlers,
+/// making it easy to add new tools without modifying the factory code.
+/// Custom handlers can be registered at runtime using [register].
 class ToolHandlerFactory {
+  /// Private constructor to prevent instantiation
+  ToolHandlerFactory._();
+
+  /// Registry mapping tools to their handler factory functions
+  static final Map<SpaceTool, ToolHandler Function()> _registry = {
+    SpaceTool.pan: () => const PanToolHandler(),
+    SpaceTool.shape: () => const ShapeToolHandler(),
+    SpaceTool.text: () => const TextToolHandler(),
+    SpaceTool.eraser: () => EraserToolHandler(),
+    SpaceTool.connector: () => const ConnectorToolHandler(),
+    SpaceTool.pen: () => const PenToolHandler(),
+    SpaceTool.image: () => const ImageToolHandler(),
+    SpaceTool.select: () => const SelectToolHandler(),
+    SpaceTool.selectConnector: () => const SelectConnectorToolHandler(),
+  };
+
+  /// Retrieves a handler instance for the given [tool].
+  ///
+  /// Throws [UnimplementedError] if no handler is registered for the tool.
   static ToolHandler getHandler(SpaceTool tool) {
-    switch (tool) {
-      case SpaceTool.pan:
-        return const PanToolHandler();
-      case SpaceTool.shape:
-        return const ShapeToolHandler();
-      case SpaceTool.text:
-        return const TextToolHandler();
-      case SpaceTool.eraser:
-        return EraserToolHandler();
-      case SpaceTool.connector:
-        return const ConnectorToolHandler();
-      case SpaceTool.pen:
-        return const PenToolHandler();
-      case SpaceTool.image:
-        return const ImageToolHandler();
-      case SpaceTool.select:
-        return const SelectToolHandler();
-      case SpaceTool.selectConnector:
-        return const SelectConnectorToolHandler();
+    final factory = _registry[tool];
+    if (factory == null) {
+      throw UnimplementedError('No handler registered for tool: $tool');
     }
+    return factory();
+  }
+
+  /// Registers a custom handler factory for a [tool].
+  ///
+  /// This allows extending the factory with new tools at runtime,
+  /// useful for plugins or dynamic tool registration.
+  ///
+  /// Example:
+  /// ```dart
+  /// ToolHandlerFactory.register(
+  ///   SpaceTool.customTool,
+  ///   () => CustomToolHandler(),
+  /// );
+  /// ```
+  static void register(SpaceTool tool, ToolHandler Function() factory) {
+    _registry[tool] = factory;
+  }
+
+  /// Checks if a handler is registered for the given [tool].
+  static bool isRegistered(SpaceTool tool) {
+    return _registry.containsKey(tool);
+  }
+
+  /// Unregisters a handler for the given [tool].
+  ///
+  /// Returns true if a handler was removed, false if none was registered.
+  static bool unregister(SpaceTool tool) {
+    return _registry.remove(tool) != null;
   }
 }

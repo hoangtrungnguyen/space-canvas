@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/domain/utils/connector_utils.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/domain/models/space_tools.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 
 /// Handles connector tool interactions using the Mediator and State patterns.
 ///
 /// Connectors can be drawn from any point to any point. If the start or end
 /// point is on an object, it will be linked to that object.
-class ConnectorToolHandler extends ToolHandler {
+class ConnectorToolHandler extends BaseToolHandler {
   const ConnectorToolHandler();
 
   @override
@@ -23,9 +21,9 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-    final activeState = context.read<ActiveLayerBloc>().state;
-    final shapeState = context.read<ShapeLayerBloc>().state;
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final activeState = getActiveLayerBloc(context).state;
+    final shapeState = getShapeLayerBloc(context).state;
 
     // Case 1: End the connector (Tap-to-End)
     if (activeState.connectorStartPoint != null) {
@@ -51,7 +49,7 @@ class ConnectorToolHandler extends ToolHandler {
 
           // Simple distance check (e.g. 20.0 radius)
           if ((worldPoint - anchorPoint).distance <= 20.0) {
-            context.read<ActiveLayerBloc>().add(
+            getActiveLayerBloc(context).add(
               ActiveLayerEvent.connectorDragStarted(
                 startNodeId: nodeId,
                 startPoint: anchorPoint,
@@ -71,22 +69,22 @@ class ConnectorToolHandler extends ToolHandler {
   ) {
     // If we already have a start point (from Tap), don't reset it.
     // Just let the drag update continue from where the mouse is.
-    final activeState = context.read<ActiveLayerBloc>().state;
+    final activeState = getActiveLayerBloc(context).state;
     if (activeState.connectorStartPoint != null) {
       return;
     }
 
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = toWorldPoint(details.localPosition, controller);
 
     // Find if we're starting on an object (optional)
     int? startNodeId;
-    final state = context.read<ShapeLayerBloc>().state;
+    final state = getShapeLayerBloc(context).state;
     if (state is ShapeLayerStateSuccess) {
       startNodeId = _findNodeAt(worldPoint, state.data.nodes);
     }
 
     // Always start the drag, even without an object
-    context.read<ActiveLayerBloc>().add(
+    getActiveLayerBloc(context).add(
       ActiveLayerEvent.connectorDragStarted(
         startNodeId: startNodeId,
         startPoint: worldPoint,
@@ -100,10 +98,10 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
+    final activeState = getActiveLayerBloc(context).state;
     if (activeState.connectorStartPoint != null) {
-      final worldPoint = _toWorldPoint(details.localPosition, controller);
-      context.read<ActiveLayerBloc>().add(
+      final worldPoint = toWorldPoint(details.localPosition, controller);
+      getActiveLayerBloc(context).add(
         ActiveLayerEvent.connectorDragUpdated(worldPoint),
       );
     }
@@ -115,13 +113,13 @@ class ConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
+    final activeState = getActiveLayerBloc(context).state;
     final startPoint = activeState.connectorStartPoint;
     final startNodeId = activeState.connectorStartNodeId;
     final endPoint = activeState.connectorDragPosition;
 
     if (startPoint != null && endPoint != null) {
-      final shapeState = context.read<ShapeLayerBloc>().state;
+      final shapeState = getShapeLayerBloc(context).state;
       _finalizeConnector(
         context,
         startPoint: startPoint,
@@ -131,7 +129,7 @@ class ConnectorToolHandler extends ToolHandler {
       );
     } else {
       // Just clear if valid start/end not present
-      context.read<ActiveLayerBloc>().add(
+      getActiveLayerBloc(context).add(
         const ActiveLayerEvent.connectorDragEnded(),
       );
     }
@@ -144,7 +142,7 @@ class ConnectorToolHandler extends ToolHandler {
     required int? startNodeId,
     required ShapeLayerState shapeState,
   }) {
-    final mediator = context.read<CanvasInteractionMediator>();
+    final mediator = getMediator(context);
 
     int? endNodeId;
     if (shapeState is ShapeLayerStateSuccess) {
@@ -184,12 +182,12 @@ class ConnectorToolHandler extends ToolHandler {
     );
 
     // Switch tool to Select Connector
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       ToolbarEvent.selected(SpaceTool.selectConnector),
     );
 
     // Always clear the drag state
-    context.read<ActiveLayerBloc>().add(
+    getActiveLayerBloc(context).add(
       const ActiveLayerEvent.connectorDragEnded(),
     );
   }
@@ -203,12 +201,5 @@ class ConnectorToolHandler extends ToolHandler {
       }
     }
     return null;
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
-    );
   }
 }

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/factories/node_factory.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:ideascape/features/space/view/utils/canvas_utils.dart';
-import 'package:provider/provider.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 
-class ShapeToolHandler extends ToolHandler {
+class ShapeToolHandler extends BaseToolHandler {
   const ShapeToolHandler();
 
   @override
@@ -20,12 +15,9 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = CanvasUtils.toWorldPoint(
-      details.localPosition,
-      controller,
-    );
-    final mediator = context.read<CanvasInteractionMediator>();
-    final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final mediator = getMediator(context);
+    final shapeType = getToolbarBloc(context).state.activeShapeType;
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final newShape = NodeFactory.createShape(
@@ -43,12 +35,9 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = CanvasUtils.toWorldPoint(
-      details.localPosition,
-      controller,
-    );
-    final mediator = context.read<CanvasInteractionMediator>();
-    final shapeType = context.read<ToolbarBloc>().state.activeShapeType;
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final mediator = getMediator(context);
+    final shapeType = getToolbarBloc(context).state.activeShapeType;
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final newShape = NodeFactory.createShape(
@@ -63,7 +52,7 @@ class ShapeToolHandler extends ToolHandler {
 
     mediator.startNewShape(zeroSizeShape, worldPoint);
 
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       ToolbarEvent.updateDrawingObject(zeroSizeShape),
     );
   }
@@ -74,24 +63,21 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
-    final mediator = context.read<CanvasInteractionMediator>();
+    final activeState = getActiveLayerBloc(context).state;
+    final mediator = getMediator(context);
     final startPoint = activeState.dragStartPoint;
 
     if (startPoint != null && activeState.activeNodes.isNotEmpty) {
       final currentObject = activeState.activeNodes.values.first;
 
       if (currentObject is ShapeNode) {
-        final currentPoint = CanvasUtils.toWorldPoint(
-          details.localPosition,
-          controller,
-        );
+        final currentPoint = toWorldPoint(details.localPosition, controller);
         final newRect = Rect.fromPoints(startPoint, currentPoint);
         final updatedShape = currentObject.copyWith(rect: newRect);
 
         mediator.updateNewShape(updatedShape, currentPoint);
 
-        context.read<ToolbarBloc>().add(
+        getToolbarBloc(context).add(
           ToolbarEvent.updateDrawingObject(updatedShape),
         );
       }
@@ -104,10 +90,10 @@ class ShapeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = context.read<CanvasInteractionMediator>();
+    final mediator = getMediator(context);
     mediator.commitAndDeactivate();
 
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       const ToolbarEvent.updateDrawingObject(null),
     );
   }

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/factories/node_factory.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:provider/provider.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 
-class PenToolHandler extends ToolHandler {
+class PenToolHandler extends BaseToolHandler {
   const PenToolHandler();
 
   @override
@@ -26,8 +22,8 @@ class PenToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final mediator = getMediator(context);
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final newListObject = NodeFactory.createListOfPoint(
@@ -37,7 +33,7 @@ class PenToolHandler extends ToolHandler {
 
     mediator.startDrawing(newListObject, worldPoint);
 
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       ToolbarEvent.updateDrawingObject(newListObject),
     );
   }
@@ -48,14 +44,14 @@ class PenToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
-    final mediator = context.read<CanvasInteractionMediator>();
+    final activeState = getActiveLayerBloc(context).state;
+    final mediator = getMediator(context);
 
     if (activeState.activeNodes.isNotEmpty) {
       final currentObject = activeState.activeNodes.values.first;
 
       if (currentObject is ListOfPointNode) {
-        final worldPoint = _toWorldPoint(details.localPosition, controller);
+        final worldPoint = toWorldPoint(details.localPosition, controller);
 
         // Optimization: Only add point if it's far enough from the last point
         const distanceThreshold = 0.5;
@@ -69,7 +65,7 @@ class PenToolHandler extends ToolHandler {
 
           mediator.updateDrawing(updatedObject, worldPoint);
 
-          context.read<ToolbarBloc>().add(
+          getToolbarBloc(context).add(
             ToolbarEvent.updateDrawingObject(updatedObject),
           );
         }
@@ -83,18 +79,11 @@ class PenToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = context.read<CanvasInteractionMediator>();
+    final mediator = getMediator(context);
     mediator.commitAndDeactivate();
 
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       const ToolbarEvent.updateDrawingObject(null),
-    );
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
     );
   }
 }

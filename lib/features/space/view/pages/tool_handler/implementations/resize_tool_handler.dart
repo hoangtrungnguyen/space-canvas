@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 import 'package:ideascape/features/space/domain/models/visitors/resize_visitor.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 /// Handles resize interactions for selected objects.
@@ -12,7 +9,7 @@ import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc
 /// This handler is typically invoked by [SelectToolHandler] when a resize handle
 /// is active. It calculates the new geometry using [ResizeVisitor] and updates
 /// the [ActiveLayerBloc].
-class ResizeToolHandler extends ToolHandler {
+class ResizeToolHandler extends BaseToolHandler {
   const ResizeToolHandler();
 
   @override
@@ -39,9 +36,9 @@ class ResizeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
+    final activeBloc = getActiveLayerBloc(context);
     final state = activeBloc.state;
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = toWorldPoint(details.localPosition, controller);
 
     if (state.resizeHandle != null && state.activeNodes.isNotEmpty) {
       final object = state.activeNodes.values.first;
@@ -74,8 +71,8 @@ class ResizeToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final mediator = context.read<CanvasInteractionMediator>();
+    final activeBloc = getActiveLayerBloc(context);
+    final mediator = getMediator(context);
 
     // Finalize the interaction (commits changes to history).
     mediator.finalizeInteraction();
@@ -84,7 +81,7 @@ class ResizeToolHandler extends ToolHandler {
     final state = activeBloc.state;
     if (state.activeNodes.isNotEmpty) {
       final activeNodeect = state.activeNodes.values.first;
-      context.read<ShapeLayerBloc>().add(
+      getShapeLayerBloc(context).add(
         ShapeLayerEvent.removeNode(activeNodeect.id),
       );
     }
@@ -106,12 +103,5 @@ class ResizeToolHandler extends ToolHandler {
 
     // Clear handle on end
     activeBloc.add(const ActiveLayerEvent.handleChanged(null));
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
-    );
   }
 }

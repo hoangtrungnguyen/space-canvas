@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/factories/node_factory.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:provider/provider.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 
-class TextToolHandler extends ToolHandler {
+class TextToolHandler extends BaseToolHandler {
   const TextToolHandler();
 
   @override
@@ -20,7 +16,7 @@ class TextToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final worldPoint = toWorldPoint(details.localPosition, controller);
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final textObject = NodeFactory.createText(
@@ -30,7 +26,7 @@ class TextToolHandler extends ToolHandler {
       fontSize: 20.0,
     );
 
-    context.read<ToolbarBloc>().add(ToolbarEvent.startedEditing(textObject));
+    getToolbarBloc(context).add(ToolbarEvent.startedEditing(textObject));
   }
 
   @override
@@ -39,8 +35,8 @@ class TextToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final mediator = getMediator(context);
 
     final id = getIt<SpaceDataService>().nextUniqueId;
     final textObject = NodeFactory.createText(
@@ -52,7 +48,7 @@ class TextToolHandler extends ToolHandler {
 
     mediator.startNewShape(textObject, worldPoint);
 
-    context.read<ToolbarBloc>().add(
+    getToolbarBloc(context).add(
       ToolbarEvent.updateDrawingObject(textObject),
     );
   }
@@ -63,15 +59,15 @@ class TextToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
-    final mediator = context.read<CanvasInteractionMediator>();
+    final activeState = getActiveLayerBloc(context).state;
+    final mediator = getMediator(context);
     final startPoint = activeState.dragStartPoint;
 
     if (startPoint != null && activeState.activeNodes.isNotEmpty) {
       final currentObject = activeState.activeNodes.values.first;
 
       if (currentObject is TextNode) {
-        final currentPoint = _toWorldPoint(details.localPosition, controller);
+        final currentPoint = toWorldPoint(details.localPosition, controller);
 
         final distance = (currentPoint - startPoint).distance;
         final newFontSize = distance.clamp(10.0, 500.0);
@@ -80,7 +76,7 @@ class TextToolHandler extends ToolHandler {
 
         mediator.updateNewShape(updatedText, currentPoint);
 
-        context.read<ToolbarBloc>().add(
+        getToolbarBloc(context).add(
           ToolbarEvent.updateDrawingObject(updatedText),
         );
       }
@@ -93,14 +89,14 @@ class TextToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeState = context.read<ActiveLayerBloc>().state;
-    final activeBloc = context.read<ActiveLayerBloc>();
+    final activeState = getActiveLayerBloc(context).state;
+    final activeBloc = getActiveLayerBloc(context);
 
     if (activeState.activeNodes.isNotEmpty) {
       final finalObject = activeState.activeNodes.values.first;
 
       if (finalObject is TextNode) {
-        context.read<ToolbarBloc>().add(
+        getToolbarBloc(context).add(
           ToolbarEvent.startedEditing(finalObject),
         );
       }
@@ -108,16 +104,9 @@ class TextToolHandler extends ToolHandler {
       // Deactivate without commit (InlineTextEditor handles commit)
       activeBloc.add(ActiveLayerEvent.nodeDeactivated(finalObject.id));
 
-      context.read<ToolbarBloc>().add(
+      getToolbarBloc(context).add(
         const ToolbarEvent.updateDrawingObject(null),
       );
     }
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
-    );
   }
 }

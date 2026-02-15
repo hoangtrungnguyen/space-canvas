@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ideascape/features/space/domain/interaction_mediator.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_bloc.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
-
 import 'package:ideascape/features/space/domain/models/connector_handle.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 import 'package:ideascape/features/space/domain/models/selection_filter.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/connector_strategies.dart';
 
 /// Handles selection of connectors ONLY.
-class SelectConnectorToolHandler extends ToolHandler {
+class SelectConnectorToolHandler extends BaseToolHandler {
   const SelectConnectorToolHandler();
 
   @override
@@ -23,8 +18,8 @@ class SelectConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = context.read<CanvasInteractionMediator>();
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
+    final mediator = getMediator(context);
+    final worldPoint = toWorldPoint(details.localPosition, controller);
     mediator.selectConnectorAt(worldPoint, isDrag: false);
   }
 
@@ -39,9 +34,9 @@ class SelectConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = _toWorldPoint(details.localPosition, controller);
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final mediator = context.read<CanvasInteractionMediator>();
+    final worldPoint = toWorldPoint(details.localPosition, controller);
+    final activeBloc = getActiveLayerBloc(context);
+    final mediator = getMediator(context);
 
     // We select/configure the state here, which then dictates the Strategy used in Update/End
     mediator.selectConnectorAt(worldPoint, isDrag: true);
@@ -80,8 +75,7 @@ class SelectConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
+    final state = getActiveLayerBloc(context).state;
 
     final strategy = _getStrategyForState(state);
     strategy.onUpdate(details, context, controller);
@@ -96,8 +90,7 @@ class SelectConnectorToolHandler extends ToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final activeBloc = context.read<ActiveLayerBloc>();
-    final state = activeBloc.state;
+    final state = getActiveLayerBloc(context).state;
 
     final strategy = _getStrategyForState(state);
     strategy.onEnd(details, context, controller);
@@ -110,12 +103,5 @@ class SelectConnectorToolHandler extends ToolHandler {
       return const MoveConnectorStrategy();
     }
     return const IdleStrategy();
-  }
-
-  Offset _toWorldPoint(Offset local, TransformationController controller) {
-    return MatrixUtils.transformPoint(
-      Matrix4.inverted(controller.value),
-      local,
-    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/tool_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
 
-class PanToolHandler extends ToolHandler {
+class PanToolHandler extends BaseToolHandler {
   const PanToolHandler();
 
   @override
