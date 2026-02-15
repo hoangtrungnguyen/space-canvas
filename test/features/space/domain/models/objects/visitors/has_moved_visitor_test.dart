@@ -11,7 +11,7 @@ void main() {
       final original = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         id: 1,
       );
       final moved = original.move(delta) as ShapeNode;
@@ -30,21 +30,6 @@ void main() {
         id: 2,
       );
       final moved = original.move(delta) as TextNode;
-      final same = original.copyWith();
-
-      expect(moved.hasMovedFrom(original), isTrue);
-      expect(same.hasMovedFrom(original), isFalse);
-    });
-
-    test('should detect movement in PathNode', () {
-      final path = Path();
-      path.moveTo(0, 0);
-      path.lineTo(10, 10);
-
-      final original = PathNode(path: path, paint: Paint(), id: 3);
-      final moved = original.move(delta) as PathNode;
-      // Re-create similar path for 'same' check, since Path equality might be identity based or platform specific.
-      // However, copyWith with existing path should be equal reference.
       final same = original.copyWith();
 
       expect(moved.hasMovedFrom(original), isTrue);
@@ -114,7 +99,7 @@ void main() {
       final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         id: 1,
       );
       final text = TextNode(

@@ -21,6 +21,7 @@ mixin _$ConnectorNode {
   int get color;
   int get id;
   int get zIndex;
+  double get rotation;
 
   /// Which edge of the start node this connector originates from.
   ConnectorEdge? get startLocation;
@@ -56,6 +57,8 @@ mixin _$ConnectorNode {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation) &&
             (identical(other.startLocation, startLocation) ||
                 other.startLocation == startLocation) &&
             (identical(other.endLocation, endLocation) ||
@@ -73,13 +76,14 @@ mixin _$ConnectorNode {
     color,
     id,
     zIndex,
+    rotation,
     startLocation,
     endLocation,
   );
 
   @override
   String toString() {
-    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
+    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation, startLocation: $startLocation, endLocation: $endLocation)';
   }
 }
 
@@ -99,6 +103,7 @@ abstract mixin class $ConnectorNodeCopyWith<$Res> {
     int color,
     int id,
     int zIndex,
+    double rotation,
     ConnectorEdge? startLocation,
     ConnectorEdge? endLocation,
   });
@@ -125,6 +130,7 @@ class _$ConnectorNodeCopyWithImpl<$Res>
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
     Object? startLocation = freezed,
     Object? endLocation = freezed,
   }) {
@@ -170,6 +176,11 @@ class _$ConnectorNodeCopyWithImpl<$Res>
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
         startLocation:
             freezed == startLocation
                 ? _self.startLocation
@@ -287,6 +298,7 @@ extension ConnectorNodePatterns on ConnectorNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       ConnectorEdge? startLocation,
       ConnectorEdge? endLocation,
     )?
@@ -305,6 +317,7 @@ extension ConnectorNodePatterns on ConnectorNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.startLocation,
           _that.endLocation,
         );
@@ -337,6 +350,7 @@ extension ConnectorNodePatterns on ConnectorNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       ConnectorEdge? startLocation,
       ConnectorEdge? endLocation,
     )
@@ -354,6 +368,7 @@ extension ConnectorNodePatterns on ConnectorNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.startLocation,
           _that.endLocation,
         );
@@ -385,6 +400,7 @@ extension ConnectorNodePatterns on ConnectorNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       ConnectorEdge? startLocation,
       ConnectorEdge? endLocation,
     )?
@@ -402,6 +418,7 @@ extension ConnectorNodePatterns on ConnectorNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.startLocation,
           _that.endLocation,
         );
@@ -423,6 +440,7 @@ class _ConnectorNode extends ConnectorNode {
     required this.color,
     required this.id,
     this.zIndex = 0,
+    this.rotation = 0.0,
     this.startLocation,
     this.endLocation,
   }) : super._();
@@ -444,6 +462,9 @@ class _ConnectorNode extends ConnectorNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double rotation;
 
   /// Which edge of the start node this connector originates from.
   @override
@@ -479,6 +500,8 @@ class _ConnectorNode extends ConnectorNode {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation) &&
             (identical(other.startLocation, startLocation) ||
                 other.startLocation == startLocation) &&
             (identical(other.endLocation, endLocation) ||
@@ -496,13 +519,14 @@ class _ConnectorNode extends ConnectorNode {
     color,
     id,
     zIndex,
+    rotation,
     startLocation,
     endLocation,
   );
 
   @override
   String toString() {
-    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, startLocation: $startLocation, endLocation: $endLocation)';
+    return 'ConnectorNode(startNodeId: $startNodeId, endNodeId: $endNodeId, startPoint: $startPoint, endPoint: $endPoint, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation, startLocation: $startLocation, endLocation: $endLocation)';
   }
 }
 
@@ -524,6 +548,7 @@ abstract mixin class _$ConnectorNodeCopyWith<$Res>
     int color,
     int id,
     int zIndex,
+    double rotation,
     ConnectorEdge? startLocation,
     ConnectorEdge? endLocation,
   });
@@ -550,6 +575,7 @@ class __$ConnectorNodeCopyWithImpl<$Res>
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
     Object? startLocation = freezed,
     Object? endLocation = freezed,
   }) {
@@ -595,6 +621,11 @@ class __$ConnectorNodeCopyWithImpl<$Res>
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
         startLocation:
             freezed == startLocation
                 ? _self.startLocation

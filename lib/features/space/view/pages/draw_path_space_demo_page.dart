@@ -19,7 +19,7 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
   final Matrix4 _transformMatrix = Matrix4.identity();
   bool _panEnabled = false;
 
-  final List<PathNode> _paths = [];
+  final List<ListOfPointNode> _drawings = [];
 
   @override
   void initState() {
@@ -78,18 +78,19 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
                         size: Size(double.infinity, double.infinity),
                         // The painter gets the objects and the current transform matrix from the state.
                         painter: NodePainter(
-                          nodes: _paths,
+                          nodes: _drawings,
                           transform: _transformMatrix,
                         ),
                       ),
-                      if (_currentPath != null)
+                      if (_currentPoints.isNotEmpty)
                         CustomPaint(
                           size: Size(double.infinity, double.infinity),
                           painter: NodePainter(
                             nodes: [
-                              PathNode(
-                                path: _currentPath!,
-                                paint: _currentPaint,
+                              ListOfPointNode(
+                                points: _currentPoints,
+                                color: Colors.black.toARGB32(),
+                                strokeWidth: 4.0,
                                 id: -1,
                               ),
                             ],
@@ -107,17 +108,8 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
     );
   }
 
-  // The line currently being drawn.
-  Path? _currentPath;
-
-  // The paint object for the current line.
-  // This can be customized to change color, stroke width, etc.
-  final Paint _currentPaint =
-      Paint()
-        ..color = Colors.black
-        ..strokeWidth = 4.0
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
+  // The points currently being drawn.
+  List<Offset> _currentPoints = [];
 
   /// Converts a global screen coordinate to the local coordinate on the canvas,
   /// taking the current InteractiveViewer transformation into account.
@@ -132,7 +124,7 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
     if (!_panEnabled) {
       final localPosition = _toLocal(details.focalPoint);
       setState(() {
-        _currentPath = Path()..moveTo(localPosition.dx, localPosition.dy);
+        _currentPoints = [localPosition];
       });
     }
   }
@@ -140,26 +132,27 @@ class _SpaceDemoPageState extends State<SpaceDemoPage> {
   void _handleInteractionUpdate(ScaleUpdateDetails details) {
     // If in drawing mode and a path exists, extend the path.
     // We check scale to prevent drawing while zooming.
-    if (!_panEnabled && _currentPath != null && details.scale == 1.0) {
+    if (!_panEnabled && _currentPoints.isNotEmpty && details.scale == 1.0) {
       final localPosition = _toLocal(details.focalPoint);
       setState(() {
-        _currentPath!.lineTo(localPosition.dx, localPosition.dy);
+        _currentPoints = [..._currentPoints, localPosition];
       });
     }
   }
 
   void _handleInteractionEnd(ScaleEndDetails details) {
     // If in drawing mode, finalize the path.
-    if (!_panEnabled && _currentPath != null) {
+    if (!_panEnabled && _currentPoints.isNotEmpty) {
       setState(() {
-        _paths.add(
-          PathNode(
-            path: _currentPath!,
-            paint: _currentPaint,
+        _drawings.add(
+          ListOfPointNode(
+            points: _currentPoints,
+            color: Colors.black.toARGB32(),
+            strokeWidth: 4.0,
             id: DateTime.now().millisecondsSinceEpoch,
           ),
         );
-        _currentPath = null;
+        _currentPoints = [];
       });
     }
   }

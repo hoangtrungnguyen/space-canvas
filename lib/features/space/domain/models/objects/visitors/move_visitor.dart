@@ -21,11 +21,6 @@ class MoveVisitor implements NodeVisitor<Node?> {
   }
 
   @override
-  Node? visitPath(PathNode node) {
-    return node.copyWith(path: node.path.shift(delta));
-  }
-
-  @override
   Node? visitListOfPoint(ListOfPointNode node) {
     return node.copyWith(points: node.points.map((p) => p + delta).toList());
   }

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
+import 'package:ideascape/features/space/domain/utils/shape_path_builder.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 export 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
 
@@ -22,6 +24,20 @@ abstract class Node {
   int get id;
   int get zIndex;
   Rect get rect;
+  double get rotation;
+
+  /// Pre-configured [Paint] for rendering this node.
+  Paint get paint;
+
+  /// Pre-calculated [Path] for rendering (in local/untransformed space).
+  Path get path;
+
+  /// Rotation transform matrix (identity when rotation is 0).
+  Matrix4 get transform;
+
+  /// Axis-aligned bounding box after rotation, for culling and hit testing.
+  Rect get bounds;
+
   T accept<T>(NodeVisitor<T> visitor);
 
   bool intersects(Node other) {
@@ -30,7 +46,6 @@ abstract class Node {
 }
 
 abstract class NodeVisitor<T> {
-  T visitPath(PathNode node);
   T visitShape(ShapeNode node);
   T visitText(TextNode node);
   T visitImage(ImageNode node);
@@ -39,40 +54,66 @@ abstract class NodeVisitor<T> {
   T visitListOfPoint(ListOfPointNode node);
 }
 
-// Represents a freehand drawing.
-@freezed
-abstract class PathNode extends Node with _$PathNode {
-  factory PathNode({
-    required Path path,
-    required Paint paint,
-    required int id,
-    @Default(0) int zIndex,
-  }) = _PathNode;
+// ---------------------------------------------------------------------------
+// Transform helpers (migrated from DomainToUiMapper)
+// ---------------------------------------------------------------------------
 
-  PathNode._() : super();
-
-  @override
-  Rect get rect => path.getBounds();
-
-  @override
-  T accept<T>(NodeVisitor<T> visitor) => visitor.visitPath(this);
+/// Builds a rotation transform around [center].
+/// Returns identity if [rotation] is 0.
+Matrix4 buildTransform(Offset center, double rotation) {
+  if (rotation == 0.0) return Matrix4.identity();
+  final r = Matrix4.rotationZ(rotation);
+  final tx =
+      center.dx - (r.entry(0, 0) * center.dx + r.entry(0, 1) * center.dy);
+  final ty =
+      center.dy - (r.entry(1, 0) * center.dx + r.entry(1, 1) * center.dy);
+  return r..setTranslation(Vector3(tx, ty, 0));
 }
+
+/// Computes the axis-aligned bounding box of [path] after rotation.
+Rect computeTransformedBounds(Path path, Offset center, double rotation) {
+  if (rotation == 0.0) return path.getBounds();
+  final transform = buildTransform(center, rotation);
+  final transformedPath = path.transform(transform.storage);
+  return transformedPath.getBounds();
+}
+
+// ---------------------------------------------------------------------------
+// Node subclasses
+// ---------------------------------------------------------------------------
 
 @freezed
 abstract class ShapeNode extends Node with _$ShapeNode {
   factory ShapeNode({
     required ShapeType type,
     required Rect rect,
-    required Paint paint,
+    required int color,
     required int id,
     @Default('') String text,
     @Default(0) int zIndex,
+    @Default(1.0) double strokeWidth,
+    @Default(0.0) double rotation,
   }) = _ShapeNode;
 
   ShapeNode._();
 
   @override
   T accept<T>(NodeVisitor<T> visitor) => visitor.visitShape(this);
+
+  @override
+  Paint get paint =>
+      Paint()
+        ..color = Color(color)
+        ..style = PaintingStyle.fill;
+
+  @override
+  Path get path => ShapePathBuilder.buildPath(type, rect);
+
+  @override
+  Matrix4 get transform => buildTransform(rect.center, rotation);
+
+  @override
+  Rect get bounds => computeTransformedBounds(path, rect.center, rotation);
 }
 
 @freezed
@@ -84,6 +125,7 @@ abstract class TextNode extends Node with _$TextNode {
     required int color, // ARGB
     required int id,
     @Default(0) int zIndex,
+    @Default(0.0) double rotation,
     String? fontFamily,
   }) = _TextNode;
 
@@ -103,6 +145,18 @@ abstract class TextNode extends Node with _$TextNode {
       fontSize,
     );
   }
+
+  @override
+  Paint get paint => Paint()..color = Color(color);
+
+  @override
+  Path get path => Path()..addRect(rect);
+
+  @override
+  Matrix4 get transform => buildTransform(rect.center, rotation);
+
+  @override
+  Rect get bounds => computeTransformedBounds(path, rect.center, rotation);
 }
 
 @freezed
@@ -112,12 +166,25 @@ abstract class ImageNode extends Node with _$ImageNode {
     required Rect rect,
     required int id,
     @Default(0) int zIndex,
+    @Default(0.0) double rotation,
   }) = _ImageNode;
 
   ImageNode._();
 
   @override
   T accept<T>(NodeVisitor<T> visitor) => visitor.visitImage(this);
+
+  @override
+  Paint get paint => Paint()..color = const Color(0xFFCCCCCC);
+
+  @override
+  Path get path => Path()..addRect(rect);
+
+  @override
+  Matrix4 get transform => buildTransform(rect.center, rotation);
+
+  @override
+  Rect get bounds => computeTransformedBounds(path, rect.center, rotation);
 }
 
 @freezed
@@ -127,12 +194,25 @@ abstract class GroupNode extends Node with _$GroupNode {
     required Rect rect,
     required int id,
     @Default(0) int zIndex,
+    @Default(0.0) double rotation,
   }) = _GroupNode;
 
   GroupNode._();
 
   @override
   T accept<T>(NodeVisitor<T> visitor) => visitor.visitGroup(this);
+
+  @override
+  Paint get paint => Paint()..color = const Color(0x00000000);
+
+  @override
+  Path get path => Path()..addRect(rect);
+
+  @override
+  Matrix4 get transform => buildTransform(rect.center, rotation);
+
+  @override
+  Rect get bounds => computeTransformedBounds(path, rect.center, rotation);
 }
 
 @freezed
@@ -143,6 +223,7 @@ abstract class ListOfPointNode extends Node with _$ListOfPointNode {
     required int color,
     required int id,
     @Default(0) int zIndex,
+    @Default(0.0) double rotation,
   }) = _ListOfPointNode;
 
   ListOfPointNode._() : super();
@@ -167,4 +248,22 @@ abstract class ListOfPointNode extends Node with _$ListOfPointNode {
 
     return Rect.fromLTRB(minX, minY, maxX, maxY).inflate(strokeWidth / 2);
   }
+
+  @override
+  Paint get paint =>
+      Paint()
+        ..color = Color(color)
+        ..strokeWidth = strokeWidth
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round;
+
+  @override
+  Path get path => ShapePathBuilder.buildPointsPath(points);
+
+  @override
+  Matrix4 get transform => buildTransform(rect.center, rotation);
+
+  @override
+  Rect get bounds => computeTransformedBounds(path, rect.center, rotation);
 }

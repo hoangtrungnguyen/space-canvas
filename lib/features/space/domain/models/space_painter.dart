@@ -23,9 +23,7 @@ class SpacePainter extends CustomPainter {
       ..sort((a, b) => a.zIndex.compareTo(b.zIndex));
 
     for (final object in sortedObjects) {
-      if (object is PathNode) {
-        canvas.drawPath(object.path, object.paint);
-      } else if (object is ShapeNode) {
+      if (object is ShapeNode) {
         _drawShape(canvas, object);
       } else if (object is TextNode) {
         _drawText(canvas, object);
@@ -40,12 +38,17 @@ class SpacePainter extends CustomPainter {
   }
 
   void _drawShape(Canvas canvas, ShapeNode shape) {
+    final paint =
+        Paint()
+          ..color = Color(shape.color)
+          ..style = PaintingStyle.fill;
+
     switch (shape.type) {
       case ShapeType.rectangle:
-        canvas.drawRect(shape.rect, shape.paint);
+        canvas.drawRect(shape.rect, paint);
         break;
       case ShapeType.oval:
-        canvas.drawOval(shape.rect, shape.paint);
+        canvas.drawOval(shape.rect, paint);
         break;
       case ShapeType.triangle:
         final path = Path();
@@ -53,7 +56,7 @@ class SpacePainter extends CustomPainter {
         path.lineTo(shape.rect.bottomRight.dx, shape.rect.bottomRight.dy);
         path.lineTo(shape.rect.bottomLeft.dx, shape.rect.bottomLeft.dy);
         path.close();
-        canvas.drawPath(path, shape.paint);
+        canvas.drawPath(path, paint);
         break;
       case ShapeType.diamond:
         final path = Path();
@@ -62,7 +65,7 @@ class SpacePainter extends CustomPainter {
         path.lineTo(shape.rect.bottomCenter.dx, shape.rect.bottomCenter.dy);
         path.lineTo(shape.rect.centerLeft.dx, shape.rect.centerLeft.dy);
         path.close();
-        canvas.drawPath(path, shape.paint);
+        canvas.drawPath(path, paint);
         break;
       case ShapeType.parallelogram:
         final path = Path();
@@ -75,7 +78,7 @@ class SpacePainter extends CustomPainter {
         );
         path.lineTo(shape.rect.bottomLeft.dx, shape.rect.bottomLeft.dy);
         path.close();
-        canvas.drawPath(path, shape.paint);
+        canvas.drawPath(path, paint);
         break;
       case ShapeType.database:
         // Cylinder approximation
@@ -125,12 +128,17 @@ class SpacePainter extends CustomPainter {
         bodyPath.arcTo(topRect, 0, 3.14159, false); // Top front arc
         bodyPath.close();
 
-        canvas.drawPath(bodyPath, shape.paint);
-        canvas.drawOval(topRect, shape.paint..style = PaintingStyle.fill);
+        canvas.drawPath(bodyPath, paint);
         canvas.drawOval(
           topRect,
           Paint()
-            ..color = shape.paint.color.withValues(alpha: 0.5)
+            ..color = Color(shape.color)
+            ..style = PaintingStyle.fill,
+        );
+        canvas.drawOval(
+          topRect,
+          Paint()
+            ..color = Color(shape.color).withValues(alpha: 0.5)
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1,
         ); // Outline for top
@@ -138,7 +146,7 @@ class SpacePainter extends CustomPainter {
 
       case ShapeType.server:
         // Rectangle with some lines
-        canvas.drawRect(shape.rect, shape.paint);
+        canvas.drawRect(shape.rect, paint);
         // Draw simplified server lights/lines
         final linePaint =
             Paint()
@@ -177,7 +185,7 @@ class SpacePainter extends CustomPainter {
             radius: shape.rect.height * 0.4,
           ),
         );
-        canvas.drawPath(p, shape.paint);
+        canvas.drawPath(p, paint);
         break;
     }
   }

@@ -12,358 +12,15 @@ part of 'node.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$PathNode {
-  Path get path;
-  Paint get paint;
-  int get id;
-  int get zIndex;
-
-  /// Create a copy of PathNode
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $PathNodeCopyWith<PathNode> get copyWith =>
-      _$PathNodeCopyWithImpl<PathNode>(this as PathNode, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is PathNode &&
-            (identical(other.path, path) || other.path == path) &&
-            (identical(other.paint, paint) || other.paint == paint) &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, path, paint, id, zIndex);
-
-  @override
-  String toString() {
-    return 'PathNode(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
-  }
-}
-
-/// @nodoc
-abstract mixin class $PathNodeCopyWith<$Res> {
-  factory $PathNodeCopyWith(PathNode value, $Res Function(PathNode) _then) =
-      _$PathNodeCopyWithImpl;
-  @useResult
-  $Res call({Path path, Paint paint, int id, int zIndex});
-}
-
-/// @nodoc
-class _$PathNodeCopyWithImpl<$Res> implements $PathNodeCopyWith<$Res> {
-  _$PathNodeCopyWithImpl(this._self, this._then);
-
-  final PathNode _self;
-  final $Res Function(PathNode) _then;
-
-  /// Create a copy of PathNode
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? path = null,
-    Object? paint = null,
-    Object? id = null,
-    Object? zIndex = null,
-  }) {
-    return _then(
-      _self.copyWith(
-        path:
-            null == path
-                ? _self.path
-                : path // ignore: cast_nullable_to_non_nullable
-                    as Path,
-        paint:
-            null == paint
-                ? _self.paint
-                : paint // ignore: cast_nullable_to_non_nullable
-                    as Paint,
-        id:
-            null == id
-                ? _self.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as int,
-        zIndex:
-            null == zIndex
-                ? _self.zIndex
-                : zIndex // ignore: cast_nullable_to_non_nullable
-                    as int,
-      ),
-    );
-  }
-}
-
-/// Adds pattern-matching-related methods to [PathNode].
-extension PathNodePatterns on PathNode {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(_PathNode value)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode() when $default != null:
-        return $default(_that);
-      case _:
-        return orElse();
-    }
-  }
-
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_PathNode value) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode():
-        return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
-
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_PathNode value)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode() when $default != null:
-        return $default(_that);
-      case _:
-        return null;
-    }
-  }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(Path path, Paint paint, int id, int zIndex)? $default, {
-    required TResult orElse(),
-  }) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode() when $default != null:
-        return $default(_that.path, _that.paint, _that.id, _that.zIndex);
-      case _:
-        return orElse();
-    }
-  }
-
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(Path path, Paint paint, int id, int zIndex) $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode():
-        return $default(_that.path, _that.paint, _that.id, _that.zIndex);
-      case _:
-        throw StateError('Unexpected subclass');
-    }
-  }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(Path path, Paint paint, int id, int zIndex)? $default,
-  ) {
-    final _that = this;
-    switch (_that) {
-      case _PathNode() when $default != null:
-        return $default(_that.path, _that.paint, _that.id, _that.zIndex);
-      case _:
-        return null;
-    }
-  }
-}
-
-/// @nodoc
-
-class _PathNode extends PathNode {
-  _PathNode({
-    required this.path,
-    required this.paint,
-    required this.id,
-    this.zIndex = 0,
-  }) : super._();
-
-  @override
-  final Path path;
-  @override
-  final Paint paint;
-  @override
-  final int id;
-  @override
-  @JsonKey()
-  final int zIndex;
-
-  /// Create a copy of PathNode
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  _$PathNodeCopyWith<_PathNode> get copyWith =>
-      __$PathNodeCopyWithImpl<_PathNode>(this, _$identity);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _PathNode &&
-            (identical(other.path, path) || other.path == path) &&
-            (identical(other.paint, paint) || other.paint == paint) &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, path, paint, id, zIndex);
-
-  @override
-  String toString() {
-    return 'PathNode(path: $path, paint: $paint, id: $id, zIndex: $zIndex)';
-  }
-}
-
-/// @nodoc
-abstract mixin class _$PathNodeCopyWith<$Res>
-    implements $PathNodeCopyWith<$Res> {
-  factory _$PathNodeCopyWith(_PathNode value, $Res Function(_PathNode) _then) =
-      __$PathNodeCopyWithImpl;
-  @override
-  @useResult
-  $Res call({Path path, Paint paint, int id, int zIndex});
-}
-
-/// @nodoc
-class __$PathNodeCopyWithImpl<$Res> implements _$PathNodeCopyWith<$Res> {
-  __$PathNodeCopyWithImpl(this._self, this._then);
-
-  final _PathNode _self;
-  final $Res Function(_PathNode) _then;
-
-  /// Create a copy of PathNode
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({
-    Object? path = null,
-    Object? paint = null,
-    Object? id = null,
-    Object? zIndex = null,
-  }) {
-    return _then(
-      _PathNode(
-        path:
-            null == path
-                ? _self.path
-                : path // ignore: cast_nullable_to_non_nullable
-                    as Path,
-        paint:
-            null == paint
-                ? _self.paint
-                : paint // ignore: cast_nullable_to_non_nullable
-                    as Paint,
-        id:
-            null == id
-                ? _self.id
-                : id // ignore: cast_nullable_to_non_nullable
-                    as int,
-        zIndex:
-            null == zIndex
-                ? _self.zIndex
-                : zIndex // ignore: cast_nullable_to_non_nullable
-                    as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
 mixin _$ShapeNode {
   ShapeType get type;
   Rect get rect;
-  Paint get paint;
+  int get color;
   int get id;
   String get text;
   int get zIndex;
+  double get strokeWidth;
+  double get rotation;
 
   /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
@@ -379,19 +36,32 @@ mixin _$ShapeNode {
             other is ShapeNode &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.rect, rect) || other.rect == rect) &&
-            (identical(other.paint, paint) || other.paint == paint) &&
+            (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.text, text) || other.text == text) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.strokeWidth, strokeWidth) ||
+                other.strokeWidth == strokeWidth) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, type, rect, paint, id, text, zIndex);
+  int get hashCode => Object.hash(
+    runtimeType,
+    type,
+    rect,
+    color,
+    id,
+    text,
+    zIndex,
+    strokeWidth,
+    rotation,
+  );
 
   @override
   String toString() {
-    return 'ShapeNode(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
+    return 'ShapeNode(type: $type, rect: $rect, color: $color, id: $id, text: $text, zIndex: $zIndex, strokeWidth: $strokeWidth, rotation: $rotation)';
   }
 }
 
@@ -403,10 +73,12 @@ abstract mixin class $ShapeNodeCopyWith<$Res> {
   $Res call({
     ShapeType type,
     Rect rect,
-    Paint paint,
+    int color,
     int id,
     String text,
     int zIndex,
+    double strokeWidth,
+    double rotation,
   });
 }
 
@@ -424,10 +96,12 @@ class _$ShapeNodeCopyWithImpl<$Res> implements $ShapeNodeCopyWith<$Res> {
   $Res call({
     Object? type = null,
     Object? rect = null,
-    Object? paint = null,
+    Object? color = null,
     Object? id = null,
     Object? text = null,
     Object? zIndex = null,
+    Object? strokeWidth = null,
+    Object? rotation = null,
   }) {
     return _then(
       _self.copyWith(
@@ -441,11 +115,11 @@ class _$ShapeNodeCopyWithImpl<$Res> implements $ShapeNodeCopyWith<$Res> {
                 ? _self.rect
                 : rect // ignore: cast_nullable_to_non_nullable
                     as Rect,
-        paint:
-            null == paint
-                ? _self.paint
-                : paint // ignore: cast_nullable_to_non_nullable
-                    as Paint,
+        color:
+            null == color
+                ? _self.color
+                : color // ignore: cast_nullable_to_non_nullable
+                    as int,
         id:
             null == id
                 ? _self.id
@@ -461,6 +135,16 @@ class _$ShapeNodeCopyWithImpl<$Res> implements $ShapeNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        strokeWidth:
+            null == strokeWidth
+                ? _self.strokeWidth
+                : strokeWidth // ignore: cast_nullable_to_non_nullable
+                    as double,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -562,10 +246,12 @@ extension ShapeNodePatterns on ShapeNode {
     TResult Function(
       ShapeType type,
       Rect rect,
-      Paint paint,
+      int color,
       int id,
       String text,
       int zIndex,
+      double strokeWidth,
+      double rotation,
     )?
     $default, {
     required TResult orElse(),
@@ -576,10 +262,12 @@ extension ShapeNodePatterns on ShapeNode {
         return $default(
           _that.type,
           _that.rect,
-          _that.paint,
+          _that.color,
           _that.id,
           _that.text,
           _that.zIndex,
+          _that.strokeWidth,
+          _that.rotation,
         );
       case _:
         return orElse();
@@ -604,10 +292,12 @@ extension ShapeNodePatterns on ShapeNode {
     TResult Function(
       ShapeType type,
       Rect rect,
-      Paint paint,
+      int color,
       int id,
       String text,
       int zIndex,
+      double strokeWidth,
+      double rotation,
     )
     $default,
   ) {
@@ -617,10 +307,12 @@ extension ShapeNodePatterns on ShapeNode {
         return $default(
           _that.type,
           _that.rect,
-          _that.paint,
+          _that.color,
           _that.id,
           _that.text,
           _that.zIndex,
+          _that.strokeWidth,
+          _that.rotation,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -644,10 +336,12 @@ extension ShapeNodePatterns on ShapeNode {
     TResult? Function(
       ShapeType type,
       Rect rect,
-      Paint paint,
+      int color,
       int id,
       String text,
       int zIndex,
+      double strokeWidth,
+      double rotation,
     )?
     $default,
   ) {
@@ -657,10 +351,12 @@ extension ShapeNodePatterns on ShapeNode {
         return $default(
           _that.type,
           _that.rect,
-          _that.paint,
+          _that.color,
           _that.id,
           _that.text,
           _that.zIndex,
+          _that.strokeWidth,
+          _that.rotation,
         );
       case _:
         return null;
@@ -674,10 +370,12 @@ class _ShapeNode extends ShapeNode {
   _ShapeNode({
     required this.type,
     required this.rect,
-    required this.paint,
+    required this.color,
     required this.id,
     this.text = '',
     this.zIndex = 0,
+    this.strokeWidth = 1.0,
+    this.rotation = 0.0,
   }) : super._();
 
   @override
@@ -685,7 +383,7 @@ class _ShapeNode extends ShapeNode {
   @override
   final Rect rect;
   @override
-  final Paint paint;
+  final int color;
   @override
   final int id;
   @override
@@ -694,6 +392,12 @@ class _ShapeNode extends ShapeNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double strokeWidth;
+  @override
+  @JsonKey()
+  final double rotation;
 
   /// Create a copy of ShapeNode
   /// with the given fields replaced by the non-null parameter values.
@@ -710,19 +414,32 @@ class _ShapeNode extends ShapeNode {
             other is _ShapeNode &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.rect, rect) || other.rect == rect) &&
-            (identical(other.paint, paint) || other.paint == paint) &&
+            (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.text, text) || other.text == text) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.strokeWidth, strokeWidth) ||
+                other.strokeWidth == strokeWidth) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, type, rect, paint, id, text, zIndex);
+  int get hashCode => Object.hash(
+    runtimeType,
+    type,
+    rect,
+    color,
+    id,
+    text,
+    zIndex,
+    strokeWidth,
+    rotation,
+  );
 
   @override
   String toString() {
-    return 'ShapeNode(type: $type, rect: $rect, paint: $paint, id: $id, text: $text, zIndex: $zIndex)';
+    return 'ShapeNode(type: $type, rect: $rect, color: $color, id: $id, text: $text, zIndex: $zIndex, strokeWidth: $strokeWidth, rotation: $rotation)';
   }
 }
 
@@ -738,10 +455,12 @@ abstract mixin class _$ShapeNodeCopyWith<$Res>
   $Res call({
     ShapeType type,
     Rect rect,
-    Paint paint,
+    int color,
     int id,
     String text,
     int zIndex,
+    double strokeWidth,
+    double rotation,
   });
 }
 
@@ -759,10 +478,12 @@ class __$ShapeNodeCopyWithImpl<$Res> implements _$ShapeNodeCopyWith<$Res> {
   $Res call({
     Object? type = null,
     Object? rect = null,
-    Object? paint = null,
+    Object? color = null,
     Object? id = null,
     Object? text = null,
     Object? zIndex = null,
+    Object? strokeWidth = null,
+    Object? rotation = null,
   }) {
     return _then(
       _ShapeNode(
@@ -776,11 +497,11 @@ class __$ShapeNodeCopyWithImpl<$Res> implements _$ShapeNodeCopyWith<$Res> {
                 ? _self.rect
                 : rect // ignore: cast_nullable_to_non_nullable
                     as Rect,
-        paint:
-            null == paint
-                ? _self.paint
-                : paint // ignore: cast_nullable_to_non_nullable
-                    as Paint,
+        color:
+            null == color
+                ? _self.color
+                : color // ignore: cast_nullable_to_non_nullable
+                    as int,
         id:
             null == id
                 ? _self.id
@@ -796,6 +517,16 @@ class __$ShapeNodeCopyWithImpl<$Res> implements _$ShapeNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        strokeWidth:
+            null == strokeWidth
+                ? _self.strokeWidth
+                : strokeWidth // ignore: cast_nullable_to_non_nullable
+                    as double,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -809,6 +540,7 @@ mixin _$TextNode {
   int get color; // ARGB
   int get id;
   int get zIndex;
+  double get rotation;
   String? get fontFamily;
 
   /// Create a copy of TextNode
@@ -831,6 +563,8 @@ mixin _$TextNode {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation) &&
             (identical(other.fontFamily, fontFamily) ||
                 other.fontFamily == fontFamily));
   }
@@ -844,12 +578,13 @@ mixin _$TextNode {
     color,
     id,
     zIndex,
+    rotation,
     fontFamily,
   );
 
   @override
   String toString() {
-    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
+    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation, fontFamily: $fontFamily)';
   }
 }
 
@@ -865,6 +600,7 @@ abstract mixin class $TextNodeCopyWith<$Res> {
     int color,
     int id,
     int zIndex,
+    double rotation,
     String? fontFamily,
   });
 }
@@ -887,6 +623,7 @@ class _$TextNodeCopyWithImpl<$Res> implements $TextNodeCopyWith<$Res> {
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
     Object? fontFamily = freezed,
   }) {
     return _then(
@@ -921,6 +658,11 @@ class _$TextNodeCopyWithImpl<$Res> implements $TextNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
         fontFamily:
             freezed == fontFamily
                 ? _self.fontFamily
@@ -1031,6 +773,7 @@ extension TextNodePatterns on TextNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       String? fontFamily,
     )?
     $default, {
@@ -1046,6 +789,7 @@ extension TextNodePatterns on TextNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.fontFamily,
         );
       case _:
@@ -1075,6 +819,7 @@ extension TextNodePatterns on TextNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       String? fontFamily,
     )
     $default,
@@ -1089,6 +834,7 @@ extension TextNodePatterns on TextNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.fontFamily,
         );
       case _:
@@ -1117,6 +863,7 @@ extension TextNodePatterns on TextNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
       String? fontFamily,
     )?
     $default,
@@ -1131,6 +878,7 @@ extension TextNodePatterns on TextNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
           _that.fontFamily,
         );
       case _:
@@ -1149,6 +897,7 @@ class _TextNode extends TextNode {
     required this.color,
     required this.id,
     this.zIndex = 0,
+    this.rotation = 0.0,
     this.fontFamily,
   }) : super._();
 
@@ -1166,6 +915,9 @@ class _TextNode extends TextNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double rotation;
   @override
   final String? fontFamily;
 
@@ -1190,6 +942,8 @@ class _TextNode extends TextNode {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation) &&
             (identical(other.fontFamily, fontFamily) ||
                 other.fontFamily == fontFamily));
   }
@@ -1203,12 +957,13 @@ class _TextNode extends TextNode {
     color,
     id,
     zIndex,
+    rotation,
     fontFamily,
   );
 
   @override
   String toString() {
-    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, fontFamily: $fontFamily)';
+    return 'TextNode(text: $text, position: $position, fontSize: $fontSize, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation, fontFamily: $fontFamily)';
   }
 }
 
@@ -1226,6 +981,7 @@ abstract mixin class _$TextNodeCopyWith<$Res>
     int color,
     int id,
     int zIndex,
+    double rotation,
     String? fontFamily,
   });
 }
@@ -1248,6 +1004,7 @@ class __$TextNodeCopyWithImpl<$Res> implements _$TextNodeCopyWith<$Res> {
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
     Object? fontFamily = freezed,
   }) {
     return _then(
@@ -1282,6 +1039,11 @@ class __$TextNodeCopyWithImpl<$Res> implements _$TextNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
         fontFamily:
             freezed == fontFamily
                 ? _self.fontFamily
@@ -1298,6 +1060,7 @@ mixin _$ImageNode {
   Rect get rect;
   int get id;
   int get zIndex;
+  double get rotation;
 
   /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
@@ -1315,15 +1078,18 @@ mixin _$ImageNode {
                 other.imageUrl == imageUrl) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, imageUrl, rect, id, zIndex);
+  int get hashCode =>
+      Object.hash(runtimeType, imageUrl, rect, id, zIndex, rotation);
 
   @override
   String toString() {
-    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -1332,7 +1098,7 @@ abstract mixin class $ImageNodeCopyWith<$Res> {
   factory $ImageNodeCopyWith(ImageNode value, $Res Function(ImageNode) _then) =
       _$ImageNodeCopyWithImpl;
   @useResult
-  $Res call({String imageUrl, Rect rect, int id, int zIndex});
+  $Res call({String imageUrl, Rect rect, int id, int zIndex, double rotation});
 }
 
 /// @nodoc
@@ -1351,6 +1117,7 @@ class _$ImageNodeCopyWithImpl<$Res> implements $ImageNodeCopyWith<$Res> {
     Object? rect = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _self.copyWith(
@@ -1374,6 +1141,11 @@ class _$ImageNodeCopyWithImpl<$Res> implements $ImageNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -1472,14 +1244,26 @@ extension ImageNodePatterns on ImageNode {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String imageUrl, Rect rect, int id, int zIndex)?
+    TResult Function(
+      String imageUrl,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )?
     $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ImageNode() when $default != null:
-        return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.imageUrl,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         return orElse();
     }
@@ -1500,12 +1284,25 @@ extension ImageNodePatterns on ImageNode {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String imageUrl, Rect rect, int id, int zIndex) $default,
+    TResult Function(
+      String imageUrl,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ImageNode():
-        return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.imageUrl,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1525,12 +1322,25 @@ extension ImageNodePatterns on ImageNode {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String imageUrl, Rect rect, int id, int zIndex)? $default,
+    TResult? Function(
+      String imageUrl,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ImageNode() when $default != null:
-        return $default(_that.imageUrl, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.imageUrl,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         return null;
     }
@@ -1545,6 +1355,7 @@ class _ImageNode extends ImageNode {
     required this.rect,
     required this.id,
     this.zIndex = 0,
+    this.rotation = 0.0,
   }) : super._();
 
   @override
@@ -1557,6 +1368,9 @@ class _ImageNode extends ImageNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double rotation;
 
   /// Create a copy of ImageNode
   /// with the given fields replaced by the non-null parameter values.
@@ -1575,15 +1389,18 @@ class _ImageNode extends ImageNode {
                 other.imageUrl == imageUrl) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, imageUrl, rect, id, zIndex);
+  int get hashCode =>
+      Object.hash(runtimeType, imageUrl, rect, id, zIndex, rotation);
 
   @override
   String toString() {
-    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'ImageNode(imageUrl: $imageUrl, rect: $rect, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -1596,7 +1413,7 @@ abstract mixin class _$ImageNodeCopyWith<$Res>
   ) = __$ImageNodeCopyWithImpl;
   @override
   @useResult
-  $Res call({String imageUrl, Rect rect, int id, int zIndex});
+  $Res call({String imageUrl, Rect rect, int id, int zIndex, double rotation});
 }
 
 /// @nodoc
@@ -1615,6 +1432,7 @@ class __$ImageNodeCopyWithImpl<$Res> implements _$ImageNodeCopyWith<$Res> {
     Object? rect = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _ImageNode(
@@ -1638,6 +1456,11 @@ class __$ImageNodeCopyWithImpl<$Res> implements _$ImageNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -1649,6 +1472,7 @@ mixin _$GroupNode {
   Rect get rect;
   int get id;
   int get zIndex;
+  double get rotation;
 
   /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
@@ -1668,7 +1492,9 @@ mixin _$GroupNode {
             ) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
@@ -1678,11 +1504,12 @@ mixin _$GroupNode {
     rect,
     id,
     zIndex,
+    rotation,
   );
 
   @override
   String toString() {
-    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -1691,7 +1518,13 @@ abstract mixin class $GroupNodeCopyWith<$Res> {
   factory $GroupNodeCopyWith(GroupNode value, $Res Function(GroupNode) _then) =
       _$GroupNodeCopyWithImpl;
   @useResult
-  $Res call({List<int> childrenIds, Rect rect, int id, int zIndex});
+  $Res call({
+    List<int> childrenIds,
+    Rect rect,
+    int id,
+    int zIndex,
+    double rotation,
+  });
 }
 
 /// @nodoc
@@ -1710,6 +1543,7 @@ class _$GroupNodeCopyWithImpl<$Res> implements $GroupNodeCopyWith<$Res> {
     Object? rect = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _self.copyWith(
@@ -1733,6 +1567,11 @@ class _$GroupNodeCopyWithImpl<$Res> implements $GroupNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -1831,14 +1670,26 @@ extension GroupNodePatterns on GroupNode {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<int> childrenIds, Rect rect, int id, int zIndex)?
+    TResult Function(
+      List<int> childrenIds,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )?
     $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _GroupNode() when $default != null:
-        return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.childrenIds,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         return orElse();
     }
@@ -1859,13 +1710,25 @@ extension GroupNodePatterns on GroupNode {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(List<int> childrenIds, Rect rect, int id, int zIndex)
+    TResult Function(
+      List<int> childrenIds,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _GroupNode():
-        return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.childrenIds,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1885,13 +1748,25 @@ extension GroupNodePatterns on GroupNode {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<int> childrenIds, Rect rect, int id, int zIndex)?
+    TResult? Function(
+      List<int> childrenIds,
+      Rect rect,
+      int id,
+      int zIndex,
+      double rotation,
+    )?
     $default,
   ) {
     final _that = this;
     switch (_that) {
       case _GroupNode() when $default != null:
-        return $default(_that.childrenIds, _that.rect, _that.id, _that.zIndex);
+        return $default(
+          _that.childrenIds,
+          _that.rect,
+          _that.id,
+          _that.zIndex,
+          _that.rotation,
+        );
       case _:
         return null;
     }
@@ -1906,6 +1781,7 @@ class _GroupNode extends GroupNode {
     required this.rect,
     required this.id,
     this.zIndex = 0,
+    this.rotation = 0.0,
   }) : _childrenIds = childrenIds,
        super._();
 
@@ -1924,6 +1800,9 @@ class _GroupNode extends GroupNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double rotation;
 
   /// Create a copy of GroupNode
   /// with the given fields replaced by the non-null parameter values.
@@ -1944,7 +1823,9 @@ class _GroupNode extends GroupNode {
             ) &&
             (identical(other.rect, rect) || other.rect == rect) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
@@ -1954,11 +1835,12 @@ class _GroupNode extends GroupNode {
     rect,
     id,
     zIndex,
+    rotation,
   );
 
   @override
   String toString() {
-    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex)';
+    return 'GroupNode(childrenIds: $childrenIds, rect: $rect, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -1971,7 +1853,13 @@ abstract mixin class _$GroupNodeCopyWith<$Res>
   ) = __$GroupNodeCopyWithImpl;
   @override
   @useResult
-  $Res call({List<int> childrenIds, Rect rect, int id, int zIndex});
+  $Res call({
+    List<int> childrenIds,
+    Rect rect,
+    int id,
+    int zIndex,
+    double rotation,
+  });
 }
 
 /// @nodoc
@@ -1990,6 +1878,7 @@ class __$GroupNodeCopyWithImpl<$Res> implements _$GroupNodeCopyWith<$Res> {
     Object? rect = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _GroupNode(
@@ -2013,6 +1902,11 @@ class __$GroupNodeCopyWithImpl<$Res> implements _$GroupNodeCopyWith<$Res> {
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -2025,6 +1919,7 @@ mixin _$ListOfPointNode {
   int get color;
   int get id;
   int get zIndex;
+  double get rotation;
 
   /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
@@ -2046,7 +1941,9 @@ mixin _$ListOfPointNode {
                 other.strokeWidth == strokeWidth) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
@@ -2057,11 +1954,12 @@ mixin _$ListOfPointNode {
     color,
     id,
     zIndex,
+    rotation,
   );
 
   @override
   String toString() {
-    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -2078,6 +1976,7 @@ abstract mixin class $ListOfPointNodeCopyWith<$Res> {
     int color,
     int id,
     int zIndex,
+    double rotation,
   });
 }
 
@@ -2099,6 +1998,7 @@ class _$ListOfPointNodeCopyWithImpl<$Res>
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _self.copyWith(
@@ -2127,6 +2027,11 @@ class _$ListOfPointNodeCopyWithImpl<$Res>
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }
@@ -2231,6 +2136,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
     )?
     $default, {
     required TResult orElse(),
@@ -2244,6 +2150,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
         );
       case _:
         return orElse();
@@ -2271,6 +2178,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
     )
     $default,
   ) {
@@ -2283,6 +2191,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -2309,6 +2218,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
       int color,
       int id,
       int zIndex,
+      double rotation,
     )?
     $default,
   ) {
@@ -2321,6 +2231,7 @@ extension ListOfPointNodePatterns on ListOfPointNode {
           _that.color,
           _that.id,
           _that.zIndex,
+          _that.rotation,
         );
       case _:
         return null;
@@ -2337,6 +2248,7 @@ class _ListOfPointNode extends ListOfPointNode {
     required this.color,
     required this.id,
     this.zIndex = 0,
+    this.rotation = 0.0,
   }) : _points = points,
        super._();
 
@@ -2357,6 +2269,9 @@ class _ListOfPointNode extends ListOfPointNode {
   @override
   @JsonKey()
   final int zIndex;
+  @override
+  @JsonKey()
+  final double rotation;
 
   /// Create a copy of ListOfPointNode
   /// with the given fields replaced by the non-null parameter values.
@@ -2376,7 +2291,9 @@ class _ListOfPointNode extends ListOfPointNode {
                 other.strokeWidth == strokeWidth) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.zIndex, zIndex) || other.zIndex == zIndex));
+            (identical(other.zIndex, zIndex) || other.zIndex == zIndex) &&
+            (identical(other.rotation, rotation) ||
+                other.rotation == rotation));
   }
 
   @override
@@ -2387,11 +2304,12 @@ class _ListOfPointNode extends ListOfPointNode {
     color,
     id,
     zIndex,
+    rotation,
   );
 
   @override
   String toString() {
-    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex)';
+    return 'ListOfPointNode(points: $points, strokeWidth: $strokeWidth, color: $color, id: $id, zIndex: $zIndex, rotation: $rotation)';
   }
 }
 
@@ -2410,6 +2328,7 @@ abstract mixin class _$ListOfPointNodeCopyWith<$Res>
     int color,
     int id,
     int zIndex,
+    double rotation,
   });
 }
 
@@ -2431,6 +2350,7 @@ class __$ListOfPointNodeCopyWithImpl<$Res>
     Object? color = null,
     Object? id = null,
     Object? zIndex = null,
+    Object? rotation = null,
   }) {
     return _then(
       _ListOfPointNode(
@@ -2459,6 +2379,11 @@ class __$ListOfPointNodeCopyWithImpl<$Res>
                 ? _self.zIndex
                 : zIndex // ignore: cast_nullable_to_non_nullable
                     as int,
+        rotation:
+            null == rotation
+                ? _self.rotation
+                : rotation // ignore: cast_nullable_to_non_nullable
+                    as double,
       ),
     );
   }

@@ -27,7 +27,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       final command = MoveNodeCommand(originalNode: shape, movedNode: shape);
       expect(command.comment, isNull);
@@ -44,7 +44,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint()..color = const Color(0xFF0000FF),
+        color: 0xFF0000FF,
       );
     });
 
@@ -114,7 +114,7 @@ void main() {
         id: 42,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(50, 50, 200, 200),
-        paint: Paint()..color = const Color(0xFFFF0000),
+        color: 0xFFFF0000,
       );
     });
 
@@ -164,7 +164,7 @@ void main() {
         id: 10,
         type: ShapeType.triangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint()..color = const Color(0xFF00FF00),
+        color: 0xFF00FF00,
       );
       movedShape = originalShape.copyWith(
         rect: const Rect.fromLTWH(200, 200, 100, 100),
@@ -244,19 +244,19 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint()..color = const Color(0xFF0000FF),
+          color: 0xFF0000FF,
         ),
         ShapeNode(
           id: 2,
           type: ShapeType.oval,
           rect: const Rect.fromLTWH(100, 100, 50, 50),
-          paint: Paint()..color = const Color(0xFFFF0000),
+          color: 0xFFFF0000,
         ),
         ShapeNode(
           id: 3,
           type: ShapeType.triangle,
           rect: const Rect.fromLTWH(200, 200, 75, 75),
-          paint: Paint()..color = const Color(0xFF00FF00),
+          color: 0xFF00FF00,
         ),
       ];
     });

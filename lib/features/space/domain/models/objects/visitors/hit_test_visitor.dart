@@ -16,13 +16,6 @@ class HitTestVisitor implements NodeVisitor<bool> {
   }
 
   @override
-  bool visitPath(PathNode node) {
-    // Basic implementation: check if point is within the path.
-    // Ideally, for thin paths, we should check proximity.
-    return node.path.contains(point);
-  }
-
-  @override
   bool visitText(TextNode node) {
     return node.rect.contains(point);
   }

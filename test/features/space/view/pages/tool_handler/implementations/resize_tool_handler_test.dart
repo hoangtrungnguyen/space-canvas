@@ -49,7 +49,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 100, 100),
-        paint: Paint()..color = const Color(0xFF0000FF),
+        color: 0xFF0000FF,
       );
     });
 

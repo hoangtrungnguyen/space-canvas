@@ -83,7 +83,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
         final moved = original.copyWith(
           rect: const Rect.fromLTWH(10, 10, 100, 100),
@@ -108,7 +108,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
         // Same object
         final current = original.copyWith();
@@ -134,7 +134,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(() => activeBloc.state).thenReturn(
@@ -161,7 +161,7 @@ void main() {
             id: 1,
             type: ShapeType.rectangle,
             rect: const Rect.fromLTWH(0, 0, 100, 100),
-            paint: Paint(),
+            color: 0xFF000000,
           );
 
           when(() => activeBloc.state).thenReturn(
@@ -193,7 +193,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
-          paint: Paint(),
+          color: 0xFF000000,
         );
         manager.deleteNode(obj);
         verify(
@@ -208,7 +208,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
-          paint: Paint(),
+          color: 0xFF000000,
         );
         manager.deleteNodes([obj]);
         verify(
@@ -221,13 +221,13 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: Rect.zero,
-          paint: Paint(),
+          color: 0xFF000000,
         );
         final obj2 = ShapeNode(
           id: 2,
           type: ShapeType.rectangle,
           rect: Rect.zero,
-          paint: Paint(),
+          color: 0xFF000000,
         );
         manager.deleteNodes([obj1, obj2]);
         verify(
@@ -253,7 +253,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(() => activeBloc.state).thenReturn(

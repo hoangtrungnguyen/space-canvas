@@ -34,8 +34,10 @@ class NodeJsonMapper {
       zIndex: json['zIndex'] as int? ?? 0,
       type: ShapeType.values.byName(json['shapeType'] as String),
       rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
-      paint: _paintFromJson(json['paint'] as Map<String, dynamic>),
+      color: json['color'] as int,
+      strokeWidth: (json['strokeWidth'] as num?)?.toDouble() ?? 2.0,
       text: json['text'] as String? ?? '',
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -48,6 +50,7 @@ class NodeJsonMapper {
       fontSize: (json['fontSize'] as num).toDouble(),
       color: json['color'] as int,
       fontFamily: json['fontFamily'] as String?,
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -61,6 +64,7 @@ class NodeJsonMapper {
       endPoint: _offsetFromJson(json['endPoint'] as Map<String, dynamic>),
       strokeWidth: (json['strokeWidth'] as num).toDouble(),
       color: json['color'] as int,
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -70,6 +74,7 @@ class NodeJsonMapper {
       zIndex: json['zIndex'] as int? ?? 0,
       imageUrl: json['imageUrl'] as String,
       rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -79,6 +84,7 @@ class NodeJsonMapper {
       zIndex: json['zIndex'] as int? ?? 0,
       childrenIds: (json['childrenIds'] as List).cast<int>(),
       rect: _rectFromJson(json['rect'] as Map<String, dynamic>),
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -92,6 +98,7 @@ class NodeJsonMapper {
               .toList(),
       strokeWidth: (json['strokeWidth'] as num).toDouble(),
       color: json['color'] as int,
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -111,14 +118,5 @@ class NodeJsonMapper {
       (json['dx'] as num).toDouble(),
       (json['dy'] as num).toDouble(),
     );
-  }
-
-  static Paint _paintFromJson(Map<String, dynamic> json) {
-    return Paint()
-      ..color = Color(json['color'] as int)
-      ..strokeWidth = (json['strokeWidth'] as num).toDouble()
-      ..style = PaintingStyle.values.byName(json['style'] as String)
-      ..strokeCap = StrokeCap.values.byName(json['strokeCap'] as String)
-      ..strokeJoin = StrokeJoin.values.byName(json['strokeJoin'] as String);
   }
 }

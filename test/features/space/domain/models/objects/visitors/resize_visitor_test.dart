@@ -10,7 +10,7 @@ void main() {
     final baseShape = ShapeNode(
       type: ShapeType.rectangle,
       rect: baseRect,
-      paint: Paint(),
+      color: 0xFF000000,
       id: 1,
     );
 
@@ -162,16 +162,6 @@ void main() {
       );
       final result = text.accept(visitor);
       expect(result, text);
-    });
-
-    test('should return original object for PathNode (no-op)', () {
-      final path = PathNode(id: 3, path: Path(), paint: Paint());
-      final visitor = ResizeVisitor(
-        handle: ResizeHandle.bottomRight,
-        delta: const Offset(10, 10),
-      );
-      final result = path.accept(visitor);
-      expect(result, path);
     });
 
     test('should return original object for ImageNode (no-op)', () {

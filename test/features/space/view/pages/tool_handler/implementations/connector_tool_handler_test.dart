@@ -32,8 +32,15 @@ class GenericNode extends Node {
   final int zIndex;
   @override
   final Rect rect;
+  @override
+  final double rotation;
 
-  GenericNode({required this.id, required this.zIndex, required this.rect});
+  GenericNode({
+    required this.id,
+    required this.zIndex,
+    required this.rect,
+    this.rotation = 0.0,
+  });
 
   @override
   T accept<T>(NodeVisitor<T> visitor) => visitor.visitListOfPoint(
@@ -45,6 +52,18 @@ class GenericNode extends Node {
       color: 0,
     ),
   ); // Hack for test
+
+  @override
+  Paint get paint => Paint();
+
+  @override
+  Path get path => Path()..addRect(rect);
+
+  @override
+  Matrix4 get transform => Matrix4.identity();
+
+  @override
+  Rect get bounds => rect;
 }
 
 void main() {

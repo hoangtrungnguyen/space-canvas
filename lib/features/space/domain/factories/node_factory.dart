@@ -19,10 +19,7 @@ class NodeFactory {
         width: size.width,
         height: size.height,
       ),
-      paint:
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.fill,
+      color: color.toARGB32(),
     );
   }
 
@@ -40,25 +37,6 @@ class NodeFactory {
       position: position,
       fontSize: fontSize,
       color: color.toARGB32(),
-    );
-  }
-
-  /// Creates a standard [PathNode].
-  static PathNode createPath({
-    required int id,
-    required Path path,
-    Color color = Colors.black,
-    double strokeWidth = 2.0,
-  }) {
-    return PathNode(
-      id: id,
-      path: path,
-      paint:
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = strokeWidth
-            ..strokeCap = StrokeCap.round,
     );
   }
 

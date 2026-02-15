@@ -56,7 +56,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint()..color = const Color(0xFF0000FF),
+        color: 0xFF0000FF,
       );
     });
 
@@ -277,7 +277,7 @@ void main() {
           id: 2,
           type: ShapeType.oval,
           rect: const Rect.fromLTWH(100, 100, 50, 50),
-          paint: Paint()..color = const Color(0xFFFF0000),
+          color: 0xFFFF0000,
         );
         final command = BatchDeleteCommand([testShape, shape2]);
         await historyManager.execute(command);

@@ -6,9 +6,6 @@ import 'package:ideascape/features/space/domain/models/objects/node.dart';
 // Mock visitor for testing accept methods
 class MockVisitor implements NodeVisitor<String> {
   @override
-  String visitPath(PathNode object) => 'path:${object.id}';
-
-  @override
   String visitShape(ShapeNode object) => 'shape:${object.id}';
 
   @override
@@ -24,8 +21,7 @@ class MockVisitor implements NodeVisitor<String> {
   String visitGroup(GroupNode object) => 'group:${object.id}';
 
   @override
-  String visitListOfPoint(ListOfPointNode object) =>
-      'listOfPoint:${object.id}';
+  String visitListOfPoint(ListOfPointNode object) => 'listOfPoint:${object.id}';
 }
 
 void main() {
@@ -49,13 +45,13 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       final shape2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(50, 50, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       expect(shape1.intersects(shape2), isTrue);
     });
@@ -65,13 +61,13 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       final shape2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 50, 50),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       expect(shape1.intersects(shape2), isFalse);
     });
@@ -81,7 +77,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
       final text = TextNode(
         id: 2,
@@ -94,64 +90,13 @@ void main() {
     });
   });
 
-  group('PathNode', () {
-    late Path testPath;
-    late Paint testPaint;
-
-    setUp(() {
-      testPath =
-          Path()
-            ..moveTo(0, 0)
-            ..lineTo(100, 0)
-            ..lineTo(100, 100)
-            ..lineTo(0, 100)
-            ..close();
-      testPaint = Paint()..color = const Color(0xFF0000FF);
-    });
-
-    test('can be created with required parameters', () {
-      final pathObject = PathNode(path: testPath, paint: testPaint, id: 1);
-      expect(pathObject.id, 1);
-      expect(pathObject.zIndex, 0);
-      expect(pathObject.path, testPath);
-      expect(pathObject.paint, testPaint);
-    });
-
-    test('can be created with custom zIndex', () {
-      final pathObject = PathNode(
-        path: testPath,
-        paint: testPaint,
-        id: 1,
-        zIndex: 5,
-      );
-      expect(pathObject.zIndex, 5);
-    });
-
-    test('rect returns path bounds', () {
-      final pathObject = PathNode(path: testPath, paint: testPaint, id: 1);
-      expect(pathObject.rect, const Rect.fromLTRB(0, 0, 100, 100));
-    });
-
-    test('accept calls visitPath', () {
-      final pathObject = PathNode(path: testPath, paint: testPaint, id: 42);
-      final visitor = MockVisitor();
-      expect(pathObject.accept(visitor), 'path:42');
-    });
-  });
-
   group('ShapeNode', () {
-    late Paint testPaint;
-
-    setUp(() {
-      testPaint = Paint()..color = const Color(0xFFFF0000);
-    });
-
     test('can be created with required parameters', () {
       final shape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(10, 20, 100, 200),
-        paint: testPaint,
+        color: 0xFFFF0000,
       );
       expect(shape.id, 1);
       expect(shape.type, ShapeType.rectangle);
@@ -165,7 +110,7 @@ void main() {
         id: 2,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
-        paint: testPaint,
+        color: 0xFFFF0000,
         text: 'Label',
         zIndex: 10,
       );
@@ -178,7 +123,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: testPaint,
+        color: 0xFFFF0000,
       );
       final copied = original.copyWith(
         rect: const Rect.fromLTWH(50, 50, 200, 200),
@@ -195,7 +140,7 @@ void main() {
         id: 99,
         type: ShapeType.triangle,
         rect: const Rect.fromLTWH(0, 0, 50, 50),
-        paint: testPaint,
+        color: 0xFFFF0000,
       );
       expect(shape.accept(MockVisitor()), 'shape:99');
     });

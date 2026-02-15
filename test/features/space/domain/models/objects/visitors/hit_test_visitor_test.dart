@@ -12,7 +12,7 @@ void main() {
       final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         id: 1,
       );
       final visitor = HitTestVisitor(const Offset(50, 50));
@@ -23,7 +23,7 @@ void main() {
       final shape = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         id: 1,
       );
       final visitor = HitTestVisitor(const Offset(150, 150));
@@ -154,20 +154,6 @@ void main() {
 
       expect(img.accept(HitTestVisitor(const Offset(50, 50))), isTrue);
       expect(img.accept(HitTestVisitor(const Offset(150, 150))), isFalse);
-    });
-
-    // =========================================================================
-    // PathNode
-    // =========================================================================
-    test('should hit PathNode', () {
-      final pathObj = PathNode(
-        path: Path()..addRect(const Rect.fromLTWH(0, 0, 100, 100)),
-        paint: Paint(),
-        id: 8,
-      );
-
-      expect(pathObj.accept(HitTestVisitor(const Offset(50, 50))), isTrue);
-      expect(pathObj.accept(HitTestVisitor(const Offset(150, 150))), isFalse);
     });
 
     // =========================================================================

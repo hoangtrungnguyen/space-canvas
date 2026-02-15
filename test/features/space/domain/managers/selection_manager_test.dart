@@ -62,7 +62,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         zIndex: 1,
       );
 
@@ -90,7 +90,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
 
       when(
@@ -113,7 +113,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
 
       when(
@@ -134,14 +134,14 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         zIndex: 1,
       );
       final node2 = ShapeNode(
         id: 2,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         zIndex: 2,
       );
 
@@ -206,7 +206,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
       );
 
       when(() => activeBloc.state).thenReturn(const ActiveLayerState());
@@ -297,7 +297,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(
@@ -313,7 +313,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(
@@ -335,7 +335,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(() => activeBloc.state).thenReturn(const ActiveLayerState());
@@ -352,14 +352,14 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
           zIndex: 1,
         );
         final node2 = ShapeNode(
           id: 2,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
           zIndex: 2,
         );
 

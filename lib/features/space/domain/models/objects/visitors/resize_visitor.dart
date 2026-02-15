@@ -92,14 +92,6 @@ class ResizeVisitor implements NodeVisitor<Node> {
   }
 
   @override
-  Node visitPath(PathNode node) {
-    // Path resizing requires transforming all points or the path matrix.
-    // Can use Matrix4 scaling.
-    // TODO: Implement path scaling.
-    return node;
-  }
-
-  @override
   Node visitImage(ImageNode node) {
     // Similar to Shape, use rect.
     // Assuming ImageNode has a rect (it inherits Node which has 'rect' abstract getter?

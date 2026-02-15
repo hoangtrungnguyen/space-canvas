@@ -136,7 +136,7 @@ void main() {
           id: 1,
           type: ShapeType.rectangle,
           rect: const Rect.fromLTWH(0, 0, 100, 100),
-          paint: Paint(),
+          color: 0xFF000000,
         );
 
         when(

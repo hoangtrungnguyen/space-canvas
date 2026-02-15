@@ -39,7 +39,7 @@ void main() {
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(100, 100, 50, 50),
-        paint: Paint()..color = const Color(0xFF0000FF),
+        color: 0xFF0000FF,
         zIndex: 1,
       );
 
@@ -47,7 +47,7 @@ void main() {
         id: 2,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(200, 200, 50, 50),
-        paint: Paint()..color = const Color(0xFFFF0000),
+        color: 0xFFFF0000,
         zIndex: 2,
       );
 
@@ -60,7 +60,7 @@ void main() {
           100,
           100,
         ), // Overlaps with testShape1
-        paint: Paint()..color = const Color(0xFF00FF00),
+        color: 0xFF00FF00,
         zIndex: 3, // Higher zIndex
       );
 

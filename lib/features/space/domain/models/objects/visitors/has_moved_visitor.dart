@@ -23,12 +23,6 @@ class HasMovedVisitor implements NodeVisitor<bool> {
   }
 
   @override
-  bool visitPath(PathNode original) {
-    if (current is! PathNode) return false;
-    return (current as PathNode).path != original.path;
-  }
-
-  @override
   bool visitListOfPoint(ListOfPointNode original) {
     if (current is! ListOfPointNode) return false;
     final currentNode = current as ListOfPointNode;

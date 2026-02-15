@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
-class JsonSerializationVisitor
-    implements NodeVisitor<Map<String, dynamic>> {
+class JsonSerializationVisitor implements NodeVisitor<Map<String, dynamic>> {
   const JsonSerializationVisitor();
 
   @override
@@ -18,6 +17,7 @@ class JsonSerializationVisitor
       'endPoint': _offsetToJson(object.endPoint),
       'strokeWidth': object.strokeWidth,
       'color': object.color,
+      'rotation': object.rotation,
     };
   }
 
@@ -29,6 +29,7 @@ class JsonSerializationVisitor
       'zIndex': object.zIndex,
       'childrenIds': object.childrenIds,
       'rect': _rectToJson(object.rect),
+      'rotation': object.rotation,
     };
   }
 
@@ -40,6 +41,7 @@ class JsonSerializationVisitor
       'zIndex': object.zIndex,
       'imageUrl': object.imageUrl,
       'rect': _rectToJson(object.rect),
+      'rotation': object.rotation,
     };
   }
 
@@ -52,21 +54,7 @@ class JsonSerializationVisitor
       'points': object.points.map(_offsetToJson).toList(),
       'strokeWidth': object.strokeWidth,
       'color': object.color,
-    };
-  }
-
-  @override
-  Map<String, dynamic> visitPath(PathNode object) {
-    // PathNode based on dart:ui Path cannot be easily serialized.
-    // Ideally, we should use ListOfPointNode for user drawings.
-    // We will return a basic representation but reconstruction might be impossible
-    // without the source data.
-    return {
-      'type': 'path',
-      'id': object.id,
-      'zIndex': object.zIndex,
-      // 'path': 'serializing raw Path is not supported',
-      // We might want to warn or handle this differently.
+      'rotation': object.rotation,
     };
   }
 
@@ -78,8 +66,10 @@ class JsonSerializationVisitor
       'zIndex': object.zIndex,
       'shapeType': object.type.name,
       'rect': _rectToJson(object.rect),
-      'paint': _paintToJson(object.paint),
+      'color': object.color,
+      'strokeWidth': object.strokeWidth,
       'text': object.text,
+      'rotation': object.rotation,
     };
   }
 
@@ -94,6 +84,7 @@ class JsonSerializationVisitor
       'fontSize': object.fontSize,
       'color': object.color,
       'fontFamily': object.fontFamily,
+      'rotation': object.rotation,
     };
   }
 
@@ -110,15 +101,5 @@ class JsonSerializationVisitor
 
   Map<String, dynamic> _offsetToJson(Offset offset) {
     return {'dx': offset.dx, 'dy': offset.dy};
-  }
-
-  Map<String, dynamic> _paintToJson(Paint paint) {
-    return {
-      'color': paint.color.toARGB32(),
-      'strokeWidth': paint.strokeWidth,
-      'style': paint.style.name, // PaintStyle.fill or PaintStyle.stroke
-      'strokeCap': paint.strokeCap.name,
-      'strokeJoin': paint.strokeJoin.name,
-    };
   }
 }

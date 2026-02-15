@@ -3,11 +3,14 @@ import 'dart:math' as math;
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 
 /// A visitor that handles the painting of [Node]s onto a [Canvas].
+///
+/// Uses each node's [paint], [path], and [transform] properties for rendering,
+/// ensuring the domain model is the single source of truth for visual
+/// representation.
 class PaintVisitor implements NodeVisitor<void> {
   final Canvas canvas;
 
-  // We can reuse a text painter for performance if needed,
-  // or create local ones. Let's keep a shared one for efficiency.
+  // Shared text painter for efficiency.
   final TextPainter _textPainter = TextPainter(
     textDirection: TextDirection.ltr,
   );
@@ -15,13 +18,11 @@ class PaintVisitor implements NodeVisitor<void> {
   PaintVisitor(this.canvas);
 
   @override
-  void visitPath(PathNode node) {
-    canvas.drawPath(node.path, node.paint);
-  }
-
-  @override
   void visitShape(ShapeNode node) {
-    _drawShape(node);
+    canvas.save();
+    canvas.transform(node.transform.storage);
+    _drawShapeBody(node);
+    canvas.restore();
     _drawShapeLabel(node);
   }
 
@@ -37,15 +38,18 @@ class PaintVisitor implements NodeVisitor<void> {
     );
     final tp = TextPainter(text: textSpan, textDirection: TextDirection.ltr);
     tp.layout();
+
+    canvas.save();
+    canvas.transform(node.transform.storage);
     tp.paint(canvas, node.position);
+    canvas.restore();
   }
 
   @override
   void visitImage(ImageNode node) {
-    canvas.drawRect(
-      node.rect,
-      Paint()..color = Colors.grey.withValues(alpha: 0.3),
-    );
+    canvas.save();
+    canvas.transform(node.transform.storage);
+    canvas.drawRect(node.rect, node.paint);
     final tp = TextPainter(
       text: const TextSpan(
         text: "Image",
@@ -55,17 +59,12 @@ class PaintVisitor implements NodeVisitor<void> {
     );
     tp.layout();
     tp.paint(canvas, node.rect.center - Offset(tp.width / 2, tp.height / 2));
+    canvas.restore();
   }
 
   @override
   void visitConnector(ConnectorNode node) {
-    final paint =
-        Paint()
-          ..color = Color(node.color)
-          ..strokeWidth = node.strokeWidth
-          ..style = PaintingStyle.stroke;
-
-    canvas.drawLine(node.startPoint, node.endPoint, paint);
+    canvas.drawLine(node.startPoint, node.endPoint, node.paint);
 
     final dx = node.endPoint.dx - node.startPoint.dx;
     final dy = node.endPoint.dy - node.startPoint.dy;
@@ -99,107 +98,18 @@ class PaintVisitor implements NodeVisitor<void> {
   void visitListOfPoint(ListOfPointNode node) {
     if (node.points.length < 2) return;
 
-    final paint =
-        Paint()
-          ..color = Color(node.color)
-          ..strokeWidth = node.strokeWidth
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round;
-
-    final path = Path();
-    path.moveTo(node.points.first.dx, node.points.first.dy);
-    for (int i = 1; i < node.points.length; i++) {
-      path.lineTo(node.points[i].dx, node.points[i].dy);
-    }
-
-    canvas.drawPath(path, paint);
+    canvas.save();
+    canvas.transform(node.transform.storage);
+    canvas.drawPath(node.path, node.paint);
+    canvas.restore();
   }
 
-  void _drawShape(ShapeNode shape) {
+  // ---------------------------------------------------------------------------
+  // Private helpers
+  // ---------------------------------------------------------------------------
+
+  void _drawShapeBody(ShapeNode shape) {
     switch (shape.type) {
-      case ShapeType.rectangle:
-        canvas.drawRect(shape.rect, shape.paint);
-        break;
-      case ShapeType.oval:
-        canvas.drawOval(shape.rect, shape.paint);
-        break;
-      case ShapeType.triangle:
-        final path = Path();
-        path.moveTo(shape.rect.topCenter.dx, shape.rect.topCenter.dy);
-        path.lineTo(shape.rect.bottomRight.dx, shape.rect.bottomRight.dy);
-        path.lineTo(shape.rect.bottomLeft.dx, shape.rect.bottomLeft.dy);
-        path.close();
-        canvas.drawPath(path, shape.paint);
-        break;
-      case ShapeType.diamond:
-        final path = Path();
-        path.moveTo(shape.rect.topCenter.dx, shape.rect.topCenter.dy);
-        path.lineTo(shape.rect.centerRight.dx, shape.rect.centerRight.dy);
-        path.lineTo(shape.rect.bottomCenter.dx, shape.rect.bottomCenter.dy);
-        path.lineTo(shape.rect.centerLeft.dx, shape.rect.centerLeft.dy);
-        path.close();
-        canvas.drawPath(path, shape.paint);
-        break;
-      case ShapeType.parallelogram:
-        final path = Path();
-        final skew = shape.rect.width * 0.2;
-        path.moveTo(shape.rect.topLeft.dx + skew, shape.rect.topLeft.dy);
-        path.lineTo(shape.rect.topRight.dx, shape.rect.topRight.dy);
-        path.lineTo(
-          shape.rect.bottomRight.dx - skew,
-          shape.rect.bottomRight.dy,
-        );
-        path.lineTo(shape.rect.bottomLeft.dx, shape.rect.bottomLeft.dy);
-        path.close();
-        canvas.drawPath(path, shape.paint);
-        break;
-      case ShapeType.database:
-        final topRect = Rect.fromLTWH(
-          shape.rect.left,
-          shape.rect.top,
-          shape.rect.width,
-          shape.rect.height * 0.2,
-        );
-        final bottomRect = Rect.fromLTWH(
-          shape.rect.left,
-          shape.rect.bottom - shape.rect.height * 0.2,
-          shape.rect.width,
-          shape.rect.height * 0.2,
-        );
-
-        final bodyPath = Path();
-        bodyPath.moveTo(
-          shape.rect.left,
-          shape.rect.top + shape.rect.height * 0.1,
-        );
-        bodyPath.lineTo(
-          shape.rect.left,
-          shape.rect.bottom - shape.rect.height * 0.1,
-        );
-        bodyPath.arcTo(bottomRect, 3.14159, -3.14159, false);
-        bodyPath.lineTo(
-          shape.rect.right,
-          shape.rect.top + shape.rect.height * 0.1,
-        );
-        bodyPath.arcTo(topRect, 0, 3.14159, false);
-        bodyPath.close();
-
-        canvas.drawPath(bodyPath, shape.paint);
-        // Clone the paint to avoid mutating the original object's paint.
-        final fillPaint =
-            Paint()
-              ..color = shape.paint.color
-              ..style = PaintingStyle.fill;
-        canvas.drawOval(topRect, fillPaint);
-        canvas.drawOval(
-          topRect,
-          Paint()
-            ..color = shape.paint.color.withValues(alpha: 0.5)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 1,
-        );
-        break;
       case ShapeType.server:
         canvas.drawRect(shape.rect, shape.paint);
         final linePaint =
@@ -217,27 +127,25 @@ class PaintVisitor implements NodeVisitor<void> {
           linePaint,
         );
         break;
-      case ShapeType.cloud:
-        final p = Path();
-        p.addOval(
-          Rect.fromCircle(
-            center: shape.rect.centerLeft + Offset(shape.rect.width * 0.2, 0),
-            radius: shape.rect.height * 0.4,
-          ),
+      case ShapeType.database:
+        canvas.drawPath(shape.path, shape.paint);
+        // Draw the top oval highlight
+        final topRect = Rect.fromLTWH(
+          shape.rect.left,
+          shape.rect.top,
+          shape.rect.width,
+          shape.rect.height * 0.2,
         );
-        p.addOval(
-          Rect.fromCircle(
-            center: shape.rect.center,
-            radius: shape.rect.height * 0.5,
-          ),
+        canvas.drawOval(
+          topRect,
+          Paint()
+            ..color = Color(shape.color).withValues(alpha: 0.5)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1,
         );
-        p.addOval(
-          Rect.fromCircle(
-            center: shape.rect.centerRight - Offset(shape.rect.width * 0.2, 0),
-            radius: shape.rect.height * 0.4,
-          ),
-        );
-        canvas.drawPath(p, shape.paint);
+        break;
+      default:
+        canvas.drawPath(shape.path, shape.paint);
         break;
     }
   }

@@ -11,7 +11,7 @@ void main() {
       final original = ShapeNode(
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
-        paint: Paint(),
+        color: 0xFF000000,
         id: 1,
       );
 
@@ -36,24 +36,6 @@ void main() {
       expect(moved.position, const Offset(60, 70));
       expect(moved.id, original.id);
       expect(moved.text, original.text);
-    });
-
-    test('should move PathNode correctly', () {
-      final path = Path();
-      path.moveTo(0, 0);
-      path.lineTo(10, 10);
-
-      final original = PathNode(path: path, paint: Paint(), id: 3);
-
-      final moved = original.move(delta) as PathNode;
-      final bounds = moved.path.getBounds();
-
-      // Original bounds: (0,0, 10,10)
-      // Moved bounds: (10,20, 20,30)
-      expect(bounds.left, 10);
-      expect(bounds.top, 20);
-      expect(bounds.right, 20);
-      expect(bounds.bottom, 30);
     });
 
     test('should move ListOfPointNode correctly', () {

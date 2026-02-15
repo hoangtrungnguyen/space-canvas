@@ -62,6 +62,7 @@ dependencies:
   talker: ^5.1.11
   talker_dio_logger: ^5.1.11
   super_editor: ^0.3.0-dev.48
+  vector_math: ^2.2.0
 
 dev_dependencies:
   flutter_test:
