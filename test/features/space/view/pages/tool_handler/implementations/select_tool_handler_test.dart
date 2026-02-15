@@ -204,7 +204,7 @@ void main() {
       );
 
       testWidgets('should handle zoomed canvas', (tester) async {
-        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        controller.value = Matrix4.diagonal3Values(2.0, 2.0, 1.0);
         setupActiveState();
         setupShapeState();
 
@@ -519,7 +519,7 @@ void main() {
       });
 
       testWidgets('should handle zoomed canvas correctly', (tester) async {
-        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        controller.value = Matrix4.diagonal3Values(2.0, 2.0, 1.0);
         setupActiveState();
         setupShapeState();
 
@@ -714,7 +714,7 @@ void main() {
       testWidgets('should correctly transform with zoomed canvas', (
         tester,
       ) async {
-        controller.value = Matrix4.identity()..scale(2.0, 2.0, 1.0);
+        controller.value = Matrix4.diagonal3Values(2.0, 2.0, 1.0);
         setupActiveState(handle: null, startPoint: const Offset(100, 100));
 
         await pumpHandlerWidget(
