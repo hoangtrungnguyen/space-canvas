@@ -3,7 +3,7 @@ import 'package:flutter/material.dart'; // For Colors
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/paint_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/paint_visitor.dart';
 
 class MockCanvas extends Mock implements Canvas {}
 

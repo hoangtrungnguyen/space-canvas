@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/hit_test_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/hit_test_visitor.dart';
 
 void main() {
   group('HitTestVisitor', () {

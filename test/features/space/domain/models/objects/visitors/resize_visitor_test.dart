@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/objects/visitors/resize_visitor.dart';
+import 'package:ideascape/features/space/domain/models/visitors/resize_visitor.dart';
 import 'package:ideascape/features/space/domain/models/resize_handle.dart';
 
 void main() {
