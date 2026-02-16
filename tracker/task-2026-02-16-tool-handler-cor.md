@@ -29,5 +29,14 @@
 -   **Mediator Interaction:** `BackgroundGestureHandler` uses `mediator.selectAt(..., filter: excludeConnectors)` to trigger internal deselection logic in `SelectionManager`, rather than a dedicated `deselectAll` method (which didn't exist).
 
 ### Next Steps
--   Refactor `SelectConnectorToolHandler` to potentially use CoR.
+-   Refactor `SelectConnectorToolHandler` to potentially use CoR. [COMPLETED Phase 2.7]
 -   Implement Command Pattern (Undo/Redo).
+
+### Completed Work (Phase 2.7)
+1.  **Refactoring:** Migrated `SelectConnectorToolHandler` to Chain of Responsibility.
+2.  **New Handlers:**
+    -   `ConnectorHandleGestureHandler`: Priority 1 (Pan Start). Detects drag on start/end handles for reshaping.
+    -   `ConnectorBodyGestureHandler`: Priority 2 (Tap/Pan). Detects hits on connector body for selection/movement.
+    -   `ConnectorBackgroundGestureHandler`: Priority 3 (Fallback). handle background taps/drags (deselect).
+3.  **Testing:** Added comprehensive unit tests for all new handlers and verified `SelectConnectorToolHandler` with regression tests.
+

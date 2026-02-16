@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
-import 'package:ideascape/features/space/domain/models/connector_handle.dart';
-import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
-import 'package:ideascape/features/space/domain/models/selection_filter.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
-import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/connector_background_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/connector_body_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/connector_handle_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_chain_builder.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_event.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/connector_strategies.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 
-/// Handles selection of connectors ONLY.
+/// Handles selection and manipulation of connectors using Chain of Responsibility for detection
+/// and Strategy pattern for interaction.
 class SelectConnectorToolHandler extends BaseToolHandler {
   const SelectConnectorToolHandler();
 
@@ -18,52 +21,23 @@ class SelectConnectorToolHandler extends BaseToolHandler {
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = getMediator(context);
-    final worldPoint = toWorldPoint(details.localPosition, controller);
-    mediator.selectConnectorAt(worldPoint, isDrag: false);
+    final event = GestureEvent.tapUp(details, controller);
+    final chain = _buildTapGestureChain();
+    chain.handle(event, context);
   }
 
-  /// Initiates the drag operation.
+  /// Initiates the drag operation by routing through the gesture handler chain.
   ///
-  /// It first selects the connector at the touch point.
-  /// Then it checks if the touch point is close to the start or end point of the connector
-  /// to determine if we are reshaping (dragging a handle) or moving the whole connector.
+  /// The chain determines if we are dragging a handle (reshape) or the body (move).
   @override
   void onPanStart(
     DragStartDetails details,
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = toWorldPoint(details.localPosition, controller);
-    final activeBloc = getActiveLayerBloc(context);
-    final mediator = getMediator(context);
-
-    // We select/configure the state here, which then dictates the Strategy used in Update/End
-    mediator.selectConnectorAt(worldPoint, isDrag: true);
-
-    // Check if we hit start or end point using hitTest directly to handle
-    // cases where the object is not yet active in the state (async update).
-    final hitNode = mediator.hitTest(
-      worldPoint,
-      filter: SelectionFilter.connectorsOnly,
-    );
-
-    if (hitNode is ConnectorNode) {
-      const double hitThreshold = 10.0; // Adjust threshold as needed
-      if ((hitNode.startPoint - worldPoint).distance < hitThreshold) {
-        activeBloc.add(
-          const ActiveLayerEvent.connectorHandleSelected(ConnectorHandle.start),
-        );
-      } else if ((hitNode.endPoint - worldPoint).distance < hitThreshold) {
-        activeBloc.add(
-          const ActiveLayerEvent.connectorHandleSelected(ConnectorHandle.end),
-        );
-      } else {
-        activeBloc.add(const ActiveLayerEvent.connectorHandleSelected(null));
-      }
-    } else {
-      activeBloc.add(const ActiveLayerEvent.connectorHandleSelected(null));
-    }
+    final event = GestureEvent.panStart(details, controller);
+    final chain = _buildPanGestureChain();
+    chain.handle(event, context);
   }
 
   /// Updates the connector position or shape during the drag.
@@ -76,7 +50,6 @@ class SelectConnectorToolHandler extends BaseToolHandler {
     TransformationController controller,
   ) {
     final state = getActiveLayerBloc(context).state;
-
     final strategy = _getStrategyForState(state);
     strategy.onUpdate(details, context, controller);
   }
@@ -91,9 +64,32 @@ class SelectConnectorToolHandler extends BaseToolHandler {
     TransformationController controller,
   ) {
     final state = getActiveLayerBloc(context).state;
-
     final strategy = _getStrategyForState(state);
     strategy.onEnd(details, context, controller);
+  }
+
+  /// Builds the gesture chain for tap gestures.
+  ///
+  /// Taps check for connector body (selection) or background (deselection).
+  /// Handles are not relevant for taps.
+  GestureHandler _buildTapGestureChain() {
+    return GestureChainBuilder()
+        .addHandler(ConnectorBodyGestureHandler()) // 1. Medium: Connector body
+        .addHandler(ConnectorBackgroundGestureHandler()) // 2. Low: Background
+        .build();
+  }
+
+  /// Builds the gesture chain for pan (drag) gestures.
+  ///
+  /// Pan checks for handles first (reshape), then body (move), then background.
+  GestureHandler _buildPanGestureChain() {
+    return GestureChainBuilder()
+        .addHandler(
+          ConnectorHandleGestureHandler(),
+        ) // 1. High: Start/End handles
+        .addHandler(ConnectorBodyGestureHandler()) // 2. Medium: Connector body
+        .addHandler(ConnectorBackgroundGestureHandler()) // 3. Low: Background
+        .build();
   }
 
   InteractionStrategy _getStrategyForState(ActiveLayerState state) {
