@@ -1,129 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/domain/models/resize_handle.dart';
-import 'package:ideascape/features/space/domain/models/selection_filter.dart';
-import 'package:ideascape/features/space/domain/models/space_tools.dart';
-import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_event.dart';
 import 'package:ideascape/features/space/view/bloc/active_layer/active_layer_state.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
-import 'package:ideascape/features/space/view/bloc/toolbar/toolbar_bloc.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/base_tool_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/background_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/connector_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_chain_builder.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_event.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/node_gesture_handler.dart';
+import 'package:ideascape/features/space/view/pages/tool_handler/gestures/resize_handle_gesture_handler.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/interaction_strategy.dart';
 import 'package:ideascape/features/space/view/pages/tool_handler/strategies/select_strategies.dart';
 
 /// Handles selection and manipulation (move/resize) of nodes.
 ///
-/// This handler serves as the primary entry point for node interaction.
-/// It delegates specific interaction logic to [InteractionStrategy] implementations
-/// based on the current state (e.g., [ResizeStrategy] or [MoveStrategy]).
+/// Uses the **Chain of Responsibility** pattern for [onTapUp] and [onPanStart]
+/// to determine *what* was clicked, and the **Strategy** pattern for
+/// [onPanUpdate] and [onPanEnd] to determine *how* to interact with it.
+///
+/// ## Tap Gesture Chain Priority (onTapUp)
+///
+/// 1. **ConnectorGestureHandler** — Connector nodes (highest)
+/// 2. **NodeGestureHandler** — Regular nodes (shapes, text, images)
+/// 3. **BackgroundGestureHandler** — Empty canvas (lowest / fallback)
+///
+/// ## Pan Gesture Chain Priority (onPanStart)
+///
+/// 1. **ResizeHandleGestureHandler** — Resize handles on active nodes (highest)
+/// 2. **ConnectorGestureHandler** — Connector nodes
+/// 3. **NodeGestureHandler** — Regular nodes (shapes, text, images)
+/// 4. **BackgroundGestureHandler** — Empty canvas (lowest / fallback)
+///
+/// Resize handles are only checked during pan (drag) gestures, not during taps,
+/// since tapping a handle area should select the node, not initiate a resize.
 class SelectToolHandler extends BaseToolHandler {
   const SelectToolHandler();
 
-  /// Handles tap gestures to select nodes.
+  /// Handles tap gestures by routing through the tap gesture handler chain.
   ///
-  /// Uses [CanvasInteractionMediator.selectAt] to verify hits on the canvas.
+  /// Taps check for connectors and regular nodes (no resize handles).
   @override
   void onTapUp(
     TapUpDetails details,
     BuildContext context,
     TransformationController controller,
   ) {
-    final mediator = getMediator(context);
-    final worldPoint = toWorldPoint(details.localPosition, controller);
-
-    final hitNode = mediator.hitTest(worldPoint);
-    if (hitNode is ConnectorNode) {
-      getToolbarBloc(context).add(
-        const ToolbarEvent.selected(SpaceTool.selectConnector),
-      );
-      mediator.selectConnectorAt(worldPoint, isDrag: false);
-      return;
-    }
-
-    mediator.selectAt(
-      worldPoint,
-      isDrag: false,
-      filter: SelectionFilter.excludeConnectors,
-    );
+    final event = GestureEvent.tapUp(details, controller);
+    final chain = _buildTapGestureChain();
+    chain.handle(event, context);
   }
 
-  /// Initiates a drag or resize operation.
+  /// Initiates a drag or resize operation by routing through the pan
+  /// gesture handler chain.
   ///
-  /// Performs hit-testing to determine if a [ResizeHandle] was touched.
-  /// If a handle is hit, it transitions to resize mode by setting the active handle
-  /// and firing [ActiveLayerEvent.interactionStarted].
-  /// Otherwise, it initiates a move or selection operation via [CanvasInteractionMediator].
+  /// Pan start checks resize handles first, then connectors, then nodes.
   @override
   void onPanStart(
     DragStartDetails details,
     BuildContext context,
     TransformationController controller,
   ) {
-    final worldPoint = toWorldPoint(details.localPosition, controller);
-    final activeBloc = getActiveLayerBloc(context);
-    final state = activeBloc.state;
-
-    // Check for handle hit
-    ResizeHandle? hitHandle;
-    if (state.activeNodes.isNotEmpty) {
-      // Check handles of the first active node (or iterate).
-      // If we hit a handle of an ALREADY selected node, that takes precedence.
-
-      final scale = controller.value.getMaxScaleOnAxis();
-      final hitRadius = 20.0 / scale; // Larger target for touch
-
-      for (final node in state.activeNodes.values) {
-        final rect = node.rect.inflate(4.0); // Padding from SelectionPainter
-        hitHandle = _getHitHandle(worldPoint, rect, hitRadius);
-        if (hitHandle != null) break;
-      }
-    }
-
-    if (hitHandle != null) {
-      // Start Resize
-      activeBloc.add(ActiveLayerEvent.handleChanged(hitHandle));
-
-      final activeNode = state.activeNodes.values.first;
-      // Temporarily remove from ShapeLayer so we don't see the "old" version
-      // beneath the active one being resized.
-      getShapeLayerBloc(context).add(
-        ShapeLayerEvent.removeNode(activeNode.id),
-      );
-
-      activeBloc.add(
-        ActiveLayerEvent.interactionStarted(
-          node: activeNode,
-          point: worldPoint,
-        ),
-      );
-    } else {
-      // Normal selection logic
-      final mediator = getMediator(context);
-
-      final hitNode = mediator.hitTest(worldPoint);
-      if (hitNode is ConnectorNode) {
-        getToolbarBloc(context).add(
-          const ToolbarEvent.selected(SpaceTool.selectConnector),
-        );
-        mediator.selectConnectorAt(worldPoint, isDrag: true);
-        activeBloc.add(const ActiveLayerEvent.handleChanged(null));
-        return;
-      }
-
-      mediator.selectAt(
-        worldPoint,
-        isDrag: true,
-        filter: SelectionFilter.excludeConnectors,
-      );
-
-      // Also ensure handle is cleared if we started a move/select
-      activeBloc.add(const ActiveLayerEvent.handleChanged(null));
-    }
+    final event = GestureEvent.panStart(details, controller);
+    final chain = _buildPanGestureChain();
+    chain.handle(event, context);
   }
 
   /// Handles ongoing drag gestures.
   ///
-  /// Delegates to the appropriate [InteractionStrategy] based on the current state.
+  /// Delegates to the appropriate [InteractionStrategy] based on the current
+  /// state (resize handle active → [ResizeStrategy], nodes selected →
+  /// [MoveStrategy], otherwise → [IdleStrategy]).
   @override
   void onPanUpdate(
     DragUpdateDetails details,
@@ -131,7 +76,6 @@ class SelectToolHandler extends BaseToolHandler {
     TransformationController controller,
   ) {
     final state = getActiveLayerBloc(context).state;
-
     final strategy = _getStrategyForState(state);
     strategy.onUpdate(details, context, controller);
   }
@@ -146,11 +90,36 @@ class SelectToolHandler extends BaseToolHandler {
     TransformationController controller,
   ) {
     final state = getActiveLayerBloc(context).state;
-
     final strategy = _getStrategyForState(state);
     strategy.onEnd(details, context, controller);
   }
 
+  /// Builds the gesture chain for tap gestures.
+  ///
+  /// Taps do NOT check resize handles — they only detect connectors,
+  /// regular nodes, or background.
+  GestureHandler _buildTapGestureChain() {
+    return GestureChainBuilder()
+        .addHandler(ConnectorGestureHandler()) // 1. High: Connectors
+        .addHandler(NodeGestureHandler()) // 2. Medium: Regular nodes
+        .addHandler(BackgroundGestureHandler()) // 3. Low: Background/deselect
+        .build();
+  }
+
+  /// Builds the gesture chain for pan (drag) gestures.
+  ///
+  /// Pan gestures check resize handles first (highest priority),
+  /// then connectors, nodes, and background.
+  GestureHandler _buildPanGestureChain() {
+    return GestureChainBuilder()
+        .addHandler(ResizeHandleGestureHandler()) // 1. Highest: Resize handles
+        .addHandler(ConnectorGestureHandler()) // 2. High: Connectors
+        .addHandler(NodeGestureHandler()) // 3. Medium: Regular nodes
+        .addHandler(BackgroundGestureHandler()) // 4. Low: Background/deselect
+        .build();
+  }
+
+  /// Selects the appropriate strategy based on the current active layer state.
   InteractionStrategy _getStrategyForState(ActiveLayerState state) {
     if (state.resizeHandle != null) {
       return const ResizeStrategy();
@@ -158,35 +127,5 @@ class SelectToolHandler extends BaseToolHandler {
       return const MoveStrategy();
     }
     return const IdleStrategy();
-  }
-
-  /// Helper to determine if a point hits any of the resize handles.
-  ResizeHandle? _getHitHandle(Offset elementPoint, Rect rect, double radius) {
-    // Check all handles
-    if ((elementPoint - rect.topLeft).distance <= radius) {
-      return ResizeHandle.topLeft;
-    }
-    if ((elementPoint - rect.topRight).distance <= radius) {
-      return ResizeHandle.topRight;
-    }
-    if ((elementPoint - rect.bottomLeft).distance <= radius) {
-      return ResizeHandle.bottomLeft;
-    }
-    if ((elementPoint - rect.bottomRight).distance <= radius) {
-      return ResizeHandle.bottomRight;
-    }
-    if ((elementPoint - rect.topCenter).distance <= radius) {
-      return ResizeHandle.topCenter;
-    }
-    if ((elementPoint - rect.bottomCenter).distance <= radius) {
-      return ResizeHandle.bottomCenter;
-    }
-    if ((elementPoint - rect.centerLeft).distance <= radius) {
-      return ResizeHandle.centerLeft;
-    }
-    if ((elementPoint - rect.centerRight).distance <= radius) {
-      return ResizeHandle.centerRight;
-    }
-    return null;
   }
 }
