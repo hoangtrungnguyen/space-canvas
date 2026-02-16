@@ -1,4 +1,4 @@
-# Task: Tool Handler Refactoring - Chain of Responsibility
+# Issue: task-2026-02-16-tool-handler-cor
 **Description:** Implemented Chain of Responsibility pattern for gesture handling in `SelectToolHandler`. Created `GestureHandler` chain (Resize -> Connector -> Node -> Background) to replace complex nested conditionals.
 **Timestamp:** 2026-02-16 13:30:00
 **Affected Modules:**
