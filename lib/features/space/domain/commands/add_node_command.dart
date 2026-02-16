@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 class AddNodeCommand extends SpaceCommand {
   final Node node;
@@ -36,20 +36,20 @@ class AddNodeCommand extends SpaceCommand {
   }
 
   @override
-  Future<void> execute(ShapeLayerBloc bloc) async {
+  Future<void> execute(SpaceEditor editor) async {
     debugPrint('┌─ AddNodeCommand.execute ─────────────────────────────────');
     debugPrint('│ Node: ${node.runtimeType} (id: ${node.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.addNode(node));
+    await editor.addNode(node);
   }
 
   @override
-  Future<void> undo(ShapeLayerBloc bloc) async {
+  Future<void> undo(SpaceEditor editor) async {
     debugPrint('┌─ AddNodeCommand.undo ────────────────────────────────────');
     debugPrint('│ Node: ${node.runtimeType} (id: ${node.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.removeNode(node.id));
+    await editor.removeNode(node.id);
   }
 }

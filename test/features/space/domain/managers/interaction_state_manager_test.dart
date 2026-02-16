@@ -11,7 +11,7 @@ import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/modify_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/commands/add_connector_command.dart';
 
@@ -41,7 +41,7 @@ void main() {
     registerFallbackValue(AddNodeCommand(FakeNode(1)));
     registerFallbackValue(DeleteNodeCommand(FakeNode(1)));
     registerFallbackValue(
-      MoveNodeCommand(originalNode: FakeNode(1), movedNode: FakeNode(1)),
+      ModifyNodeCommand(originalNode: FakeNode(1), modifiedNode: FakeNode(1)),
     );
     registerFallbackValue(BatchDeleteCommand([]));
     registerFallbackValue(
@@ -96,14 +96,14 @@ void main() {
         manager.finalizeInteraction();
 
         verify(
-          () => historyManager.execute(any(that: isA<MoveNodeCommand>())),
+          () => historyManager.execute(any(that: isA<ModifyNodeCommand>())),
         ).called(1);
         verify(
           () => activeBloc.add(ActiveLayerEvent.nodeActivated(moved)),
         ).called(1);
       });
 
-      test('should NOT execute MoveNodeCommand if object NOT moved', () {
+      test('should NOT execute ModifyNodeCommand if object NOT moved', () {
         final original = ShapeNode(
           id: 1,
           type: ShapeType.rectangle,
@@ -120,7 +120,7 @@ void main() {
         manager.finalizeInteraction();
 
         verifyNever(
-          () => historyManager.execute(any(that: isA<MoveNodeCommand>())),
+          () => historyManager.execute(any(that: isA<ModifyNodeCommand>())),
         );
         verify(
           () => activeBloc.add(ActiveLayerEvent.nodeActivated(current)),

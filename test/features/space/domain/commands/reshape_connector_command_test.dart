@@ -1,23 +1,22 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ideascape/features/space/domain/commands/reshape_connector_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockShapeLayerBloc extends MockBloc<ShapeLayerEvent, ShapeLayerState>
-    implements ShapeLayerBloc {}
+class MockSpaceEditor extends Mock implements SpaceEditor {}
 
 void main() {
   group('ReshapeConnectorCommand', () {
-    late MockShapeLayerBloc shapeLayerBloc;
+    late MockSpaceEditor editor;
 
     setUp(() {
-      shapeLayerBloc = MockShapeLayerBloc();
+      editor = MockSpaceEditor();
+      when(() => editor.updateNode(any())).thenAnswer((_) async {});
     });
 
-    test('execute removes original and adds modified', () async {
+    test('execute updates to modified connector', () async {
       final original = ConnectorNode(
         id: 1,
         startPoint: const Offset(0, 0),
@@ -35,17 +34,12 @@ void main() {
         modifiedNode: modified,
       );
 
-      await command.execute(shapeLayerBloc);
+      await command.execute(editor);
 
-      verify(
-        () => shapeLayerBloc.add(ShapeLayerEvent.removeNode(original.id)),
-      ).called(1);
-      verify(
-        () => shapeLayerBloc.add(ShapeLayerEvent.addNode(modified)),
-      ).called(1);
+      verify(() => editor.updateNode(modified)).called(1);
     });
 
-    test('undo removes modified and adds original', () async {
+    test('undo updates to original connector', () async {
       final original = ConnectorNode(
         id: 1,
         startPoint: const Offset(0, 0),
@@ -63,14 +57,9 @@ void main() {
         modifiedNode: modified,
       );
 
-      await command.undo(shapeLayerBloc);
+      await command.undo(editor);
 
-      verify(
-        () => shapeLayerBloc.add(ShapeLayerEvent.removeNode(modified.id)),
-      ).called(1);
-      verify(
-        () => shapeLayerBloc.add(ShapeLayerEvent.addNode(original)),
-      ).called(1);
+      verify(() => editor.updateNode(original)).called(1);
     });
   });
 }

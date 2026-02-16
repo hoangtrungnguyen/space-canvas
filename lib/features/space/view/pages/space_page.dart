@@ -13,6 +13,7 @@ import 'package:ideascape/aliases.dart';
 import 'package:ideascape/domain/space_data_service.dart';
 import 'package:ideascape/features/space/domain/interaction_mediator.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
+import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_editor.dart';
 import 'package:ideascape/features/space/domain/managers/interaction_state_manager.dart';
 import 'package:ideascape/features/space/domain/managers/selection_manager.dart';
 
@@ -63,11 +64,13 @@ class IdeaSpace extends StatelessWidget {
                         HistoryManager
                       >(
                         create:
-                            (context) =>
-                                HistoryManager(context.read<ShapeLayerBloc>()),
+                            (context) => HistoryManager(
+                              ShapeLayerEditor(context.read<ShapeLayerBloc>()),
+                            ),
                         update:
                             (context, shapeBloc, history) =>
-                                history!..updateShapeLayerBloc(shapeBloc),
+                                history!
+                                  ..updateEditor(ShapeLayerEditor(shapeBloc)),
                       ),
                       ProxyProvider3<
                         ShapeLayerBloc,

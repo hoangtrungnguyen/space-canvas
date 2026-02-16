@@ -1,6 +1,6 @@
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 class DeleteNodeCommand extends SpaceCommand with DefaultComment {
   final Node node;
@@ -8,12 +8,12 @@ class DeleteNodeCommand extends SpaceCommand with DefaultComment {
   DeleteNodeCommand(this.node);
 
   @override
-  Future<void> execute(ShapeLayerBloc bloc) async {
-    bloc.add(ShapeLayerEvent.removeNode(node.id));
+  Future<void> execute(SpaceEditor editor) async {
+    await editor.removeNode(node.id);
   }
 
   @override
-  Future<void> undo(ShapeLayerBloc bloc) async {
-    bloc.add(ShapeLayerEvent.addNode(node));
+  Future<void> undo(SpaceEditor editor) async {
+    await editor.addNode(node);
   }
 }

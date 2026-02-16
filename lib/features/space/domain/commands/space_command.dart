@@ -1,4 +1,4 @@
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 
 /// The Command Interface for the Undo/Redo system.
 ///
@@ -10,11 +10,11 @@ abstract class SpaceCommand {
   /// Override this getter in subclasses to provide a comment.
   String? get comment;
 
-  /// Executes the command logic against the provided [bloc].
-  Future<void> execute(ShapeLayerBloc bloc);
+  /// Executes the command logic against the provided [editor].
+  Future<void> execute(SpaceEditor editor);
 
   /// Reverts the effects of [execute].
-  Future<void> undo(ShapeLayerBloc bloc);
+  Future<void> undo(SpaceEditor editor);
 }
 
 /// Mixin that provides a default null comment implementation.

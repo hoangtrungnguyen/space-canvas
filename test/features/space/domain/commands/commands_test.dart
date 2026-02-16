@@ -1,51 +1,54 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/modify_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 
-class MockShapeLayerBloc extends MockBloc<ShapeLayerEvent, ShapeLayerState>
-    implements ShapeLayerBloc {}
-
-class FakeShapeLayerEvent extends Fake implements ShapeLayerEvent {}
+class MockSpaceEditor extends Mock implements SpaceEditor {}
 
 void main() {
   setUpAll(() {
-    registerFallbackValue(FakeShapeLayerEvent());
+    registerFallbackValue(
+      ShapeNode(id: 0, type: ShapeType.rectangle, rect: Rect.zero, color: 0),
+    );
   });
 
   group('SpaceCommand interface', () {
     test('DefaultComment mixin provides null comment', () {
-      // MoveNodeCommand uses DefaultComment mixin
+      // ModifyNodeCommand uses DefaultComment mixin
       final shape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         color: 0xFF000000,
       );
-      final command = MoveNodeCommand(originalNode: shape, movedNode: shape);
+      final command = ModifyNodeCommand(
+        originalNode: shape,
+        modifiedNode: shape,
+      );
       expect(command.comment, isNull);
     });
   });
 
   group('AddNodeCommand', () {
-    late MockShapeLayerBloc bloc;
+    late MockSpaceEditor editor;
     late ShapeNode testShape;
 
     setUp(() {
-      bloc = MockShapeLayerBloc();
+      editor = MockSpaceEditor();
       testShape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         color: 0xFF0000FF,
       );
+      when(() => editor.addNode(any())).thenAnswer((_) async {});
+      when(() => editor.removeNode(any())).thenAnswer((_) async {});
     });
 
     test('stores the node', () {
@@ -60,30 +63,20 @@ void main() {
       expect(command.comment, isA<String>());
     });
 
-    test('execute adds node to bloc', () async {
+    test('execute adds node to editor', () async {
       final command = AddNodeCommand(testShape);
 
-      await command.execute(bloc);
+      await command.execute(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 1);
-
-      // Verify the event is an addNode event
-      final event = captured.first as ShapeLayerEvent;
-      event.mapOrNull(addNode: (e) => expect(e.node, testShape));
+      verify(() => editor.addNode(testShape)).called(1);
     });
 
-    test('undo removes node from bloc', () async {
+    test('undo removes node from editor', () async {
       final command = AddNodeCommand(testShape);
 
-      await command.undo(bloc);
+      await command.undo(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 1);
-
-      // Verify the event is a removeNode event
-      final event = captured.first as ShapeLayerEvent;
-      event.mapOrNull(removeNode: (e) => expect(e.nodeId, testShape.id));
+      verify(() => editor.removeNode(testShape.id)).called(1);
     });
 
     group('_getCallerInfo', () {
@@ -105,17 +98,19 @@ void main() {
   });
 
   group('DeleteNodeCommand', () {
-    late MockShapeLayerBloc bloc;
+    late MockSpaceEditor editor;
     late ShapeNode testShape;
 
     setUp(() {
-      bloc = MockShapeLayerBloc();
+      editor = MockSpaceEditor();
       testShape = ShapeNode(
         id: 42,
         type: ShapeType.oval,
         rect: const Rect.fromLTWH(50, 50, 200, 200),
         color: 0xFFFF0000,
       );
+      when(() => editor.removeNode(any())).thenAnswer((_) async {});
+      when(() => editor.addNode(any())).thenAnswer((_) async {});
     });
 
     test('stores the node', () {
@@ -128,117 +123,88 @@ void main() {
       expect(command.comment, isNull);
     });
 
-    test('execute removes node from bloc', () async {
+    test('execute removes node from editor', () async {
       final command = DeleteNodeCommand(testShape);
 
-      await command.execute(bloc);
+      await command.execute(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 1);
-
-      final event = captured.first as ShapeLayerEvent;
-      event.mapOrNull(removeNode: (e) => expect(e.nodeId, testShape.id));
+      verify(() => editor.removeNode(testShape.id)).called(1);
     });
 
-    test('undo adds node back to bloc', () async {
+    test('undo adds node back to editor', () async {
       final command = DeleteNodeCommand(testShape);
 
-      await command.undo(bloc);
+      await command.undo(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 1);
-
-      final event = captured.first as ShapeLayerEvent;
-      event.mapOrNull(addNode: (e) => expect(e.node, testShape));
+      verify(() => editor.addNode(testShape)).called(1);
     });
   });
 
-  group('MoveNodeCommand', () {
-    late MockShapeLayerBloc bloc;
+  group('ModifyNodeCommand', () {
+    late MockSpaceEditor editor;
     late ShapeNode originalShape;
-    late ShapeNode movedShape;
+    late ShapeNode modifiedShape;
 
     setUp(() {
-      bloc = MockShapeLayerBloc();
+      editor = MockSpaceEditor();
       originalShape = ShapeNode(
         id: 10,
         type: ShapeType.triangle,
         rect: const Rect.fromLTWH(0, 0, 100, 100),
         color: 0xFF00FF00,
       );
-      movedShape = originalShape.copyWith(
+      modifiedShape = originalShape.copyWith(
         rect: const Rect.fromLTWH(200, 200, 100, 100),
       );
+      when(() => editor.updateNode(any())).thenAnswer((_) async {});
     });
 
-    test('stores original and moved nodes', () {
-      final command = MoveNodeCommand(
+    test('stores original and modified nodes', () {
+      final command = ModifyNodeCommand(
         originalNode: originalShape,
-        movedNode: movedShape,
+        modifiedNode: modifiedShape,
       );
       expect(command.originalNode, originalShape);
-      expect(command.movedNode, movedShape);
+      expect(command.modifiedNode, modifiedShape);
     });
 
     test('uses DefaultComment mixin (comment is null)', () {
-      final command = MoveNodeCommand(
+      final command = ModifyNodeCommand(
         originalNode: originalShape,
-        movedNode: movedShape,
+        modifiedNode: modifiedShape,
       );
       expect(command.comment, isNull);
     });
 
-    test('execute removes original and adds moved node', () async {
-      final command = MoveNodeCommand(
+    test('execute updates node to modified state', () async {
+      final command = ModifyNodeCommand(
         originalNode: originalShape,
-        movedNode: movedShape,
+        modifiedNode: modifiedShape,
       );
 
-      await command.execute(bloc);
+      await command.execute(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 2);
-
-      // First event: remove original
-      (captured[0] as ShapeLayerEvent).mapOrNull(
-        removeNode: (e) => expect(e.nodeId, originalShape.id),
-      );
-
-      // Second event: add moved
-      (captured[1] as ShapeLayerEvent).mapOrNull(
-        addNode: (e) => expect(e.node, movedShape),
-      );
+      verify(() => editor.updateNode(modifiedShape)).called(1);
     });
 
-    test('undo removes moved and adds original node back', () async {
-      final command = MoveNodeCommand(
+    test('undo updates node back to original state', () async {
+      final command = ModifyNodeCommand(
         originalNode: originalShape,
-        movedNode: movedShape,
+        modifiedNode: modifiedShape,
       );
 
-      await command.undo(bloc);
+      await command.undo(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 2);
-
-      // First event: remove moved
-      (captured[0] as ShapeLayerEvent).mapOrNull(
-        removeNode: (e) => expect(e.nodeId, movedShape.id),
-      );
-
-      // Second event: add original back
-      (captured[1] as ShapeLayerEvent).mapOrNull(
-        addNode: (e) => expect(e.node, originalShape),
-      );
+      verify(() => editor.updateNode(originalShape)).called(1);
     });
   });
 
   group('BatchDeleteCommand', () {
-    late MockShapeLayerBloc bloc;
+    late MockSpaceEditor editor;
     late List<ShapeNode> testShapes;
 
     setUp(() {
-      bloc = MockShapeLayerBloc();
+      editor = MockSpaceEditor();
       testShapes = [
         ShapeNode(
           id: 1,
@@ -259,6 +225,8 @@ void main() {
           color: 0xFF00FF00,
         ),
       ];
+      when(() => editor.removeNode(any())).thenAnswer((_) async {});
+      when(() => editor.addNode(any())).thenAnswer((_) async {});
     });
 
     test('stores the nodes list', () {
@@ -272,53 +240,42 @@ void main() {
       expect(command.comment, isNull);
     });
 
-    test('execute removes all nodes from bloc', () async {
+    test('execute removes all nodes from editor', () async {
       final command = BatchDeleteCommand(testShapes);
 
-      await command.execute(bloc);
+      await command.execute(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 3);
-
-      for (var i = 0; i < testShapes.length; i++) {
-        (captured[i] as ShapeLayerEvent).mapOrNull(
-          removeNode: (e) => expect(e.nodeId, testShapes[i].id),
-        );
+      for (var shape in testShapes) {
+        verify(() => editor.removeNode(shape.id)).called(1);
       }
     });
 
-    test('undo adds all nodes back to bloc', () async {
+    test('undo adds all nodes back to editor', () async {
       final command = BatchDeleteCommand(testShapes);
 
-      await command.undo(bloc);
+      await command.undo(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 3);
-
-      for (var i = 0; i < testShapes.length; i++) {
-        (captured[i] as ShapeLayerEvent).mapOrNull(
-          addNode: (e) => expect(e.node, testShapes[i]),
-        );
+      for (var shape in testShapes) {
+        verify(() => editor.addNode(shape)).called(1);
       }
     });
 
     test('handles empty nodes list', () async {
       final command = BatchDeleteCommand([]);
 
-      await command.execute(bloc);
-      await command.undo(bloc);
+      await command.execute(editor);
+      await command.undo(editor);
 
-      // No events should be added
-      verifyNever(() => bloc.add(any()));
+      verifyNever(() => editor.addNode(any()));
+      verifyNever(() => editor.removeNode(any()));
     });
 
     test('handles single node', () async {
       final command = BatchDeleteCommand([testShapes.first]);
 
-      await command.execute(bloc);
+      await command.execute(editor);
 
-      final captured = verify(() => bloc.add(captureAny())).captured;
-      expect(captured.length, 1);
+      verify(() => editor.removeNode(testShapes.first.id)).called(1);
     });
   });
 }

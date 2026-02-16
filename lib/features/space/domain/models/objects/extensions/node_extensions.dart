@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/visitors/move_visitor.dart';
-import 'package:ideascape/features/space/domain/models/visitors/has_moved_visitor.dart';
 
 /// Extension methods on [Node] that provide a clean API
 /// while internally delegating to the Visitor pattern.
@@ -20,20 +19,5 @@ extension NodeTransformations on Node {
   /// ```
   Node? move(Offset delta) {
     return accept(MoveVisitor(delta));
-  }
-
-  /// Checks if this object has moved from its [original] position.
-  ///
-  /// Returns `true` if the position/bounds differ from the original,
-  /// `false` otherwise (including if types don't match).
-  ///
-  /// Example:
-  /// ```dart
-  /// if (currentObject.hasMovedFrom(originalNode)) {
-  ///   // Record the move in history
-  /// }
-  /// ```
-  bool hasMovedFrom(Node original) {
-    return original.accept(HasMovedVisitor(this));
   }
 }

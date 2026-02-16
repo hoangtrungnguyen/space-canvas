@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 import 'package:ideascape/features/space/domain/models/objects/connector_node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
 
 class AddConnectorCommand extends SpaceCommand {
   final ConnectorNode connector;
@@ -31,24 +31,24 @@ class AddConnectorCommand extends SpaceCommand {
   }
 
   @override
-  Future<void> execute(ShapeLayerBloc bloc) async {
+  Future<void> execute(SpaceEditor editor) async {
     debugPrint(
       '┌─ AddConnectorCommand.execute ─────────────────────────────────',
     );
     debugPrint('│ Connector (id: ${connector.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.addNode(connector));
+    await editor.addNode(connector);
   }
 
   @override
-  Future<void> undo(ShapeLayerBloc bloc) async {
+  Future<void> undo(SpaceEditor editor) async {
     debugPrint(
       '┌─ AddConnectorCommand.undo ────────────────────────────────────',
     );
     debugPrint('│ Connector (id: ${connector.id})');
     debugPrint('│ Caller: $_caller');
     debugPrint('└───────────────────────────────────────────────────────────');
-    bloc.add(ShapeLayerEvent.removeNode(connector.id));
+    await editor.removeNode(connector.id);
   }
 }

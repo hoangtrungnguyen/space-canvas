@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ideascape/features/space/domain/commands/add_connector_command.dart';
 import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/modify_node_command.dart';
 import 'package:ideascape/features/space/domain/models/connector_handle.dart';
 import 'package:ideascape/features/space/domain/commands/reshape_connector_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
 import 'package:ideascape/features/space/domain/models/objects/extensions/node_extensions.dart';
@@ -32,12 +32,11 @@ class InteractionStateManager {
       final node = state.activeNodes.values.first;
       final originalNode = state.originalNode;
 
-      // If we have an original node and position changed, record the move
+      // If we have an original node and state changed, record the command
       if (originalNode != null && originalNode.id == node.id) {
-        // Check if the node actually moved
-        if (_hasNodeMoved(originalNode, node)) {
+        if (_hasNodeChanged(originalNode, node)) {
           history.execute(
-            MoveNodeCommand(originalNode: originalNode, movedNode: node),
+            ModifyNodeCommand(originalNode: originalNode, modifiedNode: node),
           );
         }
       }
@@ -78,7 +77,7 @@ class InteractionStateManager {
             // Connector interactions generally create a new instance if changed
             changed = (originalNode != node);
           } else {
-            changed = _hasNodeMoved(originalNode, node);
+            changed = _hasNodeChanged(originalNode, node);
           }
 
           if (!changed) {
@@ -134,9 +133,9 @@ class InteractionStateManager {
     history.execute(AddConnectorCommand(connector));
   }
 
-  /// Checks if a node has actually moved from its original position.
-  bool _hasNodeMoved(Node original, Node current) {
-    return current.hasMovedFrom(original);
+  /// Checks if a node has changed from its original state.
+  bool _hasNodeChanged(Node original, Node current) {
+    return original != current;
   }
 
   void dragActiveNode(Offset worldPoint, Offset delta) {
@@ -157,6 +156,7 @@ class InteractionStateManager {
   }
 
   void dragActiveConnector(Offset worldPoint, Offset delta) {
+    // ... no changes needed here, just logic
     final state = activeBloc.state;
     if (state.activeNodes.isNotEmpty && state.dragStartPoint != null) {
       final node = state.activeNodes.values.first;

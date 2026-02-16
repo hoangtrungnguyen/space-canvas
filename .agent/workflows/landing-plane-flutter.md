@@ -46,8 +46,12 @@ description: Trigger When the user says "Let's land the plane" or "Land the plan
 
     *Template for Tracker File:*
     ```markdown
-    # Issue: [Issue ID]
-    **Description:** [Concise, high-density summary of the issue context and status]
+    ---
+    issue: [Issue ID]
+    status: [analyze,readyForDev,inProgress,blocked,testing,done]
+    Description: [Concise, high-density summary of the issue context and status]
+    ---
+
     **Timestamp:** [YYYY-MM-DD HH:MM:SS]
     **Affected Modules:**
       - [path/to/module1]

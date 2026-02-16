@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 
 /// Manages the execution and history (Undo/Redo) of [SpaceCommand]s.
 class HistoryManager extends ChangeNotifier {
-  ShapeLayerBloc _bloc;
+  SpaceEditor _editor;
 
   final List<SpaceCommand> _undoStack = [];
   final List<SpaceCommand> _redoStack = [];
 
-  HistoryManager(this._bloc);
+  HistoryManager(this._editor);
 
-  void updateShapeLayerBloc(ShapeLayerBloc bloc) {
-    if (_bloc != bloc) {
-      _bloc = bloc;
-      // Optionally notify listeners if internal state depends on bloc identity,
-      // but usually we just want the new bloc for future commands.
+  void updateEditor(SpaceEditor editor) {
+    if (_editor != editor) {
+      _editor = editor;
+      // Optionally notify listeners if internal state depends on editor identity,
+      // but usually we just want the new editor for future commands.
     }
   }
 
@@ -87,7 +87,7 @@ class HistoryManager extends ChangeNotifier {
   /// Executes a command and pushes it onto the undo stack.
   /// Clears the redo stack because a new history branch has started.
   Future<void> execute(SpaceCommand command) async {
-    await command.execute(_bloc);
+    await command.execute(_editor);
     _undoStack.add(command);
     _redoStack.clear();
     _logStacks('EXECUTE: ${command.runtimeType}');
@@ -99,7 +99,7 @@ class HistoryManager extends ChangeNotifier {
     if (_undoStack.isEmpty) return;
 
     final command = _undoStack.removeLast();
-    await command.undo(_bloc);
+    await command.undo(_editor);
     _redoStack.add(command);
     _logStacks('UNDO: ${command.runtimeType}');
     notifyListeners();
@@ -110,7 +110,7 @@ class HistoryManager extends ChangeNotifier {
     if (_redoStack.isEmpty) return;
 
     final command = _redoStack.removeLast();
-    await command.execute(_bloc);
+    await command.execute(_editor);
     _undoStack.add(command);
     _logStacks('REDO: ${command.runtimeType}');
     notifyListeners();

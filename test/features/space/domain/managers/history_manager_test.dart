@@ -1,21 +1,17 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ideascape/features/space/domain/managers/history_manager.dart';
 import 'package:ideascape/features/space/domain/commands/space_command.dart';
 import 'package:ideascape/features/space/domain/commands/add_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/delete_node_command.dart';
-import 'package:ideascape/features/space/domain/commands/move_node_command.dart';
+import 'package:ideascape/features/space/domain/commands/modify_node_command.dart';
 import 'package:ideascape/features/space/domain/commands/batch_delete_command.dart';
 import 'package:ideascape/features/space/domain/models/objects/node.dart';
-import 'package:ideascape/features/space/view/bloc/shapes_layer/shape_layer_bloc.dart';
+import 'package:ideascape/features/space/domain/interfaces/space_editor.dart';
 
-class MockShapeLayerBloc extends MockBloc<ShapeLayerEvent, ShapeLayerState>
-    implements ShapeLayerBloc {}
-
-class FakeShapeLayerEvent extends Fake implements ShapeLayerEvent {}
+class MockSpaceEditor extends Mock implements SpaceEditor {}
 
 /// A simple mock command for testing basic execute/undo flow
 class MockCommand extends SpaceCommand {
@@ -29,29 +25,31 @@ class MockCommand extends SpaceCommand {
   String? get comment => _comment;
 
   @override
-  Future<void> execute(ShapeLayerBloc bloc) async {
+  Future<void> execute(SpaceEditor editor) async {
     executed = true;
   }
 
   @override
-  Future<void> undo(ShapeLayerBloc bloc) async {
+  Future<void> undo(SpaceEditor editor) async {
     undone = true;
   }
 }
 
 void main() {
   setUpAll(() {
-    registerFallbackValue(FakeShapeLayerEvent());
+    registerFallbackValue(
+      ShapeNode(id: 0, type: ShapeType.rectangle, rect: Rect.zero, color: 0),
+    );
   });
 
   group('HistoryManager', () {
-    late MockShapeLayerBloc bloc;
+    late MockSpaceEditor editor;
     late HistoryManager historyManager;
     late ShapeNode testShape;
 
     setUp(() {
-      bloc = MockShapeLayerBloc();
-      historyManager = HistoryManager(bloc);
+      editor = MockSpaceEditor();
+      historyManager = HistoryManager(editor);
       testShape = ShapeNode(
         id: 1,
         type: ShapeType.rectangle,
@@ -71,19 +69,19 @@ void main() {
       });
     });
 
-    group('updateShapeLayerBloc', () {
-      test('updates the internal bloc reference', () async {
-        final newBloc = MockShapeLayerBloc();
+    group('updateEditor', () {
+      test('updates the internal editor reference', () async {
+        final newEditor = MockSpaceEditor();
         final command = MockCommand();
 
-        historyManager.updateShapeLayerBloc(newBloc);
+        historyManager.updateEditor(newEditor);
         await historyManager.execute(command);
 
         expect(command.executed, isTrue);
       });
 
-      test('does nothing when same bloc is passed', () {
-        historyManager.updateShapeLayerBloc(bloc);
+      test('does nothing when same editor is passed', () {
+        historyManager.updateEditor(editor);
         expect(historyManager.canUndo, isFalse);
       });
     });
@@ -260,13 +258,13 @@ void main() {
         expect(historyManager.canUndo, isTrue);
       });
 
-      test('handles MoveNodeCommand', () async {
-        final movedShape = testShape.copyWith(
+      test('handles ModifyNodeCommand', () async {
+        final modifiedShape = testShape.copyWith(
           rect: const Rect.fromLTWH(50, 50, 100, 100),
         );
-        final command = MoveNodeCommand(
+        final command = ModifyNodeCommand(
           originalNode: testShape,
-          movedNode: movedShape,
+          modifiedNode: modifiedShape,
         );
         await historyManager.execute(command);
         expect(historyManager.canUndo, isTrue);
